@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Strong Log Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+        .editor { width: 100%; max-width: 500px; background: #222; padding: 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        textarea { width: 100%; height: 120px; background: #333; border: none; color: #fff; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; resize: none; }
+        input[type="file"] { margin-bottom: 20px; }
+        canvas { max-width: 100%; border-radius: 15px; margin-top: 20px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn { background: #fff; color: #000; padding: 12px 30px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn:hover { transform: scale(1.05); background: #ddd; }
+        .save-btn { background: #ff4757; color: white; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="editor">
+    <h2>📸 Workout Summary</h2>
+    <textarea id="logInput" placeholder="Strong 로그를 붙여넣으세요..."></textarea>
+    <input type="file" id="imageInput" accept="image/*">
+    <button class="btn" onclick="processWorkout()">이미지 생성</button>
+</div>
+
+<canvas id="canvas"></canvas>
+<button id="downloadBtn" class="btn save-btn" onclick="download()">이미지 저장하기</button>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function processWorkout() {
+        const rawText = document.getElementById('logInput').value;
+        const file = document.getElementById('imageInput').files[0];
+        if (!rawText || !file) return alert("텍스트와 사진을 넣어주세요!");
+
+        // --- 데이터 파싱 로직 ---
+        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
+        const title = lines[0]; // 첫 줄: 루틴 이름
+        const dateTime = lines[1]; // 둘째 줄: 날짜/시간
+        
+        let totalSets = 0;
+        let exerciseList = [];
+        let currentExercise = null;
+        let workoutDuration = "";
+
+        lines.forEach(line => {
+            // 운동 시간 추출 (Walking 같은 항목에서 시간 찾기 혹은 마지막 링크 위)
+            if (line.includes(":") && (line.includes("오전") || line.includes("오후"))) return;
+            
+            // 세트 정보 (세트 n: 또는 F:)
+            const setMatch = line.match(/^(세트\s*\d+|F):/);
+            if (setMatch) {
+                totalSets++;
+                if (currentExercise) currentExercise.sets++;
+                // 운동 시간 특수 처리 (Walking 등)
+                if (currentExercise && (currentExercise.name.includes("Walking") || currentExercise.name.includes("Plank"))) {
+                    const timeMatch = line.match(/\d+:\d+/);
+                    if (timeMatch) workoutDuration = timeMatch[0];
+                }
+            } 
+            // 워밍업(W:) 무시
+            else if (line.startsWith("W:")) {
+                return; 
+            }
+            // 하단 링크 무시
+            else if (line.startsWith("http")) {
+                return;
+            }
+            // 새로운 운동 종목명 (영어/한글/괄호 포함, 메모는 제외)
+            // 메모(with leg up 등)는 보통 소문자로 시작하거나 별도 설명이므로, 
+            // 여기서는 '세트'나 'W'로 시작하지 않는 줄을 종목으로 간주하되 
+            // 특정 키워드가 없는 경우만 종목으로 인정
+            else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== title && line !== dateTime) {
+                // 메모 무시 로직: 소문자로 시작하는 문장은 메모로 간주 (일반적인 운동명은 대문자/한글)
+                if (/^[a-z]/.test(line)) return; 
+
+                currentExercise = { name: line, sets: 0 };
+                exerciseList.push(currentExercise);
+            }
+        });
+
+        // --- 이미지 합성 로직 ---
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = 1080; // 인스타/공유 최적화 고정 해상도
+                canvas.height = (img.height / img.width) * 1080;
+                canvas.style.display = "block";
+
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // 어두운 그라데이션 (좌측 텍스트 강조)
+                const grad = ctx.createLinearGradient(0, 0, canvas.width * 0.7, 0);
+                grad.addColorStop(0, "rgba(0,0,0,0.7)");
+                grad.addColorStop(1, "rgba(0,0,0,0)");
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 텍스트 그리기
+                ctx.fillStyle = "white";
+                let currentY = 80;
+                const margin = 60;
+
+                // 타이틀 (Archivo Black - 굵고 세련된 폰트)
+                ctx.font = "800 70px 'Archivo Black'";
+                ctx.fillText(title.toUpperCase(), margin, currentY);
+                
+                currentY += 60;
+                ctx.font = "400 30px 'Inter'";
+                ctx.fillStyle = "#bbb";
+                ctx.fillText(`${dateTime}  |  TOTAL ${totalSets} SETS`, margin, currentY);
+
+                currentY += 80;
+                ctx.beginPath();
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 4;
+                ctx.moveTo(margin, currentY);
+                ctx.lineTo(margin + 100, currentY);
+                ctx.stroke();
+
+                currentY += 80;
+                // 운동 리스트
+                exerciseList.forEach(ex => {
+                    if (ex.sets === 0) return; // 세트 없는 종목 제외
+                    ctx.fillStyle = "white";
+                    ctx.font = "700 45px 'Inter'";
+                    ctx.fillText(ex.name, margin, currentY);
+                    
+                    ctx.fillStyle = "#ff4757"; // 세트 수 강조 색상
+                    ctx.font = "700 45px 'Archivo Black'";
+                    const textWidth = ctx.measureText(ex.name).width;
+                    ctx.fillText(` ${ex.sets}`, margin + textWidth + 20, currentY);
+                    
+                    currentY += 65;
+                });
+
+                document.getElementById('downloadBtn').style.display = "block";
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function download() {
+        const link = document.createElement('a');
+        link.download = 'workout_result.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+</script>
+
+</body>
+</html>
