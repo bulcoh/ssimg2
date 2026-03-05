@@ -2,36 +2,35 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Insta-Share Maker</title>
+    <title>Strong Insta-Share v2</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 40px; }
-        .editor { width: 100%; max-width: 500px; background: #222; padding: 25px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); margin-bottom: 30px; }
-        h2 { font-family: 'Archivo Black', sans-serif; text-align: center; margin-bottom: 25px; }
-        textarea { width: 100%; height: 120px; background: #333; border: none; color: #fff; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; resize: none; font-family: inherit; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        input[type="time"] { background: #333; border: none; color: #fff; padding: 10px; border-radius: 10px; flex: 1; }
-        input[type="file"] { margin-bottom: 25px; width: 100%; }
-        canvas { max-width: 100%; border-radius: 15px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .btn { background: #fff; color: #000; padding: 13px 30px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 16px; }
-        .btn:hover { background: #ddd; transform: scale(1.02); }
-        .save-btn { background: #ff4757; color: white; margin-top: 15px; display: none; }
+        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .editor { width: 100%; max-width: 500px; background: #222; padding: 25px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); margin-bottom: 20px; box-sizing: border-box; }
+        h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; }
+        textarea { width: 100%; height: 120px; background: #333; border: none; color: #fff; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-sizing: border-box; resize: none; }
+        
+        /* 파일 선택 및 버튼 UI 강화 */
+        .file-label { display: block; background: #444; color: white; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 15px; border: 2px dashed #666; font-size: 18px; }
+        .file-label:hover { background: #555; }
+        input[type="file"] { display: none; }
+        
+        .btn { background: #ff4757; color: white; padding: 20px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 20px; }
+        .btn:hover { background: #ff6b81; transform: translateY(-2px); }
+        
+        canvas { max-width: 100%; border-radius: 15px; display: none; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .save-btn { background: #2f3542; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
 
 <div class="editor">
-    <h2>📸 Strong Insta-Share</h2>
-    <p>1. 로그 텍스트를 붙여넣으세요</p>
-    <textarea id="logInput" placeholder="Strong 로그를 붙여넣으세요..."></textarea>
+    <h2>📸 Strong Visualizer</h2>
+    <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     
-    <p>2. 운동 종료 시간을 입력하세요 (시간 계산용)</p>
-    <div class="input-group">
-        <input type="time" id="endTimeInput" value="18:00">
-    </div>
-    
-    <p>3. 배경 사진을 선택하세요</p>
+    <label for="imageInput" class="file-label">🖼️ 사진 선택하기 (터치!)</label>
     <input type="file" id="imageInput" accept="image/*">
+    
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
 </div>
 
@@ -43,7 +42,6 @@
     const ctx = canvas.getContext('2d');
 
     function parseTimeString(timeStr) {
-        // "오후 3:58" 형태를 24시간 형식 "15:58"로 변환
         const parts = timeStr.match(/(오전|오후)\s*(\d+):(\d+)/);
         if (!parts) return null;
         let hours = parseInt(parts[2]);
@@ -53,173 +51,137 @@
         return { hours, minutes };
     }
 
-    function calculateDuration(startStr, endStr) {
-        // 운동 지속 시간 계산 (예: "1h 20m")
-        const start = parseTimeString(startStr);
-        const endParts = endStr.split(':');
-        const end = { hours: parseInt(endParts[0]), minutes: parseInt(endParts[1]) };
-
-        if (!start || !end) return "Time Error";
-
-        let startMinutes = start.hours * 60 + start.minutes;
-        let endMinutes = end.hours * 60 + end.minutes;
-
-        if (endMinutes < startMinutes) endMinutes += 24 * 60; // 다음날로 넘어간 경우
-
-        const diff = endMinutes - startMinutes;
-        const h = Math.floor(diff / 60);
-        const m = diff % 60;
-
-        return `${h}h ${m}m`;
-    }
-
     function processWorkout() {
         const rawText = document.getElementById('logInput').value;
-        const endTime = document.getElementById('endTimeInput').value;
-        const file = document.getElementById('imageInput').files[0];
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput.files[0];
+        
         if (!rawText || !file) return alert("텍스트와 사진을 넣어주세요!");
 
-        // --- 데이터 파싱 로직 ---
-        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
-        const title = lines[0]; // 첫 줄: 루틴 이름
-        const dateTime = lines[1]; // 둘째 줄: 날짜/시간
-        const startTimeStr = dateTime.match(/(오전|오후)\s*\d+:\d+/)[0]; // 시작 시간 추출
+        // --- 3. 사진 메타데이터에서 종료 시간 추출 ---
+        const photoTime = new Date(file.lastModified);
+        const endHours = photoTime.getHours();
+        const endMinutes = photoTime.getMinutes();
 
-        const workoutDuration = calculateDuration(startTimeStr, endTime); // 지속 시간 계산
+        // --- 데이터 파싱 ---
+        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
+        const title = lines[0];
+        const dateTime = lines[1];
+        const startTimeStr = dateTime.match(/(오전|오후)\s*\d+:\d+/)[0];
+        const start = parseTimeString(startTimeStr);
+
+        // 시간 계산
+        let startTotal = start.hours * 60 + start.minutes;
+        let endTotal = endHours * 60 + endMinutes;
+        if (endTotal < startTotal) endTotal += 1440;
+        const diff = endTotal - startTotal;
+        const duration = `${Math.floor(diff / 60)}h ${diff % 60}m`;
 
         let totalSets = 0;
         let exerciseList = [];
         let currentExercise = null;
 
-        lines.forEach((line, index) => {
-            // 날짜 줄 패스
-            if (index === 1) return;
-
-            // 세트 정보 (세트 n: 또는 F:)
+        lines.forEach((line, idx) => {
+            if (idx === 1) return;
             const setMatch = line.match(/^(세트\s*\d+|F):/);
             if (setMatch) {
                 totalSets++;
                 if (currentExercise) currentExercise.sets++;
-            } 
-            // 워밍업(W:), 하단 링크, 빈 줄 무시
-            else if (line.startsWith("W:") || line.startsWith("http") || line.trim() === "") {
-                return; 
-            }
-            // 새로운 운동 종목명 (영어/한글/괄호 포함, 메모는 제외)
-            else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== title && line !== dateTime) {
-                // 메모 무시 로직: 소문자로 시작하거나 한글 조사가 붙지 않은 짧은 문장은 메모로 간주
-                if (/^[a-z]/.test(line)) return; 
-
+            } else if (line.startsWith("W:") || line.startsWith("http")) {
+                return;
+            } else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== title && line !== dateTime) {
+                if (/^[a-z]/.test(line)) return;
                 currentExercise = { name: line, sets: 0 };
                 exerciseList.push(currentExercise);
             }
         });
 
-        // --- 이미지 합성 로직 ---
+        // --- 이미지 합성 ---
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-                canvas.width = 1080; // 인스타 최적화 가로 해상도
-                canvas.height = 1350; // 인스타 4:5 비율 세로 해상도 (사진을 중앙에 배치)
-                canvas.style.display = "block";
-
-                // 배경 채우기 (어두운 배경)
-                ctx.fillStyle = "#111";
+                canvas.width = 1080;
+                canvas.height = 1350;
+                ctx.fillStyle = "#000";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // 사진을 중앙에 비율 맞춰 그리기
-                const imgRatio = img.width / img.height;
-                const canvasRatio = canvas.width / (canvas.height * 0.7); // 사진 영역 비율 (상단 70%)
-                let drawWidth, drawHeight, drawX, drawY;
+                // 사진 배치
+                const ratio = img.width / img.height;
+                const drawH = canvas.height * 0.75;
+                const drawW = drawH * ratio;
+                ctx.drawImage(img, (canvas.width - drawW) / 2, 0, drawW, drawH);
 
-                if (imgRatio > canvasRatio) {
-                    // 사진이 더 가로로 긴 경우
-                    drawHeight = canvas.height * 0.7;
-                    drawWidth = drawHeight * imgRatio;
-                    drawX = (canvas.width - drawWidth) / 2;
-                    drawY = 0;
-                } else {
-                    // 사진이 더 세로로 긴 경우
-                    drawWidth = canvas.width;
-                    drawHeight = drawWidth / imgRatio;
-                    drawX = 0;
-                    drawY = (canvas.height * 0.7 - drawHeight) / 2;
-                }
-                ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-
-                // 하단 그라데이션 카드 영역 (사진 하단 30%)
-                const cardHeight = canvas.height * 0.35; // 약간 넉넉하게
-                const grad = ctx.createLinearGradient(0, canvas.height - cardHeight, 0, canvas.height);
-                grad.addColorStop(0, "rgba(0,0,0,0)"); // 사진 영역 경계는 투명하게
-                grad.addColorStop(0.3, "rgba(0,0,0,0.85)"); // 급격히 어두워짐
-                grad.addColorStop(1, "rgba(0,0,0,1)"); // 맨 하단은 완전 검은색
+                // 하단 카드
+                const cardH = canvas.height * 0.35;
+                const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
+                grad.addColorStop(0, "rgba(0,0,0,0)");
+                grad.addColorStop(0.2, "rgba(0,0,0,0.95)");
+                grad.addColorStop(1, "rgba(0,0,0,1)");
                 ctx.fillStyle = grad;
-                ctx.fillRect(0, canvas.height - cardHeight, canvas.width, cardHeight);
+                ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
-                // 텍스트 그리기 설정
+                // --- 2. 중간 텍스트 가독성 (Shadow 추가) ---
                 const margin = 60;
-                let currentY = canvas.height - cardHeight + 80;
+                let currentY = canvas.height - cardH + 80;
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#fff";
+                ctx.shadowColor = "rgba(0,0,0,0.8)";
+                ctx.shadowBlur = 10;
+                ctx.font = "700 30px 'Inter'";
+                const summary = `${dateTime.split('요일')[0]}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
+                ctx.fillText(summary, canvas.width / 2, currentY);
+                ctx.shadowBlur = 0; // 그림자 해제
 
-                // 상단 요약 바 (DATE | TIME | SETS)
-                ctx.fillStyle = "#aaa";
-                ctx.font = "400 28px 'Inter'";
-                const summaryText = `${dateTime.split(' ')[0]} ${dateTime.split(' ')[1]}  |  ${workoutDuration}  |  TOTAL ${totalSets} SETS`;
-                const textWidth = ctx.measureText(summaryText).width;
-                ctx.fillText(summaryText, (canvas.width - textWidth) / 2, currentY); // 중앙 정렬
-
-                currentY += 60;
-                // 구분선
-                ctx.beginPath();
+                currentY += 50;
                 ctx.strokeStyle = "rgba(255,255,255,0.2)";
-                ctx.lineWidth = 2;
-                ctx.moveTo(margin, currentY);
-                ctx.lineTo(canvas.width - margin, currentY);
-                ctx.stroke();
+                ctx.strokeRect(margin, currentY, canvas.width - (margin * 2), 1);
 
+                // --- 1. 운동 리스트 (잘림 방지 및 2열) ---
                 currentY += 80;
-                // 하단 운동 리스트 (2열 배치로 압축)
-                const colWidth = (canvas.width - margin * 2) / 2;
-                let colX = margin;
-                exerciseList.forEach((ex, index) => {
-                    if (ex.sets === 0) return; // 세트 없는 종목 제외
-                    
-                    if (index === Math.ceil(exerciseList.length / 2)) {
-                        // 2열로 변경
-                        colX = margin + colWidth + 40;
-                        currentY = canvas.height - cardHeight + 80 + 140; // 다시 상단으로
-                    }
+                ctx.textAlign = "left";
+                const colW = (canvas.width - margin * 2) / 2;
+                exerciseList.forEach((ex, i) => {
+                    if (ex.sets === 0) return;
+                    let x = margin + (i >= Math.ceil(exerciseList.length / 2) ? colW + 20 : 0);
+                    let y = i >= Math.ceil(exerciseList.length / 2) ? 
+                            (canvas.height - cardH + 210) + ((i - Math.ceil(exerciseList.length / 2)) * 60) : 
+                            currentY + (i * 60);
 
-                    // 종목명
                     ctx.fillStyle = "white";
-                    ctx.font = "700 38px 'Inter'";
-                    const truncatedName = ex.name.length > 20 ? ex.name.substring(0, 18) + '..' : ex.name;
-                    ctx.fillText(truncatedName, colX, currentY);
+                    ctx.font = "700 34px 'Inter'";
                     
-                    // 세트수 (ㅇㅇㅇ) - 빨간색 포인트
+                    // 텍스트 축약 (동그라미 공간 확보)
+                    let displayName = ex.name;
+                    const maxTextW = colW - 160; 
+                    if (ctx.measureText(displayName).width > maxTextW) {
+                        while (ctx.measureText(displayName + "..").width > maxTextW) {
+                            displayName = displayName.slice(0, -1);
+                        }
+                        displayName += "..";
+                    }
+                    ctx.fillText(displayName, x, y);
+
+                    // 동그라미 세트수
                     ctx.fillStyle = "#ff4757";
-                    ctx.font = "700 38px 'Inter'"; // 원(ㅇ)의 크기를 맞추기 위해 같은 폰트 사용
-                    const nameWidth = ctx.measureText(truncatedName).width;
-                    const circles = "ㅇ".repeat(ex.sets); // 세트수만큼 'ㅇ' 반복
-                    ctx.fillText(circles, colX + nameWidth + 15, currentY);
-                    
-                    currentY += 60;
+                    const circles = "ㅇ".repeat(ex.sets);
+                    ctx.fillText(circles, x + ctx.measureText(displayName).width + 15, y);
                 });
 
+                canvas.style.display = "block";
                 document.getElementById('downloadBtn').style.display = "block";
             };
-            img.src = event.target.result;
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
     function download() {
         const link = document.createElement('a');
-        link.download = 'workout_insta.png';
+        link.download = 'strong_workout.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
 </script>
-
 </body>
 </html>
