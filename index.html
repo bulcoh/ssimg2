@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Share</title>
+    <title>Strong Share Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -19,7 +19,7 @@
 <body>
 
 <div class="editor">
-    <h2>Strong Visualizer v1</h2>
+    <h2>Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -83,7 +83,6 @@
                 canvas.height = 1350; 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // 하단 오버레이 (0.7에서 0.9로 서서히 진해지게 수정)
                 const cardH = canvas.height * 0.45;
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
@@ -93,22 +92,25 @@
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
                 const margin = 70;
-                let currentY = canvas.height - cardH + 110;
+                
+                // --- 요약과 선의 위치를 리스트에 맞춰 아래로 땡김 ---
+                // baseY(300)보다 약 150px 정도 위에서 시작하게 설정
+                let summaryY = canvas.height - 450; 
 
                 // 가운데 요약
                 ctx.textAlign = "center";
                 ctx.fillStyle = "#eee";
                 ctx.font = "400 32px 'Inter'";
                 const summary = `${dateTime.split('요일')[0]}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
-                ctx.fillText(summary, canvas.width / 2, currentY);
+                ctx.fillText(summary, canvas.width / 2, summaryY);
 
-                currentY += 45;
-                ctx.strokeStyle = "rgba(255,255,255,0.4)"; // 너무 쨍하지 않게 조절
-                ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
+                summaryY += 45;
+                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                ctx.beginPath(); ctx.moveTo(margin, summaryY); ctx.lineTo(canvas.width - margin, summaryY); ctx.stroke();
 
-                // --- 수정한 핵심 파트: 좌우 높이 맞추기 및 하단 밀착 ---
+                // 운동 리스트 기준점
                 const colW = (canvas.width - margin * 2) / 2 - 30;
-                const baseY = canvas.height - 300; // 하단 여백 줄이려면 이 숫자를 더 작게 (예: 250) 조절
+                const baseY = canvas.height - 300; // 하단 여백 줄이는 핵심 수치
                 
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
@@ -117,7 +119,6 @@
                     let rowIdx = isRightCol ? i - Math.ceil(exerciseList.length / 2) : i;
                 
                     let x = margin + (isRightCol ? colW + 60 : 0);
-                    // baseY를 기준으로 rowIdx(행 번호)만 곱해서 좌우 열 높이를 칼같이 맞춤
                     let y = baseY + (rowIdx * 65);
 
                     ctx.textAlign = "left";
@@ -148,98 +149,7 @@
 
     function download() {
         const link = document.createElement('a');
-        link.download = 'workout_insta_final.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    }
-</script>
-</body>
-</html>        lines.forEach((line, idx) => {
-            if (idx === 1) return;
-            const setMatch = line.match(/^(세트\s*\d+|F):/);
-            if (setMatch) { totalSets++; if (currentExercise) currentExercise.sets++; }
-            else if (line.startsWith("W:") || line.startsWith("http")) return;
-            else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== title && line !== dateTime) {
-                if (/^[a-z]/.test(line)) return;
-                currentExercise = { name: line, sets: 0 };
-                exerciseList.push(currentExercise);
-            }
-        });
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                canvas.width = 1080;
-                canvas.height = 1350; 
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                // 하단 오버레이 (Opacity 0.7로 강화 및 부드러운 그라데이션)
-                const cardH = canvas.height * 0.45;
-                const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
-                grad.addColorStop(0, "rgba(0,0,0,0)");
-                grad.addColorStop(0.4, "rgba(0,0,0,0.7)");
-                grad.addColorStop(1, "rgba(0,0,0,0.9)"); // 0.5에서 0.7로 강화
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
-
-                const margin = 70;
-                let currentY = canvas.height - cardH + 110;
-
-                // 가운데 요약
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#eee";
-                ctx.font = "400 32px 'Inter'";
-                const summary = `${dateTime.split('요일')[0]}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
-                ctx.fillText(summary, canvas.width / 2, currentY);
-
-                currentY += 45;
-                ctx.strokeStyle = "rgba(255,255,255,0.9)";
-                ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
-
-                const baseY = canvas.height - 350; 
-                
-                exerciseList.forEach((ex, i) => {
-                    if (ex.sets === 0) return;
-                
-                    // 2. 열 나누기 로직
-                    let isRightCol = i >= Math.ceil(exerciseList.length / 2);
-                    let rowIdx = isRightCol ? i - Math.ceil(exerciseList.length / 2) : i;
-                
-                    // 3. X 좌표 설정
-                    let x = margin + (isRightCol ? colW + 60 : 0);
-                
-                    // 4. Y 좌표 설정 (동일한 baseY 기준 + 줄 간격)
-                    let y = baseY + (rowIdx * 60);
-                    ctx.textAlign = "left";
-                    ctx.fillStyle = "white";
-                    ctx.font = "700 36px 'Inter'";
-                    
-                    let name = ex.name;
-                    const maxW = colW - 140; 
-                    if (ctx.measureText(name).width > maxW) {
-                        while (ctx.measureText(name + "..").width > maxW) { name = name.slice(0, -1); }
-                        name += "..";
-                    }
-                    ctx.fillText(name, x, y);
-
-                    ctx.textAlign = "right";
-                    ctx.fillStyle = "#ff4757";
-                    const circlesX = x + colW; 
-                    ctx.fillText("ㅇ".repeat(ex.sets), circlesX, y);
-                });
-
-                canvas.style.display = "block";
-                document.getElementById('downloadBtn').style.display = "block";
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function download() {
-        const link = document.createElement('a');
-        link.download = 'workout_insta_final.png';
+        link.download = 'workout_done.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
