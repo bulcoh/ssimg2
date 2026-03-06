@@ -23,7 +23,7 @@
         .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; box-sizing: border-box; }
         .btn-sub { background: #444; font-size: 16px; }
         
-        /* 추가된 수영/달리기 버튼 스타일 */
+        /* 수영/달리기 버튼 그룹 */
         .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
         .btn-group .btn { flex: 1; font-size: 14px; padding: 12px; margin-bottom: 0; }
         .btn-swim { background: #1e90ff; }
@@ -45,8 +45,8 @@
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     
     <div class="btn-group">
-        <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영 기록</button>
-        <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기 기록</button>
+        <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영 추가</button>
+        <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기 추가</button>
     </div>
 
     <button class="btn btn-sub" onclick="pasteLog()">📋 클립보드 붙여넣기</button>
@@ -61,19 +61,101 @@
     <img id="resultImage" alt="Result Workout Image">
     <button id="pushGithubBtn" class="btn btn-data" style="display:block; background: #6c5ce7; color: white;">🚀 깃허브로 데이터 쏘기</button>
     <button id="saveDataBtn" class="btn btn-data" onclick="downloadData()">📊 파일로 저장 (비상용)</button>
-    <div class="guide">SHARE STRONG IMAGE V2</div>
+    <div class="guide" onclick="resetToken()" style="cursor:pointer">SHARE STRONG IMAGE V2</div>
 </div>
 
 <canvas id="canvas"></canvas>
 
 <script>
-    // ⚠️ 형! 여기 정보만 딱 채워줘!
-    const GITHUB_TOKEN = "여기에_토큰_붙여넣기";
-    const GITHUB_REPO = "사용자이름/저장소이름"; 
+    // --- 깃허브 설정 (보안을 위해 토큰은 브라우저 스토리지 사용) ---
+    let GITHUB_TOKEN = localStorage.getItem('gh_token') || ""; 
+    const GITHUB_REPO = "bulcoh/ssimg2"; 
     const GITHUB_FILE_PATH = "data.json";
 
     let currentMinutes = 0;
     let currentFileDate = "";
+
+    // 1. 토큰 체크 함수
+    function checkToken() {
+        if (!GITHUB_TOKEN) {
+            const input = prompt("🔐 깃허브 토큰이 없습니다.\n처음 한 번만 입력해주세요. (브라우저에 저장됩니다):", "");
+            if (input && input.trim().length > 0) {
+                GITHUB_TOKEN = input.trim();
+                localStorage.setItem('gh_token', GITHUB_TOKEN);
+                return true;
+            }
+            alert("토큰이 없으면 깃허브 전송이 안 돼, 형!");
+            return false;
+        }
+        return true;
+    }
+
+    // 2. 토큰 초기화 (하단 가이드 텍스트 클릭 시 호출 가능)
+    function resetToken() {
+        if(confirm("저장된 깃허브 토큰을 지울까?")) {
+            localStorage.removeItem('gh_token');
+            GITHUB_TOKEN = "";
+            alert("삭제 완료! 다음 전송 때 새로 물어볼게.");
+        }
+    }
+
+    // 3. 깃허브 전송 로직 (덮어쓰기)
+    async function pushToGithub(type, mins, dateStr) {
+        if (!checkToken()) return;
+
+        const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+        let sha = "", currentData = {};
+
+        try {
+            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            if (res.ok) {
+                const json = await res.json();
+                sha = json.sha;
+                currentData = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+            }
+        } catch (e) { console.log("기존 데이터 없음"); }
+
+        if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
+        currentData[dateStr][type] = mins; 
+
+        const putRes = await fetch(url, {
+            method: "PUT",
+            headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: `Update ${type} at ${dateStr}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2)))),
+                sha: sha
+            })
+        });
+
+        if (putRes.ok) {
+            alert(`✅ ${type} ${mins}분 저장 완료!`);
+            if(type === 'strong') {
+                const btn = document.getElementById('pushGithubBtn');
+                btn.innerText = "✅ 전송 완료";
+                btn.classList.add('btn-done');
+            }
+        } else {
+            if (putRes.status === 401) {
+                alert("❌ 토큰이 만료되었거나 틀려. 다시 입력하게 초기화할게.");
+                localStorage.removeItem('gh_token');
+                GITHUB_TOKEN = "";
+            } else {
+                alert("❌ 전송 실패! 리포지토리 이름이나 권한을 확인해줘.");
+            }
+        }
+    }
+
+    // 4. 수동 기록 함수
+    async function recordManual(type) {
+        const mins = prompt(`${type === 'swim' ? '수영' : '달리기'} 몇 분 했어?`, "0");
+        if (mins && !isNaN(mins)) {
+            const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+            await pushToGithub(type, parseInt(mins), dateStr);
+        }
+    }
+
+    // --- 기존 SSimage 로직 유지 ---
 
     document.getElementById('imageInput').onchange = function() {
         const label = document.getElementById('fileLabel');
@@ -91,15 +173,6 @@
             const text = await navigator.clipboard.readText();
             if (text) document.getElementById('logInput').value = text;
         } catch (err) { alert("붙여넣기 권한이 필요합니다."); }
-    }
-
-    // 수영, 달리기 수동 입력 함수
-    async function recordManual(type) {
-        const mins = prompt(`${type === 'swim' ? '수영' : '달리기'} 몇 분 했어?`, "0");
-        if (mins && !isNaN(mins)) {
-            const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
-            await pushToGithub(type, parseInt(mins), dateStr);
-        }
     }
 
     function parseTimeString(timeStr) {
@@ -133,14 +206,11 @@
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
         currentMinutes = endTotal - startTotal; 
-        const duration = `${Math.floor(currentMinutes / 60)}h ${currentMinutes % 60}m`;
 
         let totalSets = 0, exerciseList = [];
-
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
             let foundName = "", setsInPara = 0, hasRecord = false;
-
             lines.forEach(line => {
                 const isSet = /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(line);
                 if (isSet) {
@@ -158,7 +228,7 @@
             const img = new Image();
             img.onload = () => {
                 document.fonts.ready.then(() => {
-                    draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList);
+                    draw(img, workoutTitle, dateTime, `${Math.floor(currentMinutes/60)}h ${currentMinutes%60}m`, totalSets, exerciseList);
                     resultImg.src = canvas.toDataURL('image/png');
                     resultContainer.style.display = 'block';
                     
@@ -166,55 +236,11 @@
                     pushBtn.onclick = () => pushToGithub('strong', currentMinutes, currentFileDate);
                     pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
                     pushBtn.classList.remove('btn-done');
-
-                    const dataBtn = document.getElementById('saveDataBtn');
-                    dataBtn.style.display = 'block';
-
-                    window.scrollTo({ top: resultContainer.offsetTop, behavior: 'smooth' });
                 });
             };
             img.src = e.target.result;
         };
         reader.readAsDataURL(file);
-    }
-
-    // 🚀 깃허브 전송 핵심 함수 (덮어쓰기 로직)
-    async function pushToGithub(type, mins, dateStr) {
-        const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
-        let sha = "", currentData = {};
-
-        try {
-            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
-            if (res.ok) {
-                const json = await res.json();
-                sha = json.sha;
-                currentData = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-            }
-        } catch (e) { console.log("기존 데이터 없음"); }
-
-        if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
-        currentData[dateStr][type] = mins; // 해당 종목 덮어쓰기
-
-        const putRes = await fetch(url, {
-            method: "PUT",
-            headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: `Update ${type} at ${dateStr}`,
-                content: btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2)))),
-                sha: sha
-            })
-        });
-
-        if (putRes.ok) {
-            alert("✅ 깃허브 저장 완료!");
-            if(type === 'strong') {
-                const btn = document.getElementById('pushGithubBtn');
-                btn.innerText = "✅ 전송 완료";
-                btn.classList.add('btn-done');
-            }
-        } else {
-            alert("❌ 저장 실패. 토큰이나 저장소 설정을 확인해줘.");
-        }
     }
 
     function downloadData() {
@@ -250,9 +276,9 @@
             let x = margin + (isRightCol ? colW + 60 : 0);
             let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
             ctx.textAlign = "left"; ctx.fillStyle = "white"; ctx.font = "700 36px 'Inter'";
-            let name = ex.name; const maxW = colW - 150; 
-            if (ctx.measureText(name).width > maxW) {
-                while (ctx.measureText(name + "..").width > maxW) { name = name.slice(0, -1); }
+            let name = ex.name;
+            if (ctx.measureText(name).width > colW - 150) {
+                while (ctx.measureText(name + "..").width > colW - 150) { name = name.slice(0, -1); }
                 name += "..";
             }
             ctx.fillText(name, x, y);
