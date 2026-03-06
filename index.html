@@ -3,63 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strong Visualizer v1.4</title>
+    <title>Strong Share Image 2</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
-        .editor { width: 100%; max-width: 500px; background: #222; padding: 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); box-sizing: border-box; }
-        h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; margin-bottom: 15px; font-size: 24px; }
-        textarea { width: 100%; height: 120px; background: #333; border: 2px solid #444; color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; resize: none; font-size: 16px; outline: none; }
-        .file-label { display: block; background: #444; color: white; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 15px; border: 2px dashed #666; font-size: 16px; }
-        input[type="file"] { display: none; }
-        .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 18px; -webkit-appearance: none; margin-bottom: 10px; }
-        .btn-sub { background: #444; font-size: 16px; }
-        .btn-copy { background: #379FF1; margin-top: 10px; display: none; }
-        canvas { max-width: 100%; border-radius: 15px; display: none; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .save-btn { background: #2f3542; margin-top: 5px; display: none; }
+        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; -webkit-user-select: none; }
+        .editor { width: 100%; max-width: 500px; background: #222; padding: 20px; border-radius: 20px; box-sizing: border-box; }
+        h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; font-size: 22px; margin-top: 0; }
+        textarea { width: 100%; height: 100px; background: #333; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; margin-bottom: 10px; resize: none; outline: none; -webkit-user-select: text; }
+        .btn { background: #ff4757; color: white; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-bottom: 10px; -webkit-appearance: none; }
+        .btn-sub { background: #444; }
+        canvas { display: none; }
+        .guide { color: #888; font-size: 13px; margin-top: 15px; text-align: center; line-height: 1.5; }
     </style>
 </head>
 <body>
 
 <div class="editor">
-    <h2>Strong Visualizer</h2>
+    <h2>Strong Share Image 2</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <button class="btn btn-sub" onclick="pasteLog()">📋 클립보드 붙여넣기</button>
-    <label for="imageInput" class="file-label" id="fileLabel">🖼️ 사진 선택하기</label>
-    <input type="file" id="imageInput" accept="image/*">
-    <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
+    <input type="file" id="imageInput" accept="image/*" style="display:none">
+    <button class="btn btn-sub" onclick="document.getElementById('imageInput').click()">🖼️ 사진 선택하기</button>
+    <button class="btn" onclick="processWorkout()">이미지 생성 및 새창 열기</button>
+    
+    <div class="guide">
+        💡 생성 버튼을 누르면 <b>새 탭</b>에 이미지가 뜹니다.<br>
+        새 탭의 이미지를 <b>꾹 눌러서 [복사]</b> 하시면 끝!
+    </div>
 </div>
 
 <canvas id="canvas"></canvas>
-<button id="copyBtn" class="btn btn-copy" onclick="copyImageToClipboard()">📢 카톡용 복사하기</button>
-<button id="downloadBtn" class="btn save-btn" onclick="download()">파일로 저장하기</button>
 
 <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-
-    document.getElementById('imageInput').onchange = function() {
-        document.getElementById('fileLabel').innerText = "✅ 사진 선택 완료";
-    };
 
     async function pasteLog() {
         try {
             const text = await navigator.clipboard.readText();
             if (text) document.getElementById('logInput').value = text;
         } catch (err) { alert("붙여넣기 권한이 필요합니다."); }
-    }
-
-    // 이미지 클립보드 복사 함수 (핵심!)
-    async function copyImageToClipboard() {
-        try {
-            canvas.toBlob(async (blob) => {
-                const item = new ClipboardItem({ "image/png": blob });
-                await navigator.clipboard.write([item]);
-                alert("이미지가 복사되었습니다! 카톡에 붙여넣으세요.");
-            });
-        } catch (err) {
-            alert("복사에 실패했습니다. 브라우저 설정을 확인해주세요.");
-        }
     }
 
     function parseTimeString(timeStr) {
@@ -74,21 +57,17 @@
 
     function processWorkout() {
         const rawText = document.getElementById('logInput').value;
-        const fileInput = document.getElementById('imageInput');
-        const file = fileInput.files[0];
+        const file = document.getElementById('imageInput').files[0];
         if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
 
         const photoTime = new Date(file.lastModified);
-        // 문단 단위로 쪼개기
         const paragraphs = rawText.split(/\n\s*\n/).map(p => p.trim()).filter(p => p !== "");
         const headerLines = paragraphs[0].split('\n');
         const workoutTitle = headerLines[0];
         const dateTime = headerLines[1] || "";
         
         const timeMatch = dateTime.match(/(오전|오후)\s*\d+:\d+/);
-        if (!timeMatch) return alert("로그 형식이 올바르지 않습니다.");
-        
-        const start = parseTimeString(timeMatch[0]);
+        const start = timeMatch ? parseTimeString(timeMatch[0]) : {hours:0, minutes:0};
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
@@ -115,18 +94,25 @@
                     foundName = line;
                 }
             });
-
-            if (foundName && hasRecord) {
-                exerciseList.push({ name: foundName, sets: setsInPara });
-            }
+            if (foundName && hasRecord) exerciseList.push({ name: foundName, sets: setsInPara });
         });
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = (e) => {
             const img = new Image();
-            img.onload = function() {
+            img.onload = () => {
                 document.fonts.ready.then(() => {
                     draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList);
+                    
+                    // 핵심: 새 창에 이미지 띄우기
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const newWindow = window.open();
+                    if (newWindow) {
+                        newWindow.document.write(`<img src="${dataUrl}" style="width:100%;" oncontextmenu="return true;">`);
+                        newWindow.document.title = "꾹 눌러서 복사하세요";
+                    } else {
+                        alert("팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요!");
+                    }
                 });
             };
             img.src = e.target.result;
@@ -137,7 +123,6 @@
     function draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350; 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
         const cardH = canvas.height * 0.55;
         const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
         grad.addColorStop(0, "rgba(0,0,0,0)");
@@ -158,7 +143,6 @@
             const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
             let x = margin + (isRightCol ? colW + 60 : 0);
             let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
-
             ctx.textAlign = "left"; ctx.fillStyle = "white"; ctx.font = "700 36px 'Inter'";
             let name = ex.name; const maxW = colW - 150; 
             if (ctx.measureText(name).width > maxW) {
@@ -166,7 +150,6 @@
                 name += "..";
             }
             ctx.fillText(name, x, y);
-
             ctx.textAlign = "right"; ctx.fillStyle = "#ff4757";
             ctx.font = "700 " + (ex.sets > 5 ? 26 : 36) + "px 'Inter'";
             ctx.fillText("ㅇ".repeat(ex.sets), x + colW, y);
@@ -175,21 +158,10 @@
         const summaryY = bottomY - (Math.max(half, exerciseList.length - half) - 1) * rowHeight - 110; 
         ctx.textAlign = "center"; ctx.fillStyle = "#ccc"; ctx.font = "400 32px 'Inter'";
         ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, summaryY);
-
         ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(margin, summaryY + 45); ctx.lineTo(canvas.width - margin, summaryY + 45); ctx.stroke();
-
         ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 85px 'Archivo Black'";
         ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 45);
-
-        canvas.style.display = "block";
-        document.getElementById('copyBtn').style.display = "block";
-        document.getElementById('downloadBtn').style.display = "block";
-    }
-
-    function download() {
-        const link = document.createElement('a');
-        link.download = 'workout.png'; link.href = canvas.toDataURL(); link.click();
     }
 </script>
 </body>
