@@ -106,16 +106,20 @@
                 ctx.strokeStyle = "rgba(255,255,255,0.9)";
                 ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
 
-                // 운동 리스트 (하단 여백 축소 배치)
-                currentY += 150; 
-                const colW = (canvas.width - margin * 2) / 2 - 30;
+                const baseY = canvas.height - 350; 
+                
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
+                
+                    // 2. 열 나누기 로직
                     let isRightCol = i >= Math.ceil(exerciseList.length / 2);
+                    let rowIdx = isRightCol ? i - Math.ceil(exerciseList.length / 2) : i;
+                
+                    // 3. X 좌표 설정
                     let x = margin + (isRightCol ? colW + 60 : 0);
-                    // y 간격을 65에서 60으로 줄이고 하단으로 더 배치
-                    let y = isRightCol ? (canvas.height - cardH + 235) + ((i - Math.ceil(exerciseList.length / 2)) * 60) : currentY + (i * 60);
-
+                
+                    // 4. Y 좌표 설정 (동일한 baseY 기준 + 줄 간격)
+                    let y = baseY + (rowIdx * 60);
                     ctx.textAlign = "left";
                     ctx.fillStyle = "white";
                     ctx.font = "700 36px 'Inter'";
