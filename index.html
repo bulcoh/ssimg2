@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Share Final v4</title>
+    <title>Strong Share</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -87,8 +87,8 @@
                 const cardH = canvas.height * 0.45;
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
-                grad.addColorStop(0.4, "rgba(0,0,0,1)");
-                grad.addColorStop(1, "rgba(0,0,0,2)"); // 0.5에서 0.7로 강화
+                grad.addColorStop(0.4, "rgba(0,0,0,0.9)");
+                grad.addColorStop(1, "rgba(0,0,0,1.5)"); // 0.5에서 0.7로 강화
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
@@ -107,7 +107,7 @@
                 ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
 
                 // 운동 리스트 (하단 여백 축소 배치)
-                currentY += 80; 
+                currentY += 120; 
                 const colW = (canvas.width - margin * 2) / 2 - 30;
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
