@@ -21,13 +21,15 @@
             -webkit-user-select: text; font-size: 16px;
         }
         
-        .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; }
+        .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; box-sizing: border-box; }
         .btn-sub { background: #444; font-size: 16px; }
         
+        /* 사진 선택 완료 시 적용될 비활성화 스타일 */
+        .btn-done { background: #222 !important; color: #666 !important; border: 1px solid #444; opacity: 0.7; pointer-events: none; }
+
         /* 이미지 출력 영역 */
         #resultContainer { width: 100%; max-width: 500px; display: none; margin-top: 20px; text-align: center; }
         
-        /* 꾹 누르기(Touch Callout)를 이미지에서만 다시 활성화 */
         #resultImage { 
             width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
             -webkit-touch-callout: default !important; pointer-events: auto;
@@ -53,7 +55,7 @@
 <div id="resultContainer">
     <img id="resultImage" alt="Result Workout Image">
     <div class="guide">
-        SHARE STRONG IMAGE V1</b>
+        SHARE STRONG IMAGE V2
     </div>
 </div>
 
@@ -61,9 +63,11 @@
 
 <script>
     document.getElementById('imageInput').onchange = function() {
-        // 파일을 선택하면 라벨의 글자를 바꾼다!
-        document.getElementById('fileLabel').innerText = "✅ 사진 선택 완료";
+        const label = document.getElementById('fileLabel');
+        label.innerText = "✅ 사진 선택 완료";
+        label.classList.add('btn-done'); // 스타일 변경 클래스 추가
     };
+
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const resultImg = document.getElementById('resultImage');
@@ -134,7 +138,6 @@
             img.onload = () => {
                 document.fonts.ready.then(() => {
                     draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList);
-                    // 캔버스를 실제 이미지 태그로 변환
                     resultImg.src = canvas.toDataURL('image/png');
                     resultContainer.style.display = 'block';
                     window.scrollTo({ top: resultContainer.offsetTop, behavior: 'smooth' });
