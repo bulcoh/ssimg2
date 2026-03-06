@@ -82,6 +82,7 @@
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
+                document.fonts.ready.then(() => {
                 canvas.width = 1080;
                 canvas.height = 1350; 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -97,7 +98,7 @@
                 const margin = 70;
                 const colW = (canvas.width - margin * 2) / 2 - 30;
                 const rowHeight = 70; // 줄 간격을 약간 늘려 가독성 확보
-                const bottomY = canvas.height - 180; // 타이틀 공간 확보를 위해 위로 올림
+                const bottomY = canvas.height - 140; // 타이틀 공간 확보를 위해 위로 올림
                 const half = Math.ceil(exerciseList.length / 2);
 
                 exerciseList.forEach((ex, i) => {
@@ -152,6 +153,8 @@
 
                 canvas.style.display = "block";
                 document.getElementById('downloadBtn').style.display = "block";
+            
+                });
             };
             img.src = e.target.result;
         };
