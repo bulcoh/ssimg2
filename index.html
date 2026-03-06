@@ -19,7 +19,7 @@
 <body>
 
 <div class="editor">
-    <h2>📸 Strong Visualizer v4</h2>
+    <h2>Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -87,8 +87,8 @@
                 const cardH = canvas.height * 0.45;
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
-                grad.addColorStop(0.4, "rgba(0,0,0,0.9)");
-                grad.addColorStop(1, "rgba(0,0,0,1.5)"); // 0.5에서 0.7로 강화
+                grad.addColorStop(0.4, "rgba(0,0,0,0.7)");
+                grad.addColorStop(1, "rgba(0,0,0,0.9)"); // 0.5에서 0.7로 강화
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
