@@ -154,8 +154,8 @@
         const cardH = canvas.height * 0.55;
         const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
         grad.addColorStop(0, "rgba(0,0,0,0)");
-        grad.addColorStop(0.3, "rgba(0,0,0,0.7)");
-        grad.addColorStop(1, "rgba(0,0,0,0.95)"); 
+        grad.addColorStop(0.3, "rgba(0,0,0,0.5)");
+        grad.addColorStop(1, "rgba(0,0,0,0.8)"); 
         ctx.fillStyle = grad;
         ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
