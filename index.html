@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Insta-Share Final v3</title>
+    <title>Strong Share Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -19,7 +19,7 @@
 <body>
 
 <div class="editor">
-    <h2>📸 Strong Visualizer v3</h2>
+    <h2>📸 Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -79,63 +79,58 @@
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-                // 1. 사진 크기에 캔버스를 딱 맞춤
                 canvas.width = 1080;
                 canvas.height = 1350; 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // 2. 하단 오버레이 (Opacity 0.5 및 부드러운 그라데이션)
-                const cardH = canvas.height * 0.45; // 그라데이션 시작점을 위로 올림
+                // 하단 오버레이 (Opacity 0.5 및 아주 부드러운 그라데이션)
+                const cardH = canvas.height * 0.45;
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
-                grad.addColorStop(0, "rgba(0,0,0,0)"); // 시작은 완전 투명
-                grad.addColorStop(0.2, "rgba(0,0,0,0.1)");
-                grad.addColorStop(0.4, "rgba(0,0,0,0.25)");
-                grad.addColorStop(0.7, "rgba(0,0,0,0.4)");
-                grad.addColorStop(1, "rgba(0,0,0,0.5)"); // 맨 하단은 투명도 0.5 (요청사항)
+                grad.addColorStop(0, "rgba(0,0,0,0)");
+                grad.addColorStop(0.5, "rgba(0,0,0,0.3)");
+                grad.addColorStop(1, "rgba(0,0,0,0.5)"); 
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
-                const margin = 60;
-                let currentY = canvas.height - cardH + 130;
+                const margin = 70;
+                let currentY = canvas.height - cardH + 100;
 
-                // 3. 가운데 요약
+                // 가운데 요약
                 ctx.textAlign = "center";
                 ctx.fillStyle = "#bbb";
-                ctx.font = "400 28px 'Inter'";
+                ctx.font = "400 32px 'Inter'"; // 폰트 키움
                 const summary = `${dateTime.split('요일')[0]}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
                 ctx.fillText(summary, canvas.width / 2, currentY);
 
-                currentY += 40;
-                ctx.strokeStyle = "rgba(255,255,255,0.1)";
+                currentY += 45;
+                ctx.strokeStyle = "rgba(255,255,255,0.15)";
                 ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
 
-                // 4. 운동 리스트 (우측 정렬 동그라미 적용)
-                currentY += 70;
-                const colW = (canvas.width - margin * 2.5) / 2;
+                // 운동 리스트 (폰트 시원하게 키우고 여백 최적화)
+                currentY += 85; 
+                const colW = (canvas.width - margin * 2) / 2 - 30; // 간격 조정
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
                     let isRightCol = i >= Math.ceil(exerciseList.length / 2);
-                    let x = margin + (isRightCol ? colW + 40 : 0);
-                    let y = isRightCol ? (canvas.height - cardH + 240) + ((i - Math.ceil(exerciseList.length / 2)) * 55) : currentY + (i * 55);
+                    let x = margin + (isRightCol ? colW + 60 : 0);
+                    let y = isRightCol ? (canvas.height - cardH + 230) + ((i - Math.ceil(exerciseList.length / 2)) * 65) : currentY + (i * 65);
 
-                    // 종목명 (좌측 정렬)
                     ctx.textAlign = "left";
                     ctx.fillStyle = "white";
-                    ctx.font = "700 30px 'Inter'";
+                    ctx.font = "700 36px 'Inter'"; // 폰트 시원하게 키움
                     
                     let name = ex.name;
-                    const maxW = colW - 140; // 동그라미 공간 확보를 위해 조금 더 줄임
+                    const maxW = colW - 140; 
                     if (ctx.measureText(name).width > maxW) {
                         while (ctx.measureText(name + "..").width > maxW) { name = name.slice(0, -1); }
                         name += "..";
                     }
                     ctx.fillText(name, x, y);
 
-                    // --- 1. 세트 동그라미 (우측 정렬) ---
-                    ctx.textAlign = "right"; // 정렬 방식을 우측으로 변경
+                    // 빨간 동그라미 우측 정렬 고정
+                    ctx.textAlign = "right";
                     ctx.fillStyle = "#ff4757";
-                    // 각 열의 끝지점에서 텍스트를 그리기 시작 (우측 정렬)
-                    const circlesX = x + colW - 10; 
+                    const circlesX = x + colW; 
                     ctx.fillText("ㅇ".repeat(ex.sets), circlesX, y);
                 });
 
@@ -149,7 +144,7 @@
 
     function download() {
         const link = document.createElement('a');
-        link.download = 'strong_insta_v3.png';
+        link.download = 'workout_done.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
