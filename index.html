@@ -97,13 +97,13 @@
 
                 // 가운데 요약
                 ctx.textAlign = "center";
-                ctx.fillStyle = "#333";
+                ctx.fillStyle = "#888";
                 ctx.font = "400 32px 'Inter'";
                 const summary = `${dateTime.split('요일')[0]}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
                 ctx.fillText(summary, canvas.width / 2, currentY);
 
                 currentY += 45;
-                ctx.strokeStyle = "rgba(255,255,255,0.15)";
+                ctx.strokeStyle = "rgba(255,255,255,0.9)";
                 ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
 
                 // 운동 리스트 (하단 여백 축소 배치)
