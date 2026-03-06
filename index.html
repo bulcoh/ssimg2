@@ -65,7 +65,7 @@
         let totalSets = 0, exerciseList = [], currentExercise = null;
         lines.forEach((line, idx) => {
             if (idx === 1) return;
-            const setMatch = line.match(/^(세트\s*\d+|F):/);
+            const setMatch = line.match(/^(세트\s*\d+|F|D):/);
             if (setMatch) { totalSets++; if (currentExercise) currentExercise.sets++; }
             else if (line.startsWith("W:") || line.startsWith("http")) return;
             else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== title && line !== dateTime) {
