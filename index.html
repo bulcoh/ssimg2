@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Share</title>
+    <title>Strong Share Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -19,7 +19,7 @@
 <body>
 
 <div class="editor">
-    <h2>Strong Visualizer v1</h2>
+    <h2>Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -65,6 +65,7 @@
         let totalSets = 0, exerciseList = [], currentExercise = null;
         lines.forEach((line, idx) => {
             if (idx === 1) return;
+            // 드롭세트(D) 포함 집계
             const setMatch = line.match(/^(세트\s*\d+|F|D):/);
             if (setMatch) { totalSets++; if (currentExercise) currentExercise.sets++; }
             else if (line.startsWith("W:") || line.startsWith("http")) return;
@@ -83,61 +84,73 @@
                 canvas.height = 1350; 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                const cardH = canvas.height * 0.45;
+                // 하단 오버레이 (리스트 길이에 맞춰 검정 그라데이션 확보)
+                const cardH = canvas.height * 0.5;
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
-                grad.addColorStop(0.4, "rgba(0,0,0,0.6)");
-                grad.addColorStop(1, "rgba(0,0,0,0.85)"); 
+                grad.addColorStop(0.3, "rgba(0,0,0,0.7)");
+                grad.addColorStop(1, "rgba(0,0,0,0.9)"); 
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
                 const margin = 70;
-                
-                // --- 요약과 선의 위치를 리스트에 맞춰 아래로 땡김 ---
-                // baseY(300)보다 약 150px 정도 위에서 시작하게 설정
-                let summaryY = canvas.height - 450; 
-
-                // 가운데 요약
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#eee";
-                ctx.font = "400 32px 'Inter'";
-                const summary = `${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
-                ctx.fillText(summary, canvas.width / 2, summaryY);
-
-                summaryY += 45;
-                ctx.strokeStyle = "rgba(255,255,255,0.4)";
-                ctx.beginPath(); ctx.moveTo(margin, summaryY); ctx.lineTo(canvas.width - margin, summaryY); ctx.stroke();
-
-                // 운동 리스트 기준점
                 const colW = (canvas.width - margin * 2) / 2 - 30;
-                const baseY = canvas.height - 300; // 하단 여백 줄이는 핵심 수치
-                
+                const rowHeight = 65;
+                const bottomY = canvas.height - 80; // 바닥 고정 위치
+                const half = Math.ceil(exerciseList.length / 2);
+
+                // 운동 리스트 그리기 (바닥부터 위로 쌓기)
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
                 
-                    let isRightCol = i >= Math.ceil(exerciseList.length / 2);
-                    let rowIdx = isRightCol ? i - Math.ceil(exerciseList.length / 2) : i;
-                
+                    let isRightCol = i >= half;
+                    let rowIdx = isRightCol ? i - half : i;
+                    const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
+                    
                     let x = margin + (isRightCol ? colW + 60 : 0);
-                    let y = baseY + (rowIdx * 65);
+                    let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
 
+                    // 종목명
                     ctx.textAlign = "left";
                     ctx.fillStyle = "white";
                     ctx.font = "700 36px 'Inter'";
                     
                     let name = ex.name;
-                    const maxW = colW - 140; 
+                    const maxW = colW - 150; 
                     if (ctx.measureText(name).width > maxW) {
                         while (ctx.measureText(name + "..").width > maxW) { name = name.slice(0, -1); }
                         name += "..";
                     }
                     ctx.fillText(name, x, y);
 
+                    // 동그라미 (세트 많으면 크기 축소)
                     ctx.textAlign = "right";
                     ctx.fillStyle = "#ff4757";
+                    const circleFontSize = ex.sets > 5 ? 26 : 36;
+                    ctx.font = `700 ${circleFontSize}px 'Inter'`;
+                    
                     const circlesX = x + colW; 
                     ctx.fillText("ㅇ".repeat(ex.sets), circlesX, y);
                 });
+
+                // 상단 요약 정보 및 구분선 위치 계산
+                const maxRows = Math.max(half, exerciseList.length - half);
+                const listTopY = bottomY - (maxRows - 1) * rowHeight;
+                const summaryY = listTopY - 110; 
+
+                // 요약 정보 (날짜 전체 출력)
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#eee";
+                ctx.font = "400 32px 'Inter'";
+                const summary = `${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
+                ctx.fillText(summary, canvas.width / 2, summaryY);
+
+                // 구분선
+                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                ctx.beginPath(); 
+                ctx.moveTo(margin, summaryY + 45); 
+                ctx.lineTo(canvas.width - margin, summaryY + 45); 
+                ctx.stroke();
 
                 canvas.style.display = "block";
                 document.getElementById('downloadBtn').style.display = "block";
