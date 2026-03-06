@@ -100,48 +100,64 @@
     }
 
     // 3. 깃허브 전송 로직 (덮어쓰기)
+
+
     async function pushToGithub(type, mins, dateStr) {
         if (!checkToken()) return;
-
+    
         const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
-        let sha = "", currentData = {};
-
+        let sha = "";
+        let currentData = {};
+    
         try {
-            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            const res = await fetch(url, { 
+                headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } // 'token' 대신 'Bearer' 사용 권장
+            });
+            
             if (res.ok) {
                 const json = await res.json();
                 sha = json.sha;
-                currentData = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+                // 인코딩 문제 해결을 위한 새로운 디코딩 방식
+                const content = decodeURIComponent(atob(json.content).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                currentData = JSON.parse(content);
             }
-        } catch (e) { console.log("기존 데이터 없음"); }
-
+        } catch (e) { console.log("기존 데이터 없음 또는 에러:", e); }
+    
+        // 데이터 업데이트
         if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
         currentData[dateStr][type] = mins; 
-
+    
+        // 안전한 Base64 인코딩 (한글 대응)
+        const jsonStr = JSON.stringify(currentData, null, 2);
+        const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
+            function(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+    
         const putRes = await fetch(url, {
             method: "PUT",
-            headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+            headers: { 
+                "Authorization": `Bearer ${GITHUB_TOKEN}`,
+                "Content-Type": "application/json" 
+            },
             body: JSON.stringify({
                 message: `Update ${type} at ${dateStr}`,
-                content: btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2)))),
+                content: encodedContent,
                 sha: sha
             })
         });
-
+    
         if (putRes.ok) {
             alert(`✅ ${type} ${mins}분 저장 완료!`);
-            if(type === 'strong') {
-                const btn = document.getElementById('pushGithubBtn');
-                btn.innerText = "✅ 전송 완료";
-                btn.classList.add('btn-done');
-            }
         } else {
-            if (putRes.status === 401) {
-                alert("❌ 토큰이 만료되었거나 틀려. 다시 입력하게 초기화할게.");
-                localStorage.removeItem('gh_token');
-                GITHUB_TOKEN = "";
+            const errorDetail = await putRes.json();
+            console.log("에러 상세:", errorDetail);
+            if (putRes.status === 401 || putRes.status === 403) {
+                alert("❌ 토큰 권한 문제야. 토큰을 다시 확인하거나 새로 발급받아봐.");
             } else {
-                alert("❌ 전송 실패! 리포지토리 이름이나 권한을 확인해줘.");
+                alert(`❌ 저장 실패: ${errorDetail.message}`);
             }
         }
     }
