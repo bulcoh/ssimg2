@@ -88,7 +88,7 @@
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
                 grad.addColorStop(0.4, "rgba(0,0,0,0.4)");
-                grad.addColorStop(1, "rgba(0,0,0,0.7)"); // 0.5에서 0.7로 강화
+                grad.addColorStop(1, "rgba(0,0,0,0.9)"); // 0.5에서 0.7로 강화
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
@@ -112,7 +112,7 @@
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
                     let isRightCol = i >= Math.ceil(exerciseList.length / 2);
-                    let x = margin + (isRightCol ? colW + 60 : 0);
+                    let x = margin + (isRightCol ? colW + 50 : 0);
                     // y 간격을 65에서 60으로 줄이고 하단으로 더 배치
                     let y = isRightCol ? (canvas.height - cardH + 235) + ((i - Math.ceil(exerciseList.length / 2)) * 60) : currentY + (i * 60);
 
