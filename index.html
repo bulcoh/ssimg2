@@ -44,7 +44,9 @@
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <button class="btn btn-sub" onclick="pasteLog()">📋 클립보드 붙여넣기</button>
     <input type="file" id="imageInput" accept="image/*" style="display:none">
-    <button class="btn btn-sub" onclick="document.getElementById('imageInput').click()">🖼️ 사진 선택하기</button>
+    <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center;">
+        🖼️ 사진 선택하기
+    </label>
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
 </div>
 
@@ -58,6 +60,10 @@
 <canvas id="canvas"></canvas>
 
 <script>
+    document.getElementById('imageInput').onchange = function() {
+        // 파일을 선택하면 라벨의 글자를 바꾼다!
+        document.getElementById('fileLabel').innerText = "✅ 사진 선택 완료";
+    };
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const resultImg = document.getElementById('resultImage');
