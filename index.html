@@ -60,6 +60,7 @@
         else if (parts[1] === "오전" && hours === 12) hours = 0;
         return { hours, minutes };
     }
+    
     function processWorkout() {
         const rawText = document.getElementById('logInput').value;
         const fileInput = document.getElementById('imageInput');
@@ -68,14 +69,15 @@
         if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
     
         const photoTime = new Date(file.lastModified);
-        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
-        const workoutTitle = lines[0]; 
-        const dateTime = lines[1];
+        // 1. 문단 단위(엔터 두 번 이상)로 먼저 쪼갠다!
+        const paragraphs = rawText.split(/\n\s*\n/).map(p => p.trim()).filter(p => p !== "");
+        
+        const workoutTitle = paragraphs[0].split('\n')[0]; 
+        const dateTime = paragraphs[0].split('\n')[1] || "";
         
         const timeMatch = dateTime.match(/(오전|오후)\s*\d+:\d+/);
         if (!timeMatch) return alert("로그 형식이 올바르지 않습니다.");
         
-        // 시간 계산 로직 생략 (기존과 동일)
         const start = parseTimeString(timeMatch[0]);
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
@@ -84,42 +86,42 @@
         const duration = `${Math.floor(diff / 60)}h ${diff % 60}m`;
     
         let totalSets = 0, exerciseList = [];
-        let tempExercise = null; // 종목 후보를 잠시 담아두는 변수
     
-        lines.forEach((line, idx) => {
-            if (idx <= 1) return; // 타이틀과 날짜는 패스
+        // 첫 번째 문단(제목/날짜)은 건너뛰고 분석
+        paragraphs.slice(1).forEach(para => {
+            const lines = para.split('\n').map(l => l.trim());
+            if (lines.length < 2) return; // 한 줄짜리 문단은 운동일 리 없음
     
-            // 1. 세트 패턴인지 확인 (세트, W:, F:, D: 포함)
-            const isSet = /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(line);
+            let foundExerciseName = "";
+            let foundSetsInPara = 0;
     
-            if (isSet) {
-                // 세트가 발견됐는데, 미리 잡아둔 후보(tempExercise)가 있다면? 
-                // 그 후보는 '진짜 운동'이므로 리스트에 추가!
-                if (tempExercise) {
-                    exerciseList.push(tempExercise);
-                    tempExercise = null; // 추가했으니 비워줌
-                }
-    
-                // 워밍업(W:)이 아닐 때만 전체 세트수와 종목별 세트수 카운트
-                if (!line.toUpperCase().startsWith('W:')) {
-                    totalSets++;
-                    if (exerciseList.length > 0) {
-                        exerciseList[exerciseList.length - 1].sets++;
+            // 문단 안의 줄들을 검사
+            lines.forEach(line => {
+                const isSetLine = /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(line);
+                
+                if (isSetLine) {
+                    // 세트 줄인데 'W:'(워밍업)가 아니면 카운트
+                    if (!line.toUpperCase().startsWith('W:')) {
+                        totalSets++;
+                        foundSetsInPara++;
                     }
+                } else if (!foundExerciseName && isNaN(line[0]) && !line.includes("kg") && !line.startsWith("http")) {
+                    // 문단에서 세트가 나오기 전 가장 첫 번째 줄을 운동 이름으로 찜!
+                    foundExerciseName = line;
                 }
-            } 
-            // 2. 세트가 아닌 줄 (운동 종목 후보 혹은 메모)
-            else {
-                if (line.startsWith("http")) return; // 링크 무시
+            });
     
-                // 새로운 종목 후보로 업데이트 (세트가 나오기 전까진 리스트에 안 넣음)
-                // 숫자로 시작하거나 너무 짧은 메모성 텍스트 등을 필터링하고 싶다면 여기서 추가 조건 가능
-                tempExercise = { name: line, sets: 0 };
+            // 이 문단에 세트 기록이 하나라도 있었다면 리스트에 추가!
+            if (foundExerciseName && foundSetsInPara >= 0) {
+                // 주의: 워밍업만 있는 종목도 있을 수 있으니 lines 검사로 보정
+                const hasAnySetRecord = lines.some(l => /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(l));
+                if (hasAnySetRecord) {
+                    exerciseList.push({ name: foundExerciseName, sets: foundSetsInPara });
+                }
             }
         });
     
-        // 마지막에 세트가 0개인 것들이 혹시 남아있다면 필터링
-        exerciseList = exerciseList.filter(ex => ex.sets > 0);
+        // 사진 읽고 그리기 (이후는 기존과 동일)
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
