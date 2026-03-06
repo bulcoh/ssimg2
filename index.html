@@ -22,6 +22,7 @@
 <div class="editor">
     <h2>Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
+    <button class="btn" onclick="pasteLog()" style="background: #444; margin-bottom: 10px; font-size: 16px;">📋 클립보드에서 붙여넣기</button>
     <label for="imageInput" class="file-label" id="fileLabel">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
@@ -49,6 +50,25 @@
         return { hours, minutes };
     }
 
+
+    async function pasteLog() {
+        try {
+            // 브라우저 클립보드에서 텍스트 읽어오기
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                document.getElementById('logInput').value = text;
+                // 아이폰에서 붙여넣기 성공 시 살짝 알림 (선택사항)
+                console.log("붙여넣기 완료!");
+            } else {
+                alert("클립보드가 비어있거나 텍스트가 아닙니다.");
+            }
+        } catch (err) {
+            // 사용자가 권한을 거부했거나 브라우저가 지원하지 않을 때
+            alert("클립보드 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.");
+            console.error('Failed to read clipboard: ', err);
+        }
+    }
+    
     function processWorkout() {
         const rawText = document.getElementById('logInput').value;
         const fileInput = document.getElementById('imageInput');
@@ -114,7 +134,7 @@
         const margin = 70;
         const colW = (canvas.width - margin * 2) / 2 - 30;
         const rowHeight = 70;
-        const bottomY = canvas.height - 140; 
+        const bottomY = canvas.height - 160; 
         const half = Math.ceil(exerciseList.length / 2);
 
         exerciseList.forEach((ex, i) => {
