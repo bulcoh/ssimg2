@@ -66,7 +66,7 @@
 <canvas id="canvas"></canvas>
 
 <script>
-    let currentDataFileName = ""; // 다운로드할 파일명을 담을 변수
+    let currentDataFileName = ""; 
 
     document.getElementById('imageInput').onchange = function() {
         const label = document.getElementById('fileLabel');
@@ -110,17 +110,15 @@
         const timeMatch = dateTime.match(/(오전|오후)\s*\d+:\d+/);
         const start = timeMatch ? parseTimeString(timeMatch[0]) : {hours:0, minutes:0};
         
-        // 파일용 날짜 추출 (YYYYMMDD)
         const dateParts = dateTime.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
         const fileDate = dateParts ? `${dateParts[1]}${dateParts[2].padStart(2, '0')}${dateParts[3].padStart(2, '0')}` : "00000000";
 
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
-        const diff = endTotal - startTotal; // 운동 시간 (분)
+        const diff = endTotal - startTotal; 
         const duration = `${Math.floor(diff / 60)}h ${diff % 60}m`;
 
-        // Scriptable용 파일명 미리 저장
         currentDataFileName = `ssimg_${fileDate}_${diff}.txt`;
 
         let totalSets = 0, exerciseList = [];
@@ -155,7 +153,6 @@
                     resultImg.src = canvas.toDataURL('image/png');
                     resultContainer.style.display = 'block';
                     
-                    // 이미지 생성 시 데이터 저장 버튼 초기화 및 노출
                     const dataBtn = document.getElementById('saveDataBtn');
                     dataBtn.style.display = 'block';
                     dataBtn.innerText = "📊 Scriptable 데이터 기록";
@@ -170,11 +167,11 @@
         reader.readAsDataURL(file);
     }
 
-    // 0바이트 빈 파일 다운로드 함수
+    // 0바이트 대신 아주 짧은 글자를 넣어 무한 로딩 해결!
     function downloadData() {
         if (!currentDataFileName) return;
         
-        const blob = new Blob([""], { type: "text/plain" });
+        const blob = new Blob(["workout"], { type: "text/plain" }); // "workout" 글자 추가
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = currentDataFileName;
