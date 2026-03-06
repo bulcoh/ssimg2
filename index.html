@@ -19,7 +19,7 @@
 <body>
 
 <div class="editor">
-    <h2>Strong Visualizer</h2>
+    <h2>Strong Visualizer v1</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -107,12 +107,12 @@
                 ctx.beginPath(); ctx.moveTo(margin, currentY); ctx.lineTo(canvas.width - margin, currentY); ctx.stroke();
 
                 // 운동 리스트 (하단 여백 축소 배치)
-                currentY += 120; 
+                currentY += 150; 
                 const colW = (canvas.width - margin * 2) / 2 - 30;
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
                     let isRightCol = i >= Math.ceil(exerciseList.length / 2);
-                    let x = margin + (isRightCol ? colW + 50 : 0);
+                    let x = margin + (isRightCol ? colW + 60 : 0);
                     // y 간격을 65에서 60으로 줄이고 하단으로 더 배치
                     let y = isRightCol ? (canvas.height - cardH + 235) + ((i - Math.ceil(exerciseList.length / 2)) * 60) : currentY + (i * 60);
 
