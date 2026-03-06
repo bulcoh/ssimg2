@@ -14,7 +14,6 @@
         .editor { width: 100%; max-width: 500px; background: #222; padding: 20px; border-radius: 20px; box-sizing: border-box; }
         h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; font-size: 24px; margin-top: 0; }
         
-        /* 입력창만 텍스트 선택이 가능하게 예외 처리 */
         textarea { 
             width: 100%; height: 100px; background: #333; border: 1px solid #444; color: #fff; 
             padding: 10px; border-radius: 10px; margin-bottom: 10px; resize: none; outline: none; box-sizing: border-box;
@@ -24,20 +23,17 @@
         .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; box-sizing: border-box; }
         .btn-sub { background: #444; font-size: 16px; }
         
-        /* 사진 선택 완료 및 데이터 저장 완료 시 스타일 */
+        /* 추가된 수영/달리기 버튼 스타일 */
+        .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-group .btn { flex: 1; font-size: 14px; padding: 12px; margin-bottom: 0; }
+        .btn-swim { background: #1e90ff; }
+        .btn-run { background: #2ed573; }
+
         .btn-done { background: #222 !important; color: #666 !important; border: 1px solid #444; opacity: 0.7; pointer-events: none; }
-        
-        /* 데이터 저장 버튼용 별도 디자인 */
         .btn-data { background: #2f3542; color: #ced4da; margin-top: 5px; display: none; }
 
-        /* 이미지 출력 영역 */
         #resultContainer { width: 100%; max-width: 500px; display: none; margin-top: 20px; text-align: center; }
-        
-        #resultImage { 
-            width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
-            -webkit-touch-callout: default !important; pointer-events: auto;
-        }
-        
+        #resultImage { width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); -webkit-touch-callout: default !important; pointer-events: auto; }
         canvas { display: none; }
         .guide { color: #888; font-size: 13px; margin-top: 15px; line-height: 1.5; }
     </style>
@@ -47,6 +43,12 @@
 <div class="editor">
     <h2>SSimage 2</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
+    
+    <div class="btn-group">
+        <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영 기록</button>
+        <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기 기록</button>
+    </div>
+
     <button class="btn btn-sub" onclick="pasteLog()">📋 클립보드 붙여넣기</button>
     <input type="file" id="imageInput" accept="image/*" style="display:none">
     <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center;">
@@ -57,16 +59,21 @@
 
 <div id="resultContainer">
     <img id="resultImage" alt="Result Workout Image">
-    <button id="saveDataBtn" class="btn btn-data" onclick="downloadData()">📊 Scriptable 데이터 기록</button>
-    <div class="guide">
-        SHARE STRONG IMAGE V2
-    </div>
+    <button id="pushGithubBtn" class="btn btn-data" style="display:block; background: #6c5ce7; color: white;">🚀 깃허브로 데이터 쏘기</button>
+    <button id="saveDataBtn" class="btn btn-data" onclick="downloadData()">📊 파일로 저장 (비상용)</button>
+    <div class="guide">SHARE STRONG IMAGE V2</div>
 </div>
 
 <canvas id="canvas"></canvas>
 
 <script>
-    let currentDataFileName = ""; 
+    // ⚠️ 형! 여기 정보만 딱 채워줘!
+    const GITHUB_TOKEN = "여기에_토큰_붙여넣기";
+    const GITHUB_REPO = "사용자이름/저장소이름"; 
+    const GITHUB_FILE_PATH = "data.json";
+
+    let currentMinutes = 0;
+    let currentFileDate = "";
 
     document.getElementById('imageInput').onchange = function() {
         const label = document.getElementById('fileLabel');
@@ -84,6 +91,15 @@
             const text = await navigator.clipboard.readText();
             if (text) document.getElementById('logInput').value = text;
         } catch (err) { alert("붙여넣기 권한이 필요합니다."); }
+    }
+
+    // 수영, 달리기 수동 입력 함수
+    async function recordManual(type) {
+        const mins = prompt(`${type === 'swim' ? '수영' : '달리기'} 몇 분 했어?`, "0");
+        if (mins && !isNaN(mins)) {
+            const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+            await pushToGithub(type, parseInt(mins), dateStr);
+        }
     }
 
     function parseTimeString(timeStr) {
@@ -111,32 +127,25 @@
         const start = timeMatch ? parseTimeString(timeMatch[0]) : {hours:0, minutes:0};
         
         const dateParts = dateTime.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
-        const fileDate = dateParts ? `${dateParts[1]}${dateParts[2].padStart(2, '0')}${dateParts[3].padStart(2, '0')}` : "00000000";
+        currentFileDate = dateParts ? `${dateParts[1]}${dateParts[2].padStart(2, '0')}${dateParts[3].padStart(2, '0')}` : "00000000";
 
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
-        const diff = endTotal - startTotal; 
-        const duration = `${Math.floor(diff / 60)}h ${diff % 60}m`;
-
-        currentDataFileName = `ssimg_${fileDate}_${diff}.txt`;
+        currentMinutes = endTotal - startTotal; 
+        const duration = `${Math.floor(currentMinutes / 60)}h ${currentMinutes % 60}m`;
 
         let totalSets = 0, exerciseList = [];
 
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "";
-            let setsInPara = 0;
-            let hasRecord = false;
+            let foundName = "", setsInPara = 0, hasRecord = false;
 
             lines.forEach(line => {
                 const isSet = /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(line);
                 if (isSet) {
                     hasRecord = true;
-                    if (!line.toUpperCase().startsWith('W:')) {
-                        totalSets++;
-                        setsInPara++;
-                    }
+                    if (!line.toUpperCase().startsWith('W:')) { totalSets++; setsInPara++; }
                 } else if (!foundName && isNaN(line[0]) && !line.includes("kg") && !line.startsWith("http")) {
                     foundName = line;
                 }
@@ -153,11 +162,13 @@
                     resultImg.src = canvas.toDataURL('image/png');
                     resultContainer.style.display = 'block';
                     
+                    const pushBtn = document.getElementById('pushGithubBtn');
+                    pushBtn.onclick = () => pushToGithub('strong', currentMinutes, currentFileDate);
+                    pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
+                    pushBtn.classList.remove('btn-done');
+
                     const dataBtn = document.getElementById('saveDataBtn');
                     dataBtn.style.display = 'block';
-                    dataBtn.innerText = "📊 Scriptable 데이터 기록";
-                    dataBtn.classList.remove('btn-done');
-                    dataBtn.onclick = downloadData;
 
                     window.scrollTo({ top: resultContainer.offsetTop, behavior: 'smooth' });
                 });
@@ -167,21 +178,52 @@
         reader.readAsDataURL(file);
     }
 
-    // 0바이트 대신 아주 짧은 글자를 넣어 무한 로딩 해결!
+    // 🚀 깃허브 전송 핵심 함수 (덮어쓰기 로직)
+    async function pushToGithub(type, mins, dateStr) {
+        const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+        let sha = "", currentData = {};
+
+        try {
+            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            if (res.ok) {
+                const json = await res.json();
+                sha = json.sha;
+                currentData = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+            }
+        } catch (e) { console.log("기존 데이터 없음"); }
+
+        if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
+        currentData[dateStr][type] = mins; // 해당 종목 덮어쓰기
+
+        const putRes = await fetch(url, {
+            method: "PUT",
+            headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: `Update ${type} at ${dateStr}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2)))),
+                sha: sha
+            })
+        });
+
+        if (putRes.ok) {
+            alert("✅ 깃허브 저장 완료!");
+            if(type === 'strong') {
+                const btn = document.getElementById('pushGithubBtn');
+                btn.innerText = "✅ 전송 완료";
+                btn.classList.add('btn-done');
+            }
+        } else {
+            alert("❌ 저장 실패. 토큰이나 저장소 설정을 확인해줘.");
+        }
+    }
+
     function downloadData() {
-        if (!currentDataFileName) return;
-        
-        const blob = new Blob(["workout"], { type: "text/plain" }); // "workout" 글자 추가
+        const fileName = `ssimg_${currentFileDate}_${currentMinutes}.txt`;
+        const blob = new Blob(["workout"], { type: "text/plain" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = currentDataFileName;
-        document.body.appendChild(link);
+        link.download = fileName;
         link.click();
-        document.body.removeChild(link);
-        
-        const btn = document.getElementById('saveDataBtn');
-        btn.innerText = "✅ 기록 완료";
-        btn.classList.add('btn-done');
     }
 
     function draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
