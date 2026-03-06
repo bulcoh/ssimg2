@@ -2,17 +2,17 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Share Image 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Strong Share Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* 기존 스타일 동일 */
-        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .editor { width: 100%; max-width: 500px; background: #222; padding: 25px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); margin-bottom: 20px; box-sizing: border-box; }
-        h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; margin-bottom: 20px; }
-        textarea { width: 100%; height: 100px; background: #333; border: none; color: #fff; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-sizing: border-box; resize: none; }
-        .file-label { display: block; background: #444; color: white; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 15px; border: 2px dashed #666; font-size: 18px; }
+        body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
+        .editor { width: 100%; max-width: 500px; background: #222; padding: 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); box-sizing: border-box; }
+        h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; margin-bottom: 15px; font-size: 24px; }
+        textarea { width: 100%; height: 120px; background: #333; border: 2px solid #444; color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; resize: none; font-size: 16px; }
+        .file-label { display: block; background: #444; color: white; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 15px; border: 2px dashed #666; font-size: 16px; }
         input[type="file"] { display: none; }
-        .btn { background: #ff4757; color: white; padding: 20px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 20px; }
+        .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 18px; -webkit-appearance: none; }
         canvas { max-width: 100%; border-radius: 15px; display: none; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .save-btn { background: #2f3542; margin-top: 15px; display: none; }
     </style>
@@ -20,7 +20,7 @@
 <body>
 
 <div class="editor">
-    <h2>Strong Share Image 2</h2>
+    <h2>Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -44,18 +44,18 @@
         return { hours, minutes };
     }
 
-    function processWorkout() {
+    async function processWorkout() {
         const rawText = document.getElementById('logInput').value;
         const fileInput = document.getElementById('imageInput');
         const file = fileInput.files[0];
+        
         if (!rawText || !file) return alert("텍스트와 사진을 넣어주세요!");
 
         const photoTime = new Date(file.lastModified);
         const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
-        
-        // [추가] 첫 번째 줄을 타이틀로 저장
         const workoutTitle = lines[0]; 
         const dateTime = lines[1];
+        
         const startTimeStr = dateTime.match(/(오전|오후)\s*\d+:\d+/)[0];
         const start = parseTimeString(startTimeStr);
 
@@ -79,15 +79,20 @@
         });
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const img = new Image();
-            img.onload = () => {
-                document.fonts.ready.then(() => {
+            img.src = e.target.result;
+            
+            // 아이폰 사파리용 이미지/폰트 대기 로직
+            try {
+                await img.decode();
+                await document.fonts.ready;
+
                 canvas.width = 1080;
                 canvas.height = 1350; 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                const cardH = canvas.height * 0.55; // 하단 그라데이션 영역 소폭 확대
+                const cardH = canvas.height * 0.55;
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
                 grad.addColorStop(0.3, "rgba(0,0,0,0.7)");
@@ -97,8 +102,8 @@
 
                 const margin = 70;
                 const colW = (canvas.width - margin * 2) / 2 - 30;
-                const rowHeight = 70; // 줄 간격을 약간 늘려 가독성 확보
-                const bottomY = canvas.height - 140; // 타이틀 공간 확보를 위해 위로 올림
+                const rowHeight = 70;
+                const bottomY = canvas.height - 140; // 하단으로 더 밀착
                 const half = Math.ceil(exerciseList.length / 2);
 
                 exerciseList.forEach((ex, i) => {
@@ -127,43 +132,42 @@
                     ctx.fillText("ㅇ".repeat(ex.sets), x + colW, y);
                 });
 
-                // [수정된 핵심 파트] 요약 정보와 타이틀 배치
                 const maxRows = Math.max(half, exerciseList.length - half);
                 const listTopY = bottomY - (maxRows - 1) * rowHeight;
                 const summaryY = listTopY - 110; 
 
-                // 1. 요약 정보
                 ctx.textAlign = "center";
-                ctx.fillStyle = "#ccc"; // 날짜는 살짝 흐리게
+                ctx.fillStyle = "#ccc";
                 ctx.font = "400 30px 'Inter'";
                 ctx.fillText(`${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`, canvas.width / 2, summaryY);
 
-                // 2. 구분선
                 ctx.strokeStyle = "rgba(255,255,255,0.3)";
                 ctx.beginPath(); 
                 ctx.moveTo(margin, summaryY + 45); 
                 ctx.lineTo(canvas.width - margin, summaryY + 45); 
                 ctx.stroke();
 
-                // 3. [신규] 맨 밑 공백에 큼직하게 타이틀 박기
                 ctx.textAlign = "center";
-                ctx.fillStyle = "#ff4757"; // 포인트 컬러
-                ctx.font = "700 80px 'Archivo Black'"; // 큼직하고 묵직한 폰트
-                ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 40);
+                ctx.fillStyle = "#ff4757";
+                ctx.font = "700 80px 'Archivo Black'";
+                ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 40); // 40으로 밀착
 
                 canvas.style.display = "block";
                 document.getElementById('downloadBtn').style.display = "block";
-            
-                });
-            };
-            img.src = e.target.result;
+                
+                // 생성 후 캔버스로 자동 스크롤
+                canvas.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (err) {
+                alert("이미지 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+            }
         };
         reader.readAsDataURL(file);
     }
 
     function download() {
         const link = document.createElement('a');
-        link.download = 'workout_final_share.png';
+        link.download = 'workout_done.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
