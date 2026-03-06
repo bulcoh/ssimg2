@@ -5,6 +5,7 @@
     <title>Strong Share Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* 기존 스타일 동일 */
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         .editor { width: 100%; max-width: 500px; background: #222; padding: 25px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); margin-bottom: 20px; box-sizing: border-box; }
         h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; margin-bottom: 20px; }
@@ -51,7 +52,9 @@
 
         const photoTime = new Date(file.lastModified);
         const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
-        const title = lines[0];
+        
+        // [추가] 첫 번째 줄을 타이틀로 저장
+        const workoutTitle = lines[0]; 
         const dateTime = lines[1];
         const startTimeStr = dateTime.match(/(오전|오후)\s*\d+:\d+/)[0];
         const start = parseTimeString(startTimeStr);
@@ -65,11 +68,10 @@
         let totalSets = 0, exerciseList = [], currentExercise = null;
         lines.forEach((line, idx) => {
             if (idx === 1) return;
-            // 드롭세트(D) 포함 집계
             const setMatch = line.match(/^(세트\s*\d+|F|D):/);
             if (setMatch) { totalSets++; if (currentExercise) currentExercise.sets++; }
             else if (line.startsWith("W:") || line.startsWith("http")) return;
-            else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== title && line !== dateTime) {
+            else if (isNaN(line[0]) && !line.includes("세트") && !line.includes("kg") && line !== workoutTitle && line !== dateTime) {
                 if (/^[a-z]/.test(line)) return;
                 currentExercise = { name: line, sets: 0 };
                 exerciseList.push(currentExercise);
@@ -84,37 +86,31 @@
                 canvas.height = 1350; 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // 하단 오버레이 (리스트 길이에 맞춰 검정 그라데이션 확보)
-                const cardH = canvas.height * 0.5;
+                const cardH = canvas.height * 0.55; // 하단 그라데이션 영역 소폭 확대
                 const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
                 grad.addColorStop(0, "rgba(0,0,0,0)");
                 grad.addColorStop(0.3, "rgba(0,0,0,0.7)");
-                grad.addColorStop(1, "rgba(0,0,0,0.9)"); 
+                grad.addColorStop(1, "rgba(0,0,0,0.95)"); 
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
                 const margin = 70;
                 const colW = (canvas.width - margin * 2) / 2 - 30;
-                const rowHeight = 65;
-                const bottomY = canvas.height - 80; // 바닥 고정 위치
+                const rowHeight = 70; // 줄 간격을 약간 늘려 가독성 확보
+                const bottomY = canvas.height - 180; // 타이틀 공간 확보를 위해 위로 올림
                 const half = Math.ceil(exerciseList.length / 2);
 
-                // 운동 리스트 그리기 (바닥부터 위로 쌓기)
                 exerciseList.forEach((ex, i) => {
                     if (ex.sets === 0) return;
-                
                     let isRightCol = i >= half;
                     let rowIdx = isRightCol ? i - half : i;
                     const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
-                    
                     let x = margin + (isRightCol ? colW + 60 : 0);
                     let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
 
-                    // 종목명
                     ctx.textAlign = "left";
                     ctx.fillStyle = "white";
                     ctx.font = "700 36px 'Inter'";
-                    
                     let name = ex.name;
                     const maxW = colW - 150; 
                     if (ctx.measureText(name).width > maxW) {
@@ -123,34 +119,36 @@
                     }
                     ctx.fillText(name, x, y);
 
-                    // 동그라미 (세트 많으면 크기 축소)
                     ctx.textAlign = "right";
                     ctx.fillStyle = "#ff4757";
                     const circleFontSize = ex.sets > 5 ? 26 : 36;
                     ctx.font = `700 ${circleFontSize}px 'Inter'`;
-                    
-                    const circlesX = x + colW; 
-                    ctx.fillText("ㅇ".repeat(ex.sets), circlesX, y);
+                    ctx.fillText("ㅇ".repeat(ex.sets), x + colW, y);
                 });
 
-                // 상단 요약 정보 및 구분선 위치 계산
+                // [수정된 핵심 파트] 요약 정보와 타이틀 배치
                 const maxRows = Math.max(half, exerciseList.length - half);
                 const listTopY = bottomY - (maxRows - 1) * rowHeight;
                 const summaryY = listTopY - 110; 
 
-                // 요약 정보 (날짜 전체 출력)
+                // 1. 요약 정보
                 ctx.textAlign = "center";
-                ctx.fillStyle = "#eee";
-                ctx.font = "400 32px 'Inter'";
-                const summary = `${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
-                ctx.fillText(summary, canvas.width / 2, summaryY);
+                ctx.fillStyle = "#ccc"; // 날짜는 살짝 흐리게
+                ctx.font = "400 30px 'Inter'";
+                ctx.fillText(`${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`, canvas.width / 2, summaryY);
 
-                // 구분선
-                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                // 2. 구분선
+                ctx.strokeStyle = "rgba(255,255,255,0.3)";
                 ctx.beginPath(); 
                 ctx.moveTo(margin, summaryY + 45); 
                 ctx.lineTo(canvas.width - margin, summaryY + 45); 
                 ctx.stroke();
+
+                // 3. [신규] 맨 밑 공백에 큼직하게 타이틀 박기
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#ff4757"; // 포인트 컬러
+                ctx.font = "700 80px 'Archivo Black'"; // 큼직하고 묵직한 폰트
+                ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 70);
 
                 canvas.style.display = "block";
                 document.getElementById('downloadBtn').style.display = "block";
@@ -162,7 +160,7 @@
 
     function download() {
         const link = document.createElement('a');
-        link.download = 'workout_done.png';
+        link.download = 'workout_final_share.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
