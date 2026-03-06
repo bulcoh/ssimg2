@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strong Share Final</title>
+    <title>Strong Visualizer Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
         .editor { width: 100%; max-width: 500px; background: #222; padding: 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); box-sizing: border-box; }
         h2 { font-family: 'Archivo Black', sans-serif; text-align: center; color: #ff4757; margin-bottom: 15px; font-size: 24px; }
-        textarea { width: 100%; height: 120px; background: #333; border: 2px solid #444; color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; resize: none; font-size: 16px; }
+        textarea { width: 100%; height: 120px; background: #333; border: 2px solid #444; color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; resize: none; font-size: 16px; outline: none; }
         .file-label { display: block; background: #444; color: white; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 15px; border: 2px dashed #666; font-size: 16px; }
         input[type="file"] { display: none; }
         .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 18px; -webkit-appearance: none; }
@@ -22,7 +22,7 @@
 <div class="editor">
     <h2>Strong Visualizer</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
-    <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
+    <label for="imageInput" class="file-label" id="fileLabel">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
 </div>
@@ -34,6 +34,11 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
+    // 파일 선택 시 레이블 텍스트 변경 (아이폰 확인용)
+    document.getElementById('imageInput').onchange = function() {
+        document.getElementById('fileLabel').innerText = "✅ 사진 선택 완료";
+    };
+
     function parseTimeString(timeStr) {
         const parts = timeStr.match(/(오전|오후)\s*(\d+):(\d+)/);
         if (!parts) return null;
@@ -44,21 +49,22 @@
         return { hours, minutes };
     }
 
-    async function processWorkout() {
+    function processWorkout() {
         const rawText = document.getElementById('logInput').value;
         const fileInput = document.getElementById('imageInput');
         const file = fileInput.files[0];
         
-        if (!rawText || !file) return alert("텍스트와 사진을 넣어주세요!");
+        if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
 
         const photoTime = new Date(file.lastModified);
         const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
         const workoutTitle = lines[0]; 
         const dateTime = lines[1];
         
-        const startTimeStr = dateTime.match(/(오전|오후)\s*\d+:\d+/)[0];
-        const start = parseTimeString(startTimeStr);
-
+        const timeMatch = dateTime.match(/(오전|오후)\s*\d+:\d+/);
+        if (!timeMatch) return alert("로그 형식이 올바르지 않습니다.");
+        
+        const start = parseTimeString(timeMatch[0]);
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
@@ -79,96 +85,95 @@
         });
 
         const reader = new FileReader();
-        reader.onload = async (e) => {
+        reader.onload = function(e) {
             const img = new Image();
-            img.src = e.target.result;
-            
-            // 아이폰 사파리용 이미지/폰트 대기 로직
-            try {
-                await img.decode();
-                await document.fonts.ready;
-
-                canvas.width = 1080;
-                canvas.height = 1350; 
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                const cardH = canvas.height * 0.55;
-                const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
-                grad.addColorStop(0, "rgba(0,0,0,0)");
-                grad.addColorStop(0.3, "rgba(0,0,0,0.7)");
-                grad.addColorStop(1, "rgba(0,0,0,0.95)"); 
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
-
-                const margin = 70;
-                const colW = (canvas.width - margin * 2) / 2 - 30;
-                const rowHeight = 70;
-                const bottomY = canvas.height - 140; // 하단으로 더 밀착
-                const half = Math.ceil(exerciseList.length / 2);
-
-                exerciseList.forEach((ex, i) => {
-                    if (ex.sets === 0) return;
-                    let isRightCol = i >= half;
-                    let rowIdx = isRightCol ? i - half : i;
-                    const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
-                    let x = margin + (isRightCol ? colW + 60 : 0);
-                    let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
-
-                    ctx.textAlign = "left";
-                    ctx.fillStyle = "white";
-                    ctx.font = "700 36px 'Inter'";
-                    let name = ex.name;
-                    const maxW = colW - 150; 
-                    if (ctx.measureText(name).width > maxW) {
-                        while (ctx.measureText(name + "..").width > maxW) { name = name.slice(0, -1); }
-                        name += "..";
-                    }
-                    ctx.fillText(name, x, y);
-
-                    ctx.textAlign = "right";
-                    ctx.fillStyle = "#ff4757";
-                    const circleFontSize = ex.sets > 5 ? 26 : 36;
-                    ctx.font = `700 ${circleFontSize}px 'Inter'`;
-                    ctx.fillText("ㅇ".repeat(ex.sets), x + colW, y);
+            img.onload = function() {
+                // 폰트가 로드되었는지 확인 후 그리기
+                document.fonts.ready.then(function() {
+                    draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList);
                 });
-
-                const maxRows = Math.max(half, exerciseList.length - half);
-                const listTopY = bottomY - (maxRows - 1) * rowHeight;
-                const summaryY = listTopY - 110; 
-
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#ccc";
-                ctx.font = "400 30px 'Inter'";
-                ctx.fillText(`${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`, canvas.width / 2, summaryY);
-
-                ctx.strokeStyle = "rgba(255,255,255,0.3)";
-                ctx.beginPath(); 
-                ctx.moveTo(margin, summaryY + 45); 
-                ctx.lineTo(canvas.width - margin, summaryY + 45); 
-                ctx.stroke();
-
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#ff4757";
-                ctx.font = "700 80px 'Archivo Black'";
-                ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 40); // 40으로 밀착
-
-                canvas.style.display = "block";
-                document.getElementById('downloadBtn').style.display = "block";
-                
-                // 생성 후 캔버스로 자동 스크롤
-                canvas.scrollIntoView({ behavior: 'smooth' });
-
-            } catch (err) {
-                alert("이미지 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
-            }
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
+    function draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080;
+        canvas.height = 1350; 
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const cardH = canvas.height * 0.55;
+        const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
+        grad.addColorStop(0, "rgba(0,0,0,0)");
+        grad.addColorStop(0.3, "rgba(0,0,0,0.7)");
+        grad.addColorStop(1, "rgba(0,0,0,0.95)"); 
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
+
+        const margin = 70;
+        const colW = (canvas.width - margin * 2) / 2 - 30;
+        const rowHeight = 70;
+        const bottomY = canvas.height - 140; 
+        const half = Math.ceil(exerciseList.length / 2);
+
+        exerciseList.forEach((ex, i) => {
+            if (ex.sets === 0) return;
+            let isRightCol = i >= half;
+            let rowIdx = isRightCol ? i - half : i;
+            const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
+            let x = margin + (isRightCol ? colW + 60 : 0);
+            let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
+
+            ctx.textAlign = "left";
+            ctx.fillStyle = "white";
+            ctx.font = "700 36px 'Inter'";
+            let name = ex.name;
+            const maxW = colW - 150; 
+            if (ctx.measureText(name).width > maxW) {
+                while (ctx.measureText(name + "..").width > maxW) { name = name.slice(0, -1); }
+                name += "..";
+            }
+            ctx.fillText(name, x, y);
+
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#ff4757";
+            const circleFontSize = ex.sets > 5 ? 26 : 36;
+            ctx.font = "700 " + circleFontSize + "px 'Inter'";
+            ctx.fillText("ㅇ".repeat(ex.sets), x + colW, y);
+        });
+
+        const maxRows = Math.max(half, exerciseList.length - half);
+        const listTopY = bottomY - (maxRows - 1) * rowHeight;
+        const summaryY = listTopY - 110; 
+
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#ccc";
+        ctx.font = "400 32px 'Inter'";
+        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, summaryY);
+
+        ctx.strokeStyle = "rgba(255,255,255,0.3)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); 
+        ctx.moveTo(margin, summaryY + 45); 
+        ctx.lineTo(canvas.width - margin, summaryY + 45); 
+        ctx.stroke();
+
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#ff4757";
+        ctx.font = "700 85px 'Archivo Black'";
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 45);
+
+        canvas.style.display = "block";
+        document.getElementById('downloadBtn').style.display = "block";
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
     function download() {
+        const dataURL = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.download = 'workout_done.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = dataURL;
         link.click();
     }
 </script>
