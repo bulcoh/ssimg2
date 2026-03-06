@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Strong Share Final</title>
+    <title>Strong Share</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -19,7 +19,7 @@
 <body>
 
 <div class="editor">
-    <h2>Strong Visualizer</h2>
+    <h2>Strong Visualizer v1</h2>
     <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
     <label for="imageInput" class="file-label">🖼️ 사진 선택하기</label>
     <input type="file" id="imageInput" accept="image/*">
@@ -101,7 +101,7 @@
                 ctx.textAlign = "center";
                 ctx.fillStyle = "#eee";
                 ctx.font = "400 32px 'Inter'";
-                const summary = `${dateTime.split('요일')[0]}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
+                const summary = `${dateTime}  |  ${duration}  |  TOTAL ${totalSets} SETS`;
                 ctx.fillText(summary, canvas.width / 2, summaryY);
 
                 summaryY += 45;
