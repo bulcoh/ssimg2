@@ -325,9 +325,7 @@
         ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 85px 'Archivo Black'";
         ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 45);
     }
-    window.addEventListener("load", () => {
-        setTimeout(pasteLog, 300);
-    });
+
     //사진선탞까지 자동
     (function(){
         const params = new URLSearchParams(location.search);
