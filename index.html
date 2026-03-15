@@ -311,6 +311,14 @@
         ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 85px 'Archivo Black'";
         ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 45);
     }
+    // URL로 전달된 Strong 로그 자동 입력
+    (function(){
+        const params = new URLSearchParams(location.search);
+        const data = params.get("log");
+        if(data){
+            document.getElementById("logInput").value = decodeURIComponent(data);
+    }
+})();
 </script>
 </body>
 </html>
