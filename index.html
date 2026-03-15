@@ -172,11 +172,16 @@
     }
 
     // --- 기존 SSimage 로직 유지 ---
-
+    //사진선택하면 바로 나오게
     document.getElementById('imageInput').onchange = function() {
         const label = document.getElementById('fileLabel');
         label.innerText = "✅ 사진 선택 완료";
         label.classList.add('btn-done');
+    
+        // 로그가 이미 있으면 자동 생성
+        if(document.getElementById("logInput").value.trim()){
+            setTimeout(processWorkout,300);
+        }
     };
 
     const canvas = document.getElementById('canvas');
