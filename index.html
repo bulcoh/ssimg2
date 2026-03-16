@@ -250,15 +250,19 @@
         let totalSets = 0, exerciseList = [];
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, dropSets = 0, hasRecord = false, noteText = "";
+            let foundName = "", setsInPara = 0, dropSets = 0, warmSets = 0, hasRecord = false, noteText = "";
             lines.forEach(line => {
-                const isSet = /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(line);
+                const isSet = /^(세트\s*\d+|W\d*|F\d*|D\d*|Set\s*\d+):/i.test(line);
                 if (isSet) {
                     hasRecord = true;
                     const upper = line.toUpperCase();
-                    if (!upper.startsWith('W:')) {
+                    const isWarm = /^W\d*:/i.test(line) || line.includes('[워밍업]');
+                    const isDrop = line.includes('[드롭') || /^D\d*:/i.test(line);
+                    if (isWarm) {
+                        warmSets++;  // 총세트 카운트 제외, 표기만
+                    } else {
                         totalSets++;
-                        if (upper.startsWith('D:')) dropSets++;
+                        if (isDrop) dropSets++;
                         else setsInPara++;
                     }
                 } else if (line.startsWith('노트:')) {
@@ -267,7 +271,7 @@
                     foundName = line;
                 }
             });
-            if (foundName && hasRecord) exerciseList.push({ name: foundName, sets: setsInPara, drops: dropSets, note: noteText });
+            if (foundName && (hasRecord || warmSets > 0)) exerciseList.push({ name: foundName, sets: setsInPara, drops: dropSets, warms: warmSets, note: noteText });
         });
 
         return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
@@ -353,16 +357,20 @@
             ctx.fillText(name, x, y);
             ctx.textAlign = "right";
             ctx.font = "700 " + (ex.sets > 5 ? 26 : 36) + "px 'Inter'";
-            // 일반 세트(레드) + 드롭(파란색) ㅇ
+            // 워밍업(노란) + 일반(레드) + 드롭(파란) — 오른쪽부터 드롭,일반,워밍업 순
+            const aWarms = ex.warms || 0;
             const aDrops = ex.drops || 0;
-            ctx.fillStyle = "#ff4757";
+            const aWarm = "ㅇ".repeat(aWarms);
             const aNorm = "ㅇ".repeat(ex.sets);
             const aDrop = "ㅇ".repeat(aDrops);
             const aDropW = ctx.measureText(aDrop).width;
-            ctx.fillStyle = "#4a9eff";
+            const aNormW = ctx.measureText(aNorm).width;
+            ctx.fillStyle = "#784CD8";
             ctx.fillText(aDrop, x + colW, y);
             ctx.fillStyle = "#ff4757";
             ctx.fillText(aNorm, x + colW - aDropW, y);
+            ctx.fillStyle = "#F0B83B";
+            ctx.fillText(aWarm, x + colW - aDropW - aNormW, y);
         });
 
         const summaryY = canvas.height - 180 - (Math.max(half, exerciseList.length - half) - 1) * rowHeight - 110; 
@@ -460,17 +468,22 @@
                 ctx.fillText(ex.note, x, y + 22);
             }
 
-            // ㅇ 세트 — 일반:레드, 드롭:파란색
+            // ㅇ 세트 — 워밍업:노란, 일반:레드, 드롭:파란
             ctx.font = "700 " + (ex.sets > 5 ? 26 : 32) + "px 'Inter'";
             ctx.textAlign = "right";
+            const bWarms = ex.warms || 0;
             const bDrops = ex.drops || 0;
+            const bWarm = "ㅇ".repeat(bWarms);
             const bDrop = "ㅇ".repeat(bDrops);
             const bNorm = "ㅇ".repeat(ex.sets);
             const bDropW = ctx.measureText(bDrop).width;
-            ctx.fillStyle = "#4a9eff";
+            const bNormW = ctx.measureText(bNorm).width;
+            ctx.fillStyle = "#784CD8";
             ctx.fillText(bDrop, xR, y);
             ctx.fillStyle = "#ff4757";
             ctx.fillText(bNorm, xR - bDropW, y);
+            ctx.fillStyle = "#F0B83B";
+            ctx.fillText(bWarm, xR - bDropW - bNormW, y);
         });
 
         // 하단 서명
@@ -563,12 +576,20 @@
                 blockY = y + 46;
             }
 
-            // 세트 블록 — 일반:레드, 드롭:파란색
+            // 세트 블록 — 워밍업:노란, 일반:레드, 드롭:파란
             const bW = 26, bH = 20, bGap = 6;
-            const totalBlocks = Math.min(ex.sets + (ex.drops || 0), 12);
-            const normalCount = Math.min(ex.sets, 12);
-            const dropCount = Math.min(ex.drops || 0, 12 - normalCount);
+            const cWarms = ex.warms || 0;
+            const cDrops = ex.drops || 0;
+            const warmCount = Math.min(cWarms, 12);
+            const normalCount = Math.min(ex.sets, 12 - warmCount);
+            const dropCount = Math.min(cDrops, 12 - warmCount - normalCount);
             let bx = iX;
+            // 워밍업 (노란색)
+            ctx.fillStyle = "#F0B83B";
+            for (let s = 0; s < warmCount; s++) {
+                ctx.fillRect(bx + s * (bW + bGap), blockY - bH, bW, bH);
+            }
+            bx += warmCount * (bW + bGap);
             // 일반 세트 (레드)
             ctx.fillStyle = ACCENT;
             for (let s = 0; s < normalCount; s++) {
@@ -576,14 +597,14 @@
             }
             bx += normalCount * (bW + bGap);
             // 드롭 세트 (파란색)
-            ctx.fillStyle = "#4a9eff";
+            ctx.fillStyle = "#784CD8";
             for (let s = 0; s < dropCount; s++) {
                 ctx.fillRect(bx + s * (bW + bGap), blockY - bH, bW, bH);
             }
-            if ((ex.sets + (ex.drops || 0)) > 12) {
+            if ((cWarms + ex.sets + cDrops) > 12) {
                 ctx.fillStyle = "rgba(255,255,255,0.5)";
                 ctx.font = "400 17px 'Inter'";
-                ctx.fillText("+" + (ex.sets + (ex.drops||0) - 12), bx + dropCount * (bW + bGap) + 4, blockY - 2);
+                ctx.fillText("+" + (cWarms + ex.sets + cDrops - 12), bx + dropCount * (bW + bGap) + 4, blockY - 2);
             }
         });
 
