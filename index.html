@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SSimage 2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        /* 아이폰에서 텍스트 선택(파란 바)이 안 뜨게 강제 설정 */
         * { -webkit-user-select: none; -webkit-touch-callout: none; }
         
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
@@ -23,7 +22,6 @@
         .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; box-sizing: border-box; }
         .btn-sub { background: #444; font-size: 16px; }
         
-        /* 수영/달리기 버튼 그룹 */
         .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
         .btn-group .btn { flex: 1; font-size: 14px; padding: 12px; margin-bottom: 0; }
         .btn-swim { background: #1e90ff; }
@@ -31,6 +29,31 @@
 
         .btn-done { background: #222 !important; color: #666 !important; border: 1px solid #444; opacity: 0.7; pointer-events: none; }
         .btn-data { background: #2f3542; color: #ced4da; margin-top: 5px; display: none; }
+
+        /* --- 타입 선택 UI --- */
+        .type-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .type-btn {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 12px;
+            border: 2px solid #444;
+            background: #2a2a2a;
+            color: #888;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            -webkit-appearance: none;
+        }
+        .type-btn.active-A { border-color: #ff4757; color: #ff4757; background: rgba(255,71,87,0.12); }
+        .type-btn.active-B { border-color: #00d2ff; color: #00d2ff; background: rgba(0,210,255,0.10); }
+        .type-btn.active-C { border-color: #f9ca24; color: #f9ca24; background: rgba(249,202,36,0.10); }
+        .type-label { font-size: 10px; display: block; margin-top: 2px; opacity: 0.8; }
 
         #resultContainer { width: 100%; max-width: 500px; display: none; margin-top: 20px; text-align: center; }
         #resultImage { width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); -webkit-touch-callout: default !important; pointer-events: auto; }
@@ -54,6 +77,23 @@
     <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center;">
         🖼️ 사진 선택하기
     </label>
+
+    <!-- 디자인 타입 선택 -->
+    <div class="type-selector">
+        <button class="type-btn active-A" id="typeA" onclick="selectType('A')">
+            TYPE A
+            <span class="type-label">클래식 카드</span>
+        </button>
+        <button class="type-btn" id="typeB" onclick="selectType('B')">
+            TYPE B
+            <span class="type-label">터미널</span>
+        </button>
+        <button class="type-btn" id="typeC" onclick="selectType('C')">
+            TYPE C
+            <span class="type-label">매거진</span>
+        </button>
+    </div>
+
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
 </div>
 
@@ -67,15 +107,23 @@
 <canvas id="canvas"></canvas>
 
 <script>
-    // --- 깃허브 설정 (보안을 위해 토큰은 브라우저 스토리지 사용) ---
     let GITHUB_TOKEN = localStorage.getItem('gh_token') || ""; 
     const GITHUB_REPO = "bulcoh/ssimg2"; 
     const GITHUB_FILE_PATH = "data.json";
 
     let currentMinutes = 0;
     let currentFileDate = "";
+    let selectedType = 'A';
 
-    // 1. 토큰 체크 함수
+    function selectType(type) {
+        selectedType = type;
+        ['A','B','C'].forEach(t => {
+            const btn = document.getElementById('type' + t);
+            btn.className = 'type-btn';
+            if (t === type) btn.classList.add('active-' + t);
+        });
+    }
+
     function checkToken() {
         if (!GITHUB_TOKEN) {
             const input = prompt("🔐 깃허브 토큰이 없습니다.\n처음 한 번만 입력해주세요. (브라우저에 저장됩니다):", "");
@@ -90,7 +138,6 @@
         return true;
     }
 
-    // 2. 토큰 초기화 (하단 가이드 텍스트 클릭 시 호출 가능)
     function resetToken() {
         if(confirm("저장된 깃허브 토큰을 지울까?")) {
             localStorage.removeItem('gh_token');
@@ -99,70 +146,44 @@
         }
     }
 
-    // 3. 깃허브 전송 로직 (덮어쓰기)
-
-
     async function pushToGithub(type, mins, dateStr) {
         if (!checkToken()) return;
-    
         const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
         let sha = "";
         let currentData = {};
-    
         try {
-            const res = await fetch(url, { 
-                headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } // 'token' 대신 'Bearer' 사용 권장
-            });
-            
+            const res = await fetch(url, { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
             if (res.ok) {
                 const json = await res.json();
                 sha = json.sha;
-                // 인코딩 문제 해결을 위한 새로운 디코딩 방식
                 const content = decodeURIComponent(atob(json.content).split('').map(function(c) {
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
                 currentData = JSON.parse(content);
             }
         } catch (e) { console.log("기존 데이터 없음 또는 에러:", e); }
-    
-        // 데이터 업데이트
         if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
-        currentData[dateStr][type] = mins; 
-    
-        // 안전한 Base64 인코딩 (한글 대응)
+        currentData[dateStr][type] = mins;
         const jsonStr = JSON.stringify(currentData, null, 2);
         const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
-            function(match, p1) {
-                return String.fromCharCode('0x' + p1);
-            }));
-    
+            function(match, p1) { return String.fromCharCode('0x' + p1); }));
         const putRes = await fetch(url, {
             method: "PUT",
-            headers: { 
-                "Authorization": `Bearer ${GITHUB_TOKEN}`,
-                "Content-Type": "application/json" 
-            },
-            body: JSON.stringify({
-                message: `Update ${type} at ${dateStr}`,
-                content: encodedContent,
-                sha: sha
-            })
+            headers: { "Authorization": `Bearer ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ message: `Update ${type} at ${dateStr}`, content: encodedContent, sha: sha })
         });
-    
         if (putRes.ok) {
             alert(`✅ ${type} ${mins}분 저장 완료!`);
         } else {
             const errorDetail = await putRes.json();
-            console.log("에러 상세:", errorDetail);
             if (putRes.status === 401 || putRes.status === 403) {
-                alert("❌ 토큰 권한 문제야. 토큰을 다시 확인하거나 새로 발급받아봐.");
+                alert("❌ 토큰 권한 문제야.");
             } else {
                 alert(`❌ 저장 실패: ${errorDetail.message}`);
             }
         }
     }
 
-    // 4. 수동 기록 함수
     async function recordManual(type) {
         const mins = prompt(`${type === 'swim' ? '수영' : '달리기'} 몇 분 했어?`, "0");
         if (mins && !isNaN(mins)) {
@@ -171,14 +192,10 @@
         }
     }
 
-    // --- 기존 SSimage 로직 유지 ---
-    //사진선택하면 바로 나오게
     document.getElementById('imageInput').onchange = function() {
         const label = document.getElementById('fileLabel');
         label.innerText = "✅ 사진 선택 완료";
         label.classList.add('btn-done');
-    
-        // 로그가 이미 있으면 자동 생성
         if(document.getElementById("logInput").value.trim()){
             setTimeout(processWorkout,300);
         }
@@ -199,9 +216,7 @@
     window.addEventListener("load", async () => {
         try {
             const text = await navigator.clipboard.readText();
-            if(text){
-                document.getElementById("logInput").value = text;
-            }
+            if(text){ document.getElementById("logInput").value = text; }
         } catch(e){}
     });
     
@@ -215,12 +230,7 @@
         return { hours, minutes };
     }
 
-    function processWorkout() {
-        const rawText = document.getElementById('logInput').value;
-        const file = document.getElementById('imageInput').files[0];
-        if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
-
-        const photoTime = new Date(file.lastModified);
+    function parseWorkout(rawText, photoTime) {
         const paragraphs = rawText.split(/\n\s*\n/).map(p => p.trim()).filter(p => p !== "");
         const headerLines = paragraphs[0].split('\n');
         const workoutTitle = headerLines[0];
@@ -230,35 +240,63 @@
         const start = timeMatch ? parseTimeString(timeMatch[0]) : {hours:0, minutes:0};
         
         const dateParts = dateTime.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
-        currentFileDate = dateParts ? `${dateParts[1]}${dateParts[2].padStart(2, '0')}${dateParts[3].padStart(2, '0')}` : "00000000";
+        const fileDate = dateParts ? `${dateParts[1]}${dateParts[2].padStart(2, '0')}${dateParts[3].padStart(2, '0')}` : "00000000";
 
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
-        currentMinutes = endTotal - startTotal; 
+        const minutes = endTotal - startTotal;
 
         let totalSets = 0, exerciseList = [];
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, hasRecord = false;
+            let foundName = "", setsInPara = 0, dropSets = 0, hasRecord = false, noteText = "";
             lines.forEach(line => {
                 const isSet = /^(세트\s*\d+|W|F|D|Set\s*\d+):/i.test(line);
                 if (isSet) {
                     hasRecord = true;
-                    if (!line.toUpperCase().startsWith('W:')) { totalSets++; setsInPara++; }
+                    const upper = line.toUpperCase();
+                    if (!upper.startsWith('W:')) {
+                        totalSets++;
+                        if (upper.startsWith('D:')) dropSets++;
+                        else setsInPara++;
+                    }
+                } else if (line.startsWith('노트:')) {
+                    noteText = line.replace('노트:', '').trim();
                 } else if (!foundName && isNaN(line[0]) && !line.includes("kg") && !line.startsWith("http")) {
                     foundName = line;
                 }
             });
-            if (foundName && hasRecord) exerciseList.push({ name: foundName, sets: setsInPara });
+            if (foundName && hasRecord) exerciseList.push({ name: foundName, sets: setsInPara, drops: dropSets, note: noteText });
         });
+
+        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
+    }
+
+    function processWorkout() {
+        const rawText = document.getElementById('logInput').value;
+        const file = document.getElementById('imageInput').files[0];
+        if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
+
+        const photoTime = new Date(file.lastModified);
+        const parsed = parseWorkout(rawText, photoTime);
+        currentMinutes = parsed.minutes;
+        currentFileDate = parsed.fileDate;
+
+        const duration = `${Math.floor(currentMinutes/60)}h ${currentMinutes%60}m`;
 
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
                 document.fonts.ready.then(() => {
-                    draw(img, workoutTitle, dateTime, `${Math.floor(currentMinutes/60)}h ${currentMinutes%60}m`, totalSets, exerciseList);
+                    if (selectedType === 'A') {
+                        drawTypeA(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+                    } else if (selectedType === 'B') {
+                        drawTypeB(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+                    } else {
+                        drawTypeC(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+                    }
                     resultImg.src = canvas.toDataURL('image/png');
                     resultContainer.style.display = 'block';
                     
@@ -282,7 +320,8 @@
         link.click();
     }
 
-    function draw(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+    // ─── TYPE A (기존 오리지널) ───────────────────────────────────────────────
+    function drawTypeA(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350; 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const cardH = canvas.height * 0.55;
@@ -312,12 +351,21 @@
                 name += "..";
             }
             ctx.fillText(name, x, y);
-            ctx.textAlign = "right"; ctx.fillStyle = "#ff4757";
+            ctx.textAlign = "right";
             ctx.font = "700 " + (ex.sets > 5 ? 26 : 36) + "px 'Inter'";
-            ctx.fillText("ㅇ".repeat(ex.sets), x + colW, y);
+            // 일반 세트(레드) + 드롭(파란색) ㅇ
+            const aDrops = ex.drops || 0;
+            ctx.fillStyle = "#ff4757";
+            const aNorm = "ㅇ".repeat(ex.sets);
+            const aDrop = "ㅇ".repeat(aDrops);
+            const aDropW = ctx.measureText(aDrop).width;
+            ctx.fillStyle = "#4a9eff";
+            ctx.fillText(aDrop, x + colW, y);
+            ctx.fillStyle = "#ff4757";
+            ctx.fillText(aNorm, x + colW - aDropW, y);
         });
 
-        const summaryY = bottomY - (Math.max(half, exerciseList.length - half) - 1) * rowHeight - 110; 
+        const summaryY = canvas.height - 180 - (Math.max(half, exerciseList.length - half) - 1) * rowHeight - 110; 
         ctx.textAlign = "center"; ctx.fillStyle = "#ccc"; ctx.font = "400 32px 'Inter'";
         ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, summaryY);
         ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 2;
@@ -326,18 +374,247 @@
         ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 45);
     }
 
-    //사진선탞까지 자동
+    // ─── TYPE B ─────────────────────────────────────────────────────────────
+    function drawTypeB(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080; canvas.height = 1350;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const iX = 70;
+        const rX = canvas.width - 70;
+
+        // 상단 그라디언트: 더 진하게 — 위 검정75% → 투명
+        const topGrad = ctx.createLinearGradient(0, 0, 0, 420);
+        topGrad.addColorStop(0,   "rgba(0,0,0,0.82)");
+        topGrad.addColorStop(0.6, "rgba(0,0,0,0.4)");
+        topGrad.addColorStop(1,   "rgba(0,0,0,0)");
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, canvas.width, 420);
+
+        // 하단 그라디언트: 목록 높이에 맞게
+        const half = Math.ceil(exerciseList.length / 2);
+        const hasNote = exerciseList.some(function(e){ return e.note; });
+        const rowH = hasNote ? 62 : 52;  // 여백 타이트하게
+        const listAreaH = half * rowH + 70;
+        const botGradTop = canvas.height - listAreaH - 60;
+
+        const botGrad = ctx.createLinearGradient(0, botGradTop, 0, canvas.height);
+        botGrad.addColorStop(0, "rgba(0,0,0,0)");
+        botGrad.addColorStop(1, "rgba(0,0,0,0.65)");
+        ctx.fillStyle = botGrad;
+        ctx.fillRect(0, botGradTop, canvas.width, canvas.height - botGradTop);
+
+        // ── 상단: 제목 (빨간색, 중앙정렬, 더 크게) ──
+        ctx.fillStyle = "#ff4757";
+        ctx.font = "700 140px 'Archivo Black'";
+        ctx.textAlign = "center";
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, 158);
+
+        // 메타 (중앙정렬)
+        ctx.fillStyle = "rgba(255,255,255,0.55)";
+        ctx.font = "400 30px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, 205);
+
+        // 상단 구분선
+        ctx.strokeStyle = "rgba(255,255,255,0.2)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(iX, 226);
+        ctx.lineTo(rX, 226);
+        ctx.stroke();
+
+        // ── 하단: 2단 운동 목록 — 하단에서 위로 쌓음 ──
+        const colW = (canvas.width - iX * 2 - 40) / 2;
+        const col2X = iX + colW + 40;
+
+        // 목록 맨 아래 기준점: 서명 위 10px
+        const signY = canvas.height - 18;
+        const listBot = signY - 60;  // 서명과 목록 사이 한 칸
+
+        exerciseList.forEach(function(ex, i) {
+            const col = i >= half ? 1 : 0;
+            const row = col === 0 ? i : i - half;
+            const colRows = col === 0 ? half : exerciseList.length - half;
+            const x  = col === 0 ? iX : col2X;
+            const xR = col === 0 ? iX + colW : col2X + colW;
+
+            // 아래에서 위로 배치
+            const y = listBot - (colRows - 1 - row) * rowH;
+
+            // 이름
+            ctx.fillStyle = "rgba(255,255,255,0.92)";
+            ctx.font = "700 34px 'Inter'";
+            ctx.textAlign = "left";
+            let name = ex.name;
+            const maxW = colW - 155;
+            if (ctx.measureText(name).width > maxW) {
+                while (ctx.measureText(name + "..").width > maxW) name = name.slice(0, -1);
+                name += "..";
+            }
+            ctx.fillText(name, x, y);
+
+            // 노트
+            if (ex.note) {
+                ctx.fillStyle = "rgba(255,210,75,0.78)";
+                ctx.font = "400 20px 'Inter'";
+                ctx.fillText(ex.note, x, y + 22);
+            }
+
+            // ㅇ 세트 — 일반:레드, 드롭:파란색
+            ctx.font = "700 " + (ex.sets > 5 ? 26 : 32) + "px 'Inter'";
+            ctx.textAlign = "right";
+            const bDrops = ex.drops || 0;
+            const bDrop = "ㅇ".repeat(bDrops);
+            const bNorm = "ㅇ".repeat(ex.sets);
+            const bDropW = ctx.measureText(bDrop).width;
+            ctx.fillStyle = "#4a9eff";
+            ctx.fillText(bDrop, xR, y);
+            ctx.fillStyle = "#ff4757";
+            ctx.fillText(bNorm, xR - bDropW, y);
+        });
+
+        // 하단 서명
+        ctx.fillStyle = "rgba(255,255,255,0.22)";
+        ctx.font = "400 22px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, signY);
+    }
+
+    // ─── TYPE C : 좌하단 카드 ──────────────────────────────────────────────
+    function drawTypeC(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080; canvas.height = 1350;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const ACCENT = "#ff4757";
+        const pad = 36;        // 카드 내부 패딩
+        const cardW = 460;     // 카드 너비
+        const cardX = 40;      // 좌측 여백
+        const cardBot = canvas.height - 40; // 하단 여백
+
+        // 카드 높이 계산 (운동 목록 수에 따라)
+        const hasNote = exerciseList.some(function(e){ return e.note; });
+        const rowH = hasNote ? 80 : 68;
+        const listH = exerciseList.length * rowH;
+        const headerH = 260; // 타이틀+메타 영역
+        const footerH = 40;
+        const cardH = headerH + listH + footerH;
+        const cardY = cardBot - cardH;
+
+        // 카드 배경 (반투명 검정)
+        ctx.fillStyle = "rgba(0,0,0,0.50)";
+        roundRect(ctx, cardX, cardY, cardW, cardH, 16);
+        ctx.fill();
+
+        const iX = cardX + pad;
+        const rX = cardX + cardW - pad;
+
+        // ── 타이틀 ──
+        ctx.fillStyle = ACCENT;
+        ctx.textAlign = "left";
+        let fs = 88;
+        ctx.font = "700 " + fs + "px 'Archivo Black'";
+        while (ctx.measureText(workoutTitle.toUpperCase()).width > rX - iX && fs > 44) {
+            fs -= 4;
+            ctx.font = "700 " + fs + "px 'Archivo Black'";
+        }
+        ctx.fillText(workoutTitle.toUpperCase(), iX, cardY + fs + 20);
+
+        // ── 메타 ──
+        const metaY = cardY + fs + 24;
+        ctx.fillStyle = "rgba(255,255,255,0.45)";
+        ctx.font = "400 24px 'Inter'";
+        ctx.fillText(dateTime, iX, metaY + 32);
+        ctx.fillText("TOTAL " + totalSets + " SETS", iX, metaY + 62);
+        ctx.fillText(duration, iX, metaY + 92);
+
+        // 구분선
+        const divY = metaY + 110;
+        ctx.strokeStyle = "rgba(255,255,255,0.15)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(iX, divY);
+        ctx.lineTo(rX, divY);
+        ctx.stroke();
+
+        // ── 운동 목록 ──
+        const listStartY = divY + 30;
+
+        exerciseList.forEach(function(ex, i) {
+            const y = listStartY + i * rowH;
+
+            // 이름 — 밝은 회색
+            ctx.fillStyle = "rgba(220,220,220,0.92)";
+            ctx.font = "700 26px 'Inter'";
+            ctx.textAlign = "left";
+            let name = ex.name;
+            const maxW = rX - iX;
+            if (ctx.measureText(name).width > maxW) {
+                while (ctx.measureText(name + "..").width > maxW) name = name.slice(0, -1);
+                name += "..";
+            }
+            ctx.fillText(name, iX, y);
+
+            // 노트
+            let blockY = y + 28;
+            if (ex.note) {
+                ctx.fillStyle = "rgba(255,210,75,0.78)";
+                ctx.font = "400 18px 'Inter'";
+                ctx.fillText(ex.note, iX, y + 24);
+                blockY = y + 46;
+            }
+
+            // 세트 블록 — 일반:레드, 드롭:파란색
+            const bW = 26, bH = 20, bGap = 6;
+            const totalBlocks = Math.min(ex.sets + (ex.drops || 0), 12);
+            const normalCount = Math.min(ex.sets, 12);
+            const dropCount = Math.min(ex.drops || 0, 12 - normalCount);
+            let bx = iX;
+            // 일반 세트 (레드)
+            ctx.fillStyle = ACCENT;
+            for (let s = 0; s < normalCount; s++) {
+                ctx.fillRect(bx + s * (bW + bGap), blockY - bH, bW, bH);
+            }
+            bx += normalCount * (bW + bGap);
+            // 드롭 세트 (파란색)
+            ctx.fillStyle = "#4a9eff";
+            for (let s = 0; s < dropCount; s++) {
+                ctx.fillRect(bx + s * (bW + bGap), blockY - bH, bW, bH);
+            }
+            if ((ex.sets + (ex.drops || 0)) > 12) {
+                ctx.fillStyle = "rgba(255,255,255,0.5)";
+                ctx.font = "400 17px 'Inter'";
+                ctx.fillText("+" + (ex.sets + (ex.drops||0) - 12), bx + dropCount * (bW + bGap) + 4, blockY - 2);
+            }
+        });
+
+        // 하단 서명
+        ctx.fillStyle = "rgba(255,255,255,0.18)";
+        ctx.font = "400 20px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText("SHARE STRONG IMAGE V2", cardX + cardW / 2, cardBot - 12);
+    }
+
+    // ─── 유틸: 둥근 사각형 ───────────────────────────────────────────────────
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
     (function(){
         const params = new URLSearchParams(location.search);
         const data = params.get("log");
-    
         if(data){
             document.getElementById("logInput").value = decodeURIComponent(data);
-    
-            // 페이지 로딩 후 사진 선택창 자동 열기
-            setTimeout(()=>{
-                document.getElementById("imageInput").click();
-            },500);
+            setTimeout(()=>{ document.getElementById("imageInput").click(); }, 500);
         }
     })();
 </script>
