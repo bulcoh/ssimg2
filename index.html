@@ -53,6 +53,7 @@
         .type-btn.active-A { border-color: #ff4757; color: #ff4757; background: rgba(255,71,87,0.12); }
         .type-btn.active-B { border-color: #00d2ff; color: #00d2ff; background: rgba(0,210,255,0.10); }
         .type-btn.active-C { border-color: #f9ca24; color: #f9ca24; background: rgba(249,202,36,0.10); }
+        .type-btn.active-D { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.10); }
         .type-label { font-size: 10px; display: block; margin-top: 2px; opacity: 0.8; }
 
         #resultContainer { width: 100%; max-width: 500px; display: none; margin-top: 20px; text-align: center; }
@@ -92,6 +93,10 @@
             TYPE C
             <span class="type-label">매거진</span>
         </button>
+        <button class="type-btn" id="typeD" onclick="selectType('D')">
+            TYPE D
+            <span class="type-label">블러</span>
+        </button>
     </div>
 
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
@@ -117,7 +122,7 @@
 
     function selectType(type) {
         selectedType = type;
-        ['A','B','C'].forEach(t => {
+        ['A','B','C','D'].forEach(t => {
             const btn = document.getElementById('type' + t);
             btn.className = 'type-btn';
             if (t === type) btn.classList.add('active-' + t);
@@ -298,6 +303,8 @@
                         drawTypeA(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     } else if (selectedType === 'B') {
                         drawTypeB(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+                    } else if (selectedType === 'D') {
+                        drawTypeD(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     } else {
                         drawTypeC(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     }
@@ -613,6 +620,127 @@
         ctx.font = "400 20px 'Inter'";
         ctx.textAlign = "center";
         ctx.fillText("SHARE STRONG IMAGE V2", cardX + cardW / 2, cardBot - 12);
+    }
+
+    // ─── TYPE D : 상단 타이틀 + 운동 태그 줄줄이 ─────────────────────────────
+    // 상단: 그라디언트 위에 타이틀 크게 + 메타
+    // 운동 종목을 태그처럼 가로로 줄줄이 (넘치면 다음 줄)
+    // 중앙은 사진 뻥 뚫림
+    function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080; canvas.height = 1350;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // 살짝 전체 어둡게
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const iX = 60;
+        const rX = canvas.width - 60;
+
+        // ── 상단 그라디언트 ──
+        // 높이는 내용에 따라 동적으로 계산
+        ctx.font = "700 118px 'Archivo Black'";
+        let fs = 118;
+        while (ctx.measureText(workoutTitle.toUpperCase()).width > rX - iX && fs > 60) {
+            fs -= 4;
+            ctx.font = "700 " + fs + "px 'Archivo Black'";
+        }
+
+        // 태그 줄 계산 — 중앙정렬을 위해 줄별 너비 미리 계산
+        const tagFont = "700 28px 'Inter'";
+        ctx.font = tagFont;
+        const tagPadX = 28, tagGap = 14;
+        const tagLineH = 70;
+
+        // 줄별 태그 그룹화
+        const tagRows = [];
+        let curRow = [], curRowW = 0;
+        exerciseList.forEach(function(ex) {
+            const tw = ctx.measureText(ex.name).width + tagPadX * 2;
+            if (curRow.length > 0 && curRowW + tw + tagGap > canvas.width - iX * 2) {
+                tagRows.push({ tags: curRow, width: curRowW - tagGap });
+                curRow = []; curRowW = 0;
+            }
+            curRow.push({ ex: ex, tw: tw });
+            curRowW += tw + tagGap;
+        });
+        if (curRow.length > 0) tagRows.push({ tags: curRow, width: curRowW - tagGap });
+
+        const tagLines = tagRows.length;
+        const headerH = fs + 30 + 50 + 20 + tagLines * tagLineH + 40;
+        const topGrad = ctx.createLinearGradient(0, 0, 0, headerH);
+        topGrad.addColorStop(0,   "rgba(0,0,0,0.80)");
+        topGrad.addColorStop(0.7, "rgba(0,0,0,0.50)");
+        topGrad.addColorStop(1,   "rgba(0,0,0,0)");
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, canvas.width, headerH);
+
+        // ── 타이틀 ──
+        ctx.fillStyle = "rgba(255,255,255,0.97)";
+        ctx.font = "700 " + fs + "px 'Archivo Black'";
+        ctx.textAlign = "left";
+        ctx.fillText(workoutTitle.toUpperCase(), iX, fs + 20);
+
+        // ── 메타 ──
+        ctx.fillStyle = "rgba(255,255,255,0.48)";
+        ctx.font = "400 30px 'Inter'";
+        ctx.textAlign = "left";
+        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", iX, fs + 72);
+
+        // ── 태그 줄별 좌측정렬 ──
+        let ty = fs + 72 + 36;
+        ctx.font = tagFont;
+
+        tagRows.forEach(function(row) {
+            let tx = iX;
+
+        row.tags.forEach(function(item) {
+            const ex = item.ex;
+            const tw = item.tw;
+
+            // 태그 구조: tagTop=ty, 텍스트=ty+30, 블록=ty+44, 태그높이=58
+            const TAG_H = 58;
+            const textX = tx + tagPadX;
+
+            // 태그 배경
+            ctx.fillStyle = "rgba(255,255,255,0.12)";
+            roundRect(ctx, tx, ty, tw, TAG_H, 8);
+            ctx.fill();
+
+            // 텍스트 (태그 상단에서 30px 아래)
+            ctx.textAlign = "left";
+            ctx.font = tagFont;
+            let charX = textX;
+            for (let c = 0; c < ex.name.length; c++) {
+                const ch = ex.name[c];
+                ctx.fillStyle = /[^a-zA-Z ]/.test(ch) ? "#ff4757" : "rgba(255,255,255,0.88)";
+                ctx.fillText(ch, charX, ty + 30);
+                charX += ctx.measureText(ch).width;
+            }
+
+            // 세트 블록 (텍스트 아래 딱 붙게 ty+42)
+            const bW = 8, bH = 6, bGap = 3;
+            const warms = ex.warms || 0, drops = ex.drops || 0;
+            let bx = textX;
+            ctx.fillStyle = "#F0B83B";
+            for (let s = 0; s < Math.min(warms, 6); s++) ctx.fillRect(bx + s*(bW+bGap), ty + 42, bW, bH);
+            bx += Math.min(warms, 6) * (bW + bGap);
+            ctx.fillStyle = "#ff4757";
+            for (let s = 0; s < Math.min(ex.sets, 6); s++) ctx.fillRect(bx + s*(bW+bGap), ty + 42, bW, bH);
+            bx += Math.min(ex.sets, 6) * (bW + bGap);
+            ctx.fillStyle = "#784CD8";
+            for (let s = 0; s < Math.min(drops, 6); s++) ctx.fillRect(bx + s*(bW+bGap), ty + 42, bW, bH);
+
+            tx += tw + tagGap;
+        }); // row.tags.forEach
+        ty += tagLineH;
+        }); // tagRows.forEach
+
+        // 하단 서명
+        ctx.fillStyle = "rgba(255,255,255,0.6)";
+        ctx.font = "400 22px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 25);
     }
 
     // ─── 유틸: 둥근 사각형 ───────────────────────────────────────────────────
