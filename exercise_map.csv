@@ -26,7 +26,7 @@ Bicep Curl (Dumbbell),Biceps,
 Bicep Curl (Machine),Biceps,
 Bicep Curl (Plate),Biceps,
 Bicycle Crunch,Core,
-Birddogg,Core,Lower Back
+Birddog,Core,Lower Back
 Box Jump,Cardio,
 Box Squat (Barbell),Quads,Hamstring
 Bridge,Glute,Hamstring
@@ -54,7 +54,7 @@ Clean (Barbell),Allbody,
 Clean and Jerk (Barbell),Allbody,
 Concentration Curl (Dumbbell),Biceps,
 Cross Body Crunch,Core,
-Corss-Body Cable Y-Raise,Shoulder,
+Cross-Body Cable Y-Raise,Shoulder,
 Cross-Body Triceps Extension,Triceps,
 Crunch,Core,
 Crunch (Machine),Core,
@@ -66,7 +66,7 @@ Deadlift (Band),Hamstring,Lower Back
 Deadlift (Barbell),Hamstring,Lower Back
 Deadlift (Dumbbell),Hamstring,Lower Back
 Deadlift (Smith Machine),Hamstring,Lower Back
-Deadlift High Pull (Barbell),Allbody
+Deadlift High Pull (Barbell),Allbody,
 Decline Bench Press (Barbell),Chest,Triceps
 Decline Bench Press (Dumbbell),Chest,Triceps
 Decline Bench Press (Smith Machine),Chest,Triceps
@@ -97,7 +97,7 @@ Hammer Curl (Dumbbell),Biceps,Forearm
 Handstand Push Up,Shoulder,Triceps
 Hang Clean (Barbell),Allbody,
 Hang Snatch (Barbell),Allbody,
-Hanging,Forarm,
+Hanging,Forearm,
 Hanging Knee Raise,Core,
 Hanging Leg Raise,Core,
 High Knee Skips,Cardio,
@@ -129,7 +129,7 @@ Kettlebell Swing,Glute,Quads
 Kettlebell Turkish Get Up,Allbody,
 Kipping Pull Up,Lat,Biceps
 Knee Raise (Captain's Chair),Core,
-Kneeing Lat Pulldown (Cable),Lat,
+Kneeling Lat Pulldown (Cable),Lat,
 Kneeling Pulldown (Band),Lat,
 Knees to Elbows,Core,
 Kroc Row,Lat,Traps
@@ -140,12 +140,12 @@ Lat Pulldown (Single Arm),Lat,Traps
 Lat Pulldown - Underhand (Band),Lat,Traps
 Lat Pulldown - Underhand (Cable),Lat,Traps
 Lat Pulldown - Wide Grip (Cable),Lat,Traps
-Lateral Box Jump,Cardio
+Lateral Box Jump,Cardio,
 Lateral Raise (Band),Shoulder,
 Lateral Raise (Cable),Shoulder,
 Lateral Raise (Dumbbell),Shoulder,
 Lateral Raise (Machine),Shoulder,
-Lateral Raise In 3 Digrees,Shoulder,
+Lateral Raise In 3 Degrees,Shoulder,
 Leg Extension (Machine),Quads,
 Leg Extension (Single Leg),Quads,
 Leg Press,Quads,Glute
@@ -173,7 +173,7 @@ Overhead Squat (Barbell),Allbody,
 Paused Bench Press (Barbell),Chest,Triceps
 Paused Deadlift (Barbell),Hamstring,Lower Back
 Paused Row (Barbell),Lat,Traps
-Paused Squat (Barbell),Quads,Quads
+Paused Squat (Barbell),Quads,Glute
 Pec Deck (Machine),Chest,
 Pendlay Row (Barbell),Lat,Traps
 Pistol Squat,Quads,Glute
@@ -208,7 +208,7 @@ Romanian Deadlift (Barbell),Hamstring,Lower Back
 Romanian Deadlift (Dumbbell),Hamstring,Lower Back
 Rowing (Machine),Cardio,
 Running,Cardio,
-Running (Threadmill),Cardio,
+Running (Treadmill),Cardio,
 Russian Twist,Core,
 Seated Calf Raise (Machine),Calf,
 Seated Calf Raise (Plate Loaded),Calf,
