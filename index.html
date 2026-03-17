@@ -261,64 +261,49 @@
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
         const minutes = endTotal - startTotal;
-
         let totalSets = 0, exerciseList = [];
-        const summary = {}; 
 
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0;
+            let foundName = "", setsInPara = 0, drops = 0, fails = 0;
 
-            // 1. 운동 이름 추출
+            // 1. 운동 이름 추출 (CSV에 있는 이름인지 확인)
             if (lines[0] && exerciseMap[lines[0]]) {
                 foundName = lines[0];
             }
 
             lines.forEach(line => {
-                // 워밍업 제외
                 if (line.toUpperCase().startsWith('W') || line.includes('[워밍업]')) return; 
 
-                // 세트 인정 (세트, D:, F:, 드롭, 실패)
-                const isSet = /^(세트\s*\d+|Set\s*\d+|D:|F:|Drop:|Failure:)/i.test(line) || 
-                            line.includes('[드롭 세트]') || 
-                            line.includes('[실패]');
-                
-                // 시간만 적힌 운동(Plank, Walking 등)은 세트 카운트에서 제외 (':' 뒤에 'kg'이나 'x'가 있는지 확인)
+                // 세트 유형 판별
+                const isDrop = line.includes('[드롭 세트]') || line.toUpperCase().startsWith('D:');
+                const isFail = line.includes('[실패]') || line.toUpperCase().startsWith('F:');
+                const isNormal = /^(세트\s*\d+|Set\s*\d+):/i.test(line);
+
+                // 유효한 볼륨 데이터(kg 또는 x)가 있는지 확인
                 const isVolumeSet = line.includes('kg') || line.includes('×') || line.includes('x');
 
-                if (isSet && isVolumeSet) {
+                if ((isNormal || isDrop || isFail) && isVolumeSet) {
                     setsInPara++;
+                    if (isDrop) drops++;
+                    if (isFail) fails++;
                 }
             });
 
-            // 2. 부위별 세트 집계
-// 2. 부위별 세트 집계 (메인 1, 서브 0.5)
-        if (foundName && setsInPara > 0) {
-            const exerciseInfo = exerciseMap[foundName];
-            const mainMuscle = exerciseInfo.main || "기타";
-            const subMuscle = exerciseInfo.sub || ""; 
-
-            // 메인 부위: 1세트 그대로 인정
-            summary[mainMuscle] = (summary[mainMuscle] || 0) + setsInPara;
-
-            // 서브 부위: 0.5세트로 보정해서 합산
-            if (subMuscle && subMuscle !== "") {
-                summary[subMuscle] = (summary[subMuscle] || 0) + (setsInPara * 0.5); 
+            // 2. JSON에는 운동 이름과 세트 구성 정보만 저장
+            if (foundName && setsInPara > 0) {
+                totalSets += setsInPara;
+                exerciseList.push({
+                    name: foundName,
+                    sets: setsInPara,
+                    drops: drops,
+                    fails: fails
+                });
             }
-
-            totalSets += setsInPara; // 전체 세트 수는 실제 수행 세트로 계산
-            
-            exerciseList.push({
-                name: foundName,
-                sets: setsInPara,
-                main: mainMuscle,
-                sub: subMuscle
-            });
-        }
-
         });
 
-        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList, summary };
+        // 이제 반환값에서 'summary'(근육 합산 데이터)는 빠짐!
+        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
     }
 
 
