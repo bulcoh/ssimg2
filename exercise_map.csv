@@ -1,17 +1,17 @@
 exercise,main,sub
 Ab wheel,Core,
 aerobics,Cardio,
-Arnold Press (Dumbbell),Shoulder,Triceps
+Arnold Press (Dumbbell),Shoulder,
 Around the world,Shoulder,Core
 Back Extension,Lower Back,Hamstring
 Back Extension (Machine),Lower Back,Hamstring
 Ball Slams,Core,Shoulder
 Battle Ropes,Cardio,
-Bench Dip,Triceps,Chest
-Bench Press (Barbell),Chest,Triceps
-Bench Press (Cable),Chest,Triceps
-Bench Press (Dumbbell),Chest,Triceps
-Bench Press (Smith Machine),Chest,Triceps
+Bench Dip,Triceps,
+Bench Press (Barbell),Chest,
+Bench Press (Cable),Chest,
+Bench Press (Dumbbell),Chest,
+Bench Press (Smith Machine),Chest,
 Bench Press - Close Grip (Barbell),Triceps,Chest
 Bench Press - Wide Grip (Barbell),Chest,Triceps
 Bent Over Lateral Raise,Shoulder,
@@ -28,14 +28,14 @@ Bicep Curl (Plate),Biceps,
 Bicycle Crunch,Core,
 Birddog,Core,Lower Back
 Box Jump,Cardio,
-Box Squat (Barbell),Quads,Hamstring
+Box Squat (Barbell),Quads,Glute
 Bridge,Glute,Hamstring
-Bulgarian Split Squat,Quads,Glute
+Bulgarian Split Squat,Glute,Quads
 Burpee,Cardio,
-Cable Crossover,Chest,Shoulder
+Cable Crossover,Chest,
 Cable Crunch,Core,
-Cable Kickback,Glute,Hamstring
-Cable Pull Through,Glute,Hamstring
+Cable Kickback,Glute,
+Cable Pull Through,Glute,
 Cable Rope Extension,Triceps,
 Cable Twist,Core,
 Calf Press on Leg Press,Calf,
@@ -45,8 +45,8 @@ Chest Dip (Assisted),Chest,Triceps
 Chest Fly,Chest,
 Chest Fly (Band),Chest,
 Chest Fly (Dumbbell),Chest,
-Chest Press (Band),Chest,Triceps
-Chest Press (Machine),Chest,Triceps
+Chest Press (Band),Chest,
+Chest Press (Machine),Chest,
 Chin Up,Lat,Biceps
 Chin Up (Assisted),Lat,Biceps
 Chin Up (Band),Lat,Biceps
@@ -62,14 +62,14 @@ Crunch (Smith Machine),Core,
 Crunch (Stability Ball),Core,
 Cycling,Cardio,
 Cycling (Indoor),Cardio,
-Deadlift (Band),Hamstring,Lower Back
-Deadlift (Barbell),Hamstring,Lower Back
-Deadlift (Dumbbell),Hamstring,Lower Back
-Deadlift (Smith Machine),Hamstring,Lower Back
+Deadlift (Band),Glute,Hamstring
+Deadlift (Barbell),Glute,Hamstring
+Deadlift (Dumbbell),Glute,Hamstring
+Deadlift (Smith Machine),Glute,Hamstring
 Deadlift High Pull (Barbell),Allbody,
-Decline Bench Press (Barbell),Chest,Triceps
-Decline Bench Press (Dumbbell),Chest,Triceps
-Decline Bench Press (Smith Machine),Chest,Triceps
+Decline Bench Press (Barbell),Chest,
+Decline Bench Press (Dumbbell),Chest,
+Decline Bench Press (Smith Machine),Chest,
 Decline Crunch,Core,
 Deficit Deadlift (Barbell),Hamstring,Lower Back
 Deficit Deadlift (Dumbbell),Hamstring,Lower Back
@@ -77,7 +77,7 @@ Elliptical Machine,Cardio,
 Face Pull (Cable),Shoulder,Traps
 Flat Knee Raise,Core,
 Flat Leg Raise,Core,
-Floor Press (Barbell),Chest,Triceps
+Floor Press (Barbell),Chest,
 Front Raise (Band),Shoulder,
 Front Raise (Barbell),Shoulder,
 Front Raise (Cable),Shoulder,
@@ -102,7 +102,7 @@ Hanging Knee Raise,Core,
 Hanging Leg Raise,Core,
 High Knee Skips,Cardio,
 High Row,Lat,Traps
-High Row (Single Arm),Lat,Traps
+High Row (Single Arm),Lat,
 Hiking,Cardio,
 Hip Abductor (Machine),Glute,
 Hip Adductor (Machine),Adductor,
@@ -112,20 +112,20 @@ Incline Bench Press (Barbell),Chest,Shoulder
 Incline Bench Press (Cable),Chest,Shoulder
 Incline Bench Press (Dumbbell),Chest,Shoulder
 Incline Bench Press (Smith Machine),Chest,Shoulder
-Incline Bench Press - Close Grip (Barbell),Triceps,Chest
+Incline Bench Press - Close Grip (Barbell),Chest,Triceps
 Incline Chest Fly (Dumbbell),Chest,
 Incline Chest Press (Machine),Chest,Shoulder
 Incline Curl (Dumbbell),Biceps,
 Incline Single Lateral Raise,Shoulder,
 Inverted Row (Bodyweight),Lat,Traps
-Iso-Lateral Chest Press (Machine),Chest,Triceps
+Iso-Lateral Chest Press (Machine),Chest,
 Iso-Lateral Row (Machine),Lat,Traps
 Jackknife Sit Up,Core,
 Jump Rope,Cardio,
 Jump Shrug (Barbell),Traps,Shoulder
 Jump Squat,Quads,Glute
 Jumping Jack,Cardio,
-Kettlebell Swing,Glute,Quads
+Kettlebell Swing,Allbody,
 Kettlebell Turkish Get Up,Allbody,
 Kipping Pull Up,Lat,Biceps
 Knee Raise (Captain's Chair),Core,
@@ -133,7 +133,7 @@ Kneeling Lat Pulldown (Cable),Lat,
 Kneeling Pulldown (Band),Lat,
 Knees to Elbows,Core,
 Kroc Row,Lat,Traps
-Larsen Press,Chest,Triceps
+Larsen Press,Chest,
 Lat Pulldown (Cable),Lat,Traps
 Lat Pulldown (Machine),Lat,Traps
 Lat Pulldown (Single Arm),Lat,Traps
@@ -170,8 +170,8 @@ Overhead Press (Cable),Shoulder,Triceps
 Overhead Press (Dumbbell),Shoulder,Triceps
 Overhead Press (Smith Machine),Shoulder,Triceps
 Overhead Squat (Barbell),Allbody,
-Paused Bench Press (Barbell),Chest,Triceps
-Paused Deadlift (Barbell),Hamstring,Lower Back
+Paused Bench Press (Barbell),Chest,
+Paused Deadlift (Barbell),Glute,Hamstring
 Paused Row (Barbell),Lat,Traps
 Paused Squat (Barbell),Quads,Glute
 Pec Deck (Machine),Chest,
@@ -199,10 +199,10 @@ Rack Pull (Barbell),Hamstring,Glute
 Reverse Crunch,Core,
 Reverse Curl (Band),Biceps,Forearm
 Reverse Curl (Dumbbell),Biceps,Forearm
-Reverse Fly (Cable),Shoulder,Traps
-Reverse Fly (Dumbbell),Shoulder,Traps
-Reverse Fly (Machine),Shoulder,Traps
-Reverse Grip Concentration Curl (Dumbbell),Forearm,Biceps
+Reverse Fly (Cable),Shoulder,
+Reverse Fly (Dumbbell),Shoulder,
+Reverse Fly (Machine),Shoulder,
+Reverse Grip Concentration Curl (Dumbbell),Biceps,Forearm
 Reverse Plank,Core,
 Romanian Deadlift (Barbell),Hamstring,Lower Back
 Romanian Deadlift (Dumbbell),Hamstring,Lower Back
@@ -219,8 +219,8 @@ Seated Overhead Press (Barbell),Shoulder,Triceps
 Seated Overhead Press (Dumbbell),Shoulder,Triceps
 Seated Overhead Press (Smith Machine),Shoulder,Triceps
 Seated Palms Up Wrist Curl (Dumbbell),Forearm,
-Seated Row (Cable),Lat,Traps
-Seated Row (Machine),Lat,Traps
+Seated Row (Cable),Traps,Lat
+Seated Row (Machine),Traps,Lat
 Seated Wide-Grip Row (Cable),Traps,Lat
 Shoulder Press (Machine),Shoulder,
 Shoulder Press (Plate Loaded),Shoulder,
@@ -263,7 +263,7 @@ Sumo Deadlift (Barbell),Glute,Adductor
 Sumo Deadlift High Pull (Barbell),Allbody,
 Superman,Lower Back,
 Swimming,Cardio,
-T Bar Row,Lat,Traps
+T Bar Row,Traps,Lat
 Thruster (Bar),Quads,Shoulder
 Thruster (Kettlebell),Quads,Shoulder
 Toe touch,Core,
