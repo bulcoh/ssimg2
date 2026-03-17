@@ -72,47 +72,47 @@
       {
         "name": "Plank",
         "sets": 3,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Lat Pulldown (Cable)",
         "sets": 6,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "M Torture Low Row",
         "sets": 3,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Pullover (Dumbbell)",
         "sets": 2,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Seated Wide-Grip Row (Cable)",
         "sets": 3,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Hammer Curl (Cable)",
         "sets": 4,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Incline Curl (Dumbbell)",
         "sets": 2,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Cable Crunch",
         "sets": 3,
-        "note": ""
+        "vol": 0
       },
       {
         "name": "Walking",
         "sets": 1,
-        "note": ""
+        "vol": 0
       }
     ]
   }
