@@ -244,6 +244,7 @@
         return { hours, minutes };
     }
 
+    
     function parseWorkout(rawText, photoTime) {
         const paragraphs = rawText.split(/\n\s*\n/).map(p => p.trim()).filter(p => p !== "");
         const headerLines = paragraphs[0].split('\n');
@@ -262,49 +263,64 @@
         const minutes = endTotal - startTotal;
 
         let totalSets = 0, exerciseList = [];
+        const summary = {}; 
 
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, dropSets = 0, warms = 0, hasRecord = false;
-            let totalVol = 0; // 해당 종목의 총 볼륨(무게 * 횟수)
+            let foundName = "", setsInPara = 0;
+
+            // 1. 운동 이름 추출
+            if (lines[0] && exerciseMap[lines[0]]) {
+                foundName = lines[0];
+            }
 
             lines.forEach(line => {
-                // 세트 라인 매칭 (예: 세트 1: 80 kg x 8)
-                const isSet = /^(세트\s*\d+|W\d*|F\d*|D\d*|Set\s*\d+):/i.test(line);
-                if (isSet) {
-                    hasRecord = true;
-                    const isWarm = /^W\d*:/i.test(line) || line.includes('[워밍업]');
-                    
-                    // 무게와 횟수 추출 (숫자 kg x 숫자 회 형식)
-                    const match = line.match(/(\d+\.?\d*)\s*kg\s*x\s*(\d+)/i);
-                    if (match && !isWarm) {
-                        const weight = parseFloat(match[1]);
-                        const reps = parseInt(match[2]);
-                        totalVol += (weight * reps);
-                    }
+                // 워밍업 제외
+                if (line.toUpperCase().startsWith('W') || line.includes('[워밍업]')) return; 
 
-                    if (!isWarm) {
-                        setsInPara++;
-                        if (line.includes('[드롭') || /^D\d*:/i.test(line)) dropSets++;
-                    } else {
-                        warms++;
-                    }
-                } else if (!foundName && isNaN(line[0]) && !line.includes("kg") && !line.startsWith("http")) {
-                    foundName = line;
+                // 세트 인정 (세트, D:, F:, 드롭, 실패)
+                const isSet = /^(세트\s*\d+|Set\s*\d+|D:|F:|Drop:|Failure:)/i.test(line) || 
+                            line.includes('[드롭 세트]') || 
+                            line.includes('[실패]');
+                
+                // 시간만 적힌 운동(Plank, Walking 등)은 세트 카운트에서 제외 (':' 뒤에 'kg'이나 'x'가 있는지 확인)
+                const isVolumeSet = line.includes('kg') || line.includes('×') || line.includes('x');
+
+                if (isSet && isVolumeSet) {
+                    setsInPara++;
                 }
             });
 
-            if (foundName && (hasRecord || warms > 0)) {
-                exerciseList.push({ 
-                    name: foundName, 
-                    sets: setsInPara, // 일반+드롭 합산 (워밍업 제외)
-                    vol: Math.round(totalVol) // 소수점 반올림
-                });
+            // 2. 부위별 세트 집계
+// 2. 부위별 세트 집계 (메인 1, 서브 0.5)
+        if (foundName && setsInPara > 0) {
+            const exerciseInfo = exerciseMap[foundName];
+            const mainMuscle = exerciseInfo.main || "기타";
+            const subMuscle = exerciseInfo.sub || ""; 
+
+            // 메인 부위: 1세트 그대로 인정
+            summary[mainMuscle] = (summary[mainMuscle] || 0) + setsInPara;
+
+            // 서브 부위: 0.5세트로 보정해서 합산
+            if (subMuscle && subMuscle !== "") {
+                summary[subMuscle] = (summary[subMuscle] || 0) + (setsInPara * 0.5); 
             }
+
+            totalSets += setsInPara; // 전체 세트 수는 실제 수행 세트로 계산
+            
+            exerciseList.push({
+                name: foundName,
+                sets: setsInPara,
+                main: mainMuscle,
+                sub: subMuscle
+            });
+        }
+
         });
 
-        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
+        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList, summary };
     }
+
 
     function processWorkout() {
         const rawText = document.getElementById('logInput').value;
