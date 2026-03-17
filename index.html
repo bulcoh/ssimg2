@@ -119,6 +119,7 @@
     let currentMinutes = 0;
     let currentFileDate = "";
     let selectedType = 'A';
+    let currentParsed = null;
 
     function selectType(type) {
         selectedType = type;
@@ -169,6 +170,23 @@
         } catch (e) { console.log("기존 데이터 없음 또는 에러:", e); }
         if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
         currentData[dateStr][type] = mins;
+        if (type === 'strong' && currentParsed) {
+            currentData[dateStr].workout = {
+                title: currentParsed.workoutTitle,
+                datetime: currentParsed.dateTime,
+                duration: mins,
+                totalSets: currentParsed.totalSets,
+                exercises: currentParsed.exerciseList.map(function(ex) {
+                    return {
+                        name: ex.name,
+                        sets: ex.sets,
+                        warms: ex.warms || 0,
+                        drops: ex.drops || 0,
+                        fails: ex.fails || 0
+                    };
+                })
+            };
+        }
         const jsonStr = JSON.stringify(currentData, null, 2);
         const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
             function(match, p1) { return String.fromCharCode('0x' + p1); }));
@@ -246,7 +264,9 @@
         
         const dateParts = dateTime.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
         const fileDate = dateParts ? `${dateParts[1]}${dateParts[2].padStart(2, '0')}${dateParts[3].padStart(2, '0')}` : "00000000";
+        
 
+        
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
@@ -255,7 +275,7 @@
         let totalSets = 0, exerciseList = [];
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, dropSets = 0, warmSets = 0, hasRecord = false, noteText = "";
+            let foundName = "", setsInPara = 0, dropSets = 0, failSets=0, warmSets = 0, hasRecord = false, noteText = "";
             lines.forEach(line => {
                 const isSet = /^(세트\s*\d+|W\d*|F\d*|D\d*|Set\s*\d+):/i.test(line);
                 if (isSet) {
@@ -263,11 +283,13 @@
                     const upper = line.toUpperCase();
                     const isWarm = /^W\d*:/i.test(line) || line.includes('[워밍업]');
                     const isDrop = line.includes('[드롭') || /^D\d*:/i.test(line);
+                    const isFail = line.includes('[실패]');
                     if (isWarm) {
                         warmSets++;  // 총세트 카운트 제외, 표기만
                     } else {
                         totalSets++;
                         if (isDrop) dropSets++;
+                        else if (isFail) failSets++;
                         else setsInPara++;
                     }
                 } else if (line.startsWith('노트:')) {
@@ -276,7 +298,7 @@
                     foundName = line;
                 }
             });
-            if (foundName && (hasRecord || warmSets > 0)) exerciseList.push({ name: foundName, sets: setsInPara, drops: dropSets, warms: warmSets, note: noteText });
+            if (foundName && (hasRecord || warmSets > 0)) exerciseList.push({ name: foundName, sets: setsInPara, drops: dropSets, fails: failSets, warms: warmSets, note: noteText });
         });
 
         return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
@@ -291,6 +313,7 @@
         const parsed = parseWorkout(rawText, photoTime);
         currentMinutes = parsed.minutes;
         currentFileDate = parsed.fileDate;
+        currentParsed = parsed;
 
         const duration = `${Math.floor(currentMinutes/60)}h ${currentMinutes%60}m`;
 
