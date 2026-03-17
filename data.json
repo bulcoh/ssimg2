@@ -63,57 +63,5 @@
     "strong": 90,
     "swim": 0,
     "run": 0
-  },
-  "20260317": {
-    "strong": 104,
-    "swim": 0,
-    "run": 0,
-    "details": [
-      {
-        "name": "Plank",
-        "sets": 3,
-        "vol": 0
-      },
-      {
-        "name": "Lat Pulldown (Cable)",
-        "sets": 6,
-        "vol": 0
-      },
-      {
-        "name": "M Torture Low Row",
-        "sets": 3,
-        "vol": 0
-      },
-      {
-        "name": "Pullover (Dumbbell)",
-        "sets": 2,
-        "vol": 0
-      },
-      {
-        "name": "Seated Wide-Grip Row (Cable)",
-        "sets": 3,
-        "vol": 0
-      },
-      {
-        "name": "Hammer Curl (Cable)",
-        "sets": 4,
-        "vol": 0
-      },
-      {
-        "name": "Incline Curl (Dumbbell)",
-        "sets": 2,
-        "vol": 0
-      },
-      {
-        "name": "Cable Crunch",
-        "sets": 3,
-        "vol": 0
-      },
-      {
-        "name": "Walking",
-        "sets": 1,
-        "vol": 0
-      }
-    ]
   }
 }
