@@ -67,6 +67,53 @@
   "20260317": {
     "strong": 88,
     "swim": 0,
-    "run": 0
+    "run": 0,
+    "details": [
+      {
+        "name": "Plank",
+        "sets": 3,
+        "note": ""
+      },
+      {
+        "name": "Lat Pulldown (Cable)",
+        "sets": 6,
+        "note": ""
+      },
+      {
+        "name": "M Torture Low Row",
+        "sets": 3,
+        "note": ""
+      },
+      {
+        "name": "Pullover (Dumbbell)",
+        "sets": 2,
+        "note": ""
+      },
+      {
+        "name": "Seated Wide-Grip Row (Cable)",
+        "sets": 3,
+        "note": ""
+      },
+      {
+        "name": "Hammer Curl (Cable)",
+        "sets": 4,
+        "note": ""
+      },
+      {
+        "name": "Incline Curl (Dumbbell)",
+        "sets": 2,
+        "note": ""
+      },
+      {
+        "name": "Cable Crunch",
+        "sets": 3,
+        "note": ""
+      },
+      {
+        "name": "Walking",
+        "sets": 1,
+        "note": ""
+      }
+    ]
   }
 }
