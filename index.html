@@ -243,6 +243,7 @@
         else if (parts[1] === "오전" && hours === 12) hours = 0;
         return { hours, minutes };
     }
+
     function parseWorkout(rawText, photoTime) {
         const paragraphs = rawText.split(/\n\s*\n/).map(p => p.trim()).filter(p => p !== "");
         const headerLines = paragraphs[0].split('\n');
@@ -258,55 +259,52 @@
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
-        const strongMinutes = endTotal - startTotal;
+        const minutes = endTotal - startTotal;
 
-        let totalSets = 0;
-        let details = []; 
+        let totalSets = 0, exerciseList = [];
 
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, drops = 0;
-
-            if (lines[0] && exerciseMap[lines[0]]) {
-                foundName = lines[0];
-            }
+            let foundName = "", setsInPara = 0, dropSets = 0, warms = 0, hasRecord = false;
+            let totalVol = 0; // 해당 종목의 총 볼륨(무게 * 횟수)
 
             lines.forEach(line => {
-                if (line.toUpperCase().startsWith('W') || line.includes('[워밍업]')) return; 
-
-                const isDrop = line.includes('[드롭 세트]') || line.toUpperCase().startsWith('D:');
-                const isSet = /^(세트\s*\d+|Set\s*\d+|F:|Failure:)/i.test(line) || line.includes('[실패]') || isDrop;
-                
+                // 세트 라인 매칭 (예: 세트 1: 80 kg x 8)
+                const isSet = /^(세트\s*\d+|W\d*|F\d*|D\d*|Set\s*\d+):/i.test(line);
                 if (isSet) {
-                    setsInPara++;
-                    if (isDrop) drops++; // 드롭세트 카운트 (사진 그릴 때 필요)
+                    hasRecord = true;
+                    const isWarm = /^W\d*:/i.test(line) || line.includes('[워밍업]');
+                    
+                    // 무게와 횟수 추출 (숫자 kg x 숫자 회 형식)
+                    const match = line.match(/(\d+\.?\d*)\s*kg\s*x\s*(\d+)/i);
+                    if (match && !isWarm) {
+                        const weight = parseFloat(match[1]);
+                        const reps = parseInt(match[2]);
+                        totalVol += (weight * reps);
+                    }
+
+                    if (!isWarm) {
+                        setsInPara++;
+                        if (line.includes('[드롭') || /^D\d*:/i.test(line)) dropSets++;
+                    } else {
+                        warms++;
+                    }
+                } else if (!foundName && isNaN(line[0]) && !line.includes("kg") && !line.startsWith("http")) {
+                    foundName = line;
                 }
             });
 
-            if (foundName && setsInPara > 0) {
-                totalSets += setsInPara;
-                details.push({
-                    name: foundName,
-                    sets: setsInPara,
-                    drops: drops // 캔버스에서 보라색 칸 그릴 때 사용함
+            if (foundName && (hasRecord || warms > 0)) {
+                exerciseList.push({ 
+                    name: foundName, 
+                    sets: setsInPara, // 일반+드롭 합산 (워밍업 제외)
+                    vol: Math.round(totalVol) // 소수점 반올림
                 });
             }
         });
 
-        // 사진 그리는 함수가 바로 쓸 수 있게 평면 구조로 리턴!
-        // (나중에 JSON 저장할 때만 날짜 키로 감싸면 돼)
-        return { 
-            workoutTitle, 
-            dateTime, 
-            fileDate, 
-            strong: strongMinutes, 
-            totalSets, 
-            details, 
-            swim: 0, 
-            run: 0 
-        };
+        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
     }
-
 
     function processWorkout() {
         const rawText = document.getElementById('logInput').value;
