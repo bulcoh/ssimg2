@@ -262,30 +262,45 @@
         const minutes = endTotal - startTotal;
 
         let totalSets = 0, exerciseList = [];
+
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, dropSets = 0, warmSets = 0, hasRecord = false, noteText = "";
+            let foundName = "", setsInPara = 0, dropSets = 0, warms = 0, hasRecord = false;
+            let totalVol = 0; // 해당 종목의 총 볼륨(무게 * 횟수)
+
             lines.forEach(line => {
+                // 세트 라인 매칭 (예: 세트 1: 80 kg x 8)
                 const isSet = /^(세트\s*\d+|W\d*|F\d*|D\d*|Set\s*\d+):/i.test(line);
                 if (isSet) {
                     hasRecord = true;
-                    const upper = line.toUpperCase();
                     const isWarm = /^W\d*:/i.test(line) || line.includes('[워밍업]');
-                    const isDrop = line.includes('[드롭') || /^D\d*:/i.test(line);
-                    if (isWarm) {
-                        warmSets++;  // 총세트 카운트 제외, 표기만
-                    } else {
-                        totalSets++;
-                        if (isDrop) dropSets++;
-                        else setsInPara++;
+                    
+                    // 무게와 횟수 추출 (숫자 kg x 숫자 회 형식)
+                    const match = line.match(/(\d+\.?\d*)\s*kg\s*x\s*(\d+)/i);
+                    if (match && !isWarm) {
+                        const weight = parseFloat(match[1]);
+                        const reps = parseInt(match[2]);
+                        totalVol += (weight * reps);
                     }
-                } else if (line.startsWith('노트:')) {
-                    noteText = line.replace('노트:', '').trim();
+
+                    if (!isWarm) {
+                        setsInPara++;
+                        if (line.includes('[드롭') || /^D\d*:/i.test(line)) dropSets++;
+                    } else {
+                        warms++;
+                    }
                 } else if (!foundName && isNaN(line[0]) && !line.includes("kg") && !line.startsWith("http")) {
                     foundName = line;
                 }
             });
-            if (foundName && (hasRecord || warmSets > 0)) exerciseList.push({ name: foundName, sets: setsInPara, drops: dropSets, warms: warmSets, note: noteText });
+
+            if (foundName && (hasRecord || warms > 0)) {
+                exerciseList.push({ 
+                    name: foundName, 
+                    sets: setsInPara, // 일반+드롭 합산 (워밍업 제외)
+                    vol: Math.round(totalVol) // 소수점 반올림
+                });
+            }
         });
 
         return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
@@ -320,15 +335,15 @@
                     resultImg.src = canvas.toDataURL('image/png');
                     resultContainer.style.display = 'block';
                     
+
                     const pushBtn = document.getElementById('pushGithubBtn');
                     pushBtn.onclick = () => {
-                        // 쏠 데이터를 객체로 묶음
                         const workoutData = {
                             minutes: currentMinutes,
                             details: parsed.exerciseList.map(ex => ({
                                 name: ex.name,
-                                sets: ex.sets + (ex.drops || 0), // 본세트 + 드롭세트 (워밍업 제외)
-                                note: ex.note
+                                sets: ex.sets, // 본세트 수
+                                vol: ex.vol    // 종목별 총 볼륨
                             }))
                         };
                         pushToGithub('strong', workoutData, currentFileDate);
