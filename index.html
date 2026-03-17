@@ -244,13 +244,12 @@
         return { hours, minutes };
     }
 
-    
     function parseWorkout(rawText, photoTime) {
         const paragraphs = rawText.split(/\n\s*\n/).map(p => p.trim()).filter(p => p !== "");
         const headerLines = paragraphs[0].split('\n');
-        const workoutTitle = headerLines[0];
         const dateTime = headerLines[1] || "";
         
+        // 시간 계산 (strong 키값)
         const timeMatch = dateTime.match(/(오전|오후)\s*\d+:\d+/);
         const start = timeMatch ? parseTimeString(timeMatch[0]) : {hours:0, minutes:0};
         
@@ -260,14 +259,14 @@
         let endTotal = photoTime.getHours() * 60 + photoTime.getMinutes();
         let startTotal = start.hours * 60 + start.minutes;
         if (endTotal < startTotal) endTotal += 1440;
-        const minutes = endTotal - startTotal;
-        let totalSets = 0, exerciseList = [];
+        const strongMinutes = endTotal - startTotal;
+
+        let details = []; 
 
         paragraphs.slice(1).forEach(para => {
             const lines = para.split('\n').map(l => l.trim());
-            let foundName = "", setsInPara = 0, drops = 0, fails = 0;
+            let foundName = "", setsInPara = 0;
 
-            // 1. 운동 이름 추출 (CSV에 있는 이름인지 확인)
             if (lines[0] && exerciseMap[lines[0]]) {
                 foundName = lines[0];
             }
@@ -275,35 +274,32 @@
             lines.forEach(line => {
                 if (line.toUpperCase().startsWith('W') || line.includes('[워밍업]')) return; 
 
-                // 세트 유형 판별
-                const isDrop = line.includes('[드롭 세트]') || line.toUpperCase().startsWith('D:');
-                const isFail = line.includes('[실패]') || line.toUpperCase().startsWith('F:');
-                const isNormal = /^(세트\s*\d+|Set\s*\d+):/i.test(line);
+                // 세트, 드롭, 실패 모두 합산
+                const isAnySet = /^(세트\s*\d+|Set\s*\d+|D:|F:|Drop:|Failure:)/i.test(line) || 
+                                line.includes('[드롭 세트]') || 
+                                line.includes('[실패]');
 
-                // 유효한 볼륨 데이터(kg 또는 x)가 있는지 확인
-                const isVolumeSet = line.includes('kg') || line.includes('×') || line.includes('x');
-
-                if ((isNormal || isDrop || isFail) && isVolumeSet) {
+                if (isAnySet) {
                     setsInPara++;
-                    if (isDrop) drops++;
-                    if (isFail) fails++;
                 }
             });
 
-            // 2. JSON에는 운동 이름과 세트 구성 정보만 저장
             if (foundName && setsInPara > 0) {
-                totalSets += setsInPara;
-                exerciseList.push({
+                details.push({
                     name: foundName,
-                    sets: setsInPara,
-                    drops: drops,
-                    fails: fails
+                    sets: setsInPara
                 });
             }
         });
 
-        // 이제 반환값에서 'summary'(근육 합산 데이터)는 빠짐!
-        return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList };
+        return {
+            [fileDate]: {
+                "strong": strongMinutes,
+                "swim": 0,
+                "run": 0,
+                "details": details
+            }
+        };
     }
 
 
