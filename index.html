@@ -151,11 +151,12 @@
         }
     }
 
-    async function pushToGithub(type, mins, dateStr) {
+    async function pushToGithub(type, workoutData, dateStr) {
         if (!checkToken()) return;
         const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
         let sha = "";
         let currentData = {};
+
         try {
             const res = await fetch(url, { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
             if (res.ok) {
@@ -166,26 +167,34 @@
                 }).join(''));
                 currentData = JSON.parse(content);
             }
-        } catch (e) { console.log("기존 데이터 없음 또는 에러:", e); }
-        if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
-        currentData[dateStr][type] = mins;
+        } catch (e) { console.log("기존 데이터 조회 실패:", e); }
+
+        // 해당 날짜 객체 초기화
+        if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0, details: [] };
+
+        if (type === 'strong') {
+            // [교체 로직] 헬스는 마지막에 쏜 데이터로 완전히 갈아끼움
+            currentData[dateStr].strong = workoutData.minutes;
+            currentData[dateStr].details = workoutData.details; 
+        } else {
+            // [누적 로직] 수영/달리기는 "몇 분 했어?" 물어보니까 기존 값에 더함
+            currentData[dateStr][type] += workoutData;
+        }
+
         const jsonStr = JSON.stringify(currentData, null, 2);
         const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
             function(match, p1) { return String.fromCharCode('0x' + p1); }));
+
         const putRes = await fetch(url, {
             method: "PUT",
             headers: { "Authorization": `Bearer ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
             body: JSON.stringify({ message: `Update ${type} at ${dateStr}`, content: encodedContent, sha: sha })
         });
+
         if (putRes.ok) {
-            alert(`✅ ${type} ${mins}분 저장 완료!`);
+            alert(`✅ ${dateStr} 기록 저장 완료!`);
         } else {
-            const errorDetail = await putRes.json();
-            if (putRes.status === 401 || putRes.status === 403) {
-                alert("❌ 토큰 권한 문제야.");
-            } else {
-                alert(`❌ 저장 실패: ${errorDetail.message}`);
-            }
+            alert("❌ 저장 실패");
         }
     }
 
@@ -312,7 +321,18 @@
                     resultContainer.style.display = 'block';
                     
                     const pushBtn = document.getElementById('pushGithubBtn');
-                    pushBtn.onclick = () => pushToGithub('strong', currentMinutes, currentFileDate);
+                    pushBtn.onclick = () => {
+                        // 쏠 데이터를 객체로 묶음
+                        const workoutData = {
+                            minutes: currentMinutes,
+                            details: parsed.exerciseList.map(ex => ({
+                                name: ex.name,
+                                sets: ex.sets + (ex.drops || 0), // 본세트 + 드롭세트 (워밍업 제외)
+                                note: ex.note
+                            }))
+                        };
+                        pushToGithub('strong', workoutData, currentFileDate);
+                    };
                     pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
                     pushBtn.classList.remove('btn-done');
                 });
