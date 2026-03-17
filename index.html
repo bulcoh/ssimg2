@@ -335,7 +335,11 @@
                     resultContainer.style.display = 'block';
                     
                     const pushBtn = document.getElementById('pushGithubBtn');
-                    pushBtn.onclick = () => pushToGithub('strong', currentMinutes, currentFileDate);
+                    const snapParsed = parsed;
+                    pushBtn.onclick = () => {
+                        currentParsed = snapParsed;
+                        pushToGithub('strong', currentMinutes, currentFileDate);
+                    };
                     pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
                     pushBtn.classList.remove('btn-done');
                 });
