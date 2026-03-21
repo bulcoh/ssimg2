@@ -381,5 +381,81 @@
         }
       ]
     }
+  },
+  "20260321": {
+    "strong": 96,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#2",
+      "datetime": "2026년 3월 21일 토요일 오후 6:51",
+      "duration": 96,
+      "totalSets": 22,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Deadlift (Barbell)",
+          "sets": 1,
+          "warms": 5,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Romanian Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Leg Press",
+          "sets": 4,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lying One Leg Curl",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lunge (Smith Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 4,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
