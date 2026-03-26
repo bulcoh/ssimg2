@@ -692,5 +692,88 @@
         }
       ]
     }
+  },
+  "20260326": {
+    "strong": 80,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#2+PULL",
+      "datetime": "2026년 3월 26일 목요일 오후 4:55",
+      "duration": 80,
+      "totalSets": 26,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Bench Press - Close Grip (Barbell)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Machine)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 1
+        },
+        {
+          "name": "Skullcrusher (Barbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Chest Dip (Assisted)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Front Raise (Plate)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bicycle Crunch",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
