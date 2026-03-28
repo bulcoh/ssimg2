@@ -858,5 +858,60 @@
         }
       ]
     }
+  },
+  "20260328": {
+    "strong": 82,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "CHEST,TRICEPS",
+      "datetime": "2026년 3월 28일 토요일 오후 12:39",
+      "duration": 82,
+      "totalSets": 21,
+      "exercises": [
+        {
+          "name": "Bench Press (Barbell)",
+          "sets": 4,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 4,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Chest Fly",
+          "sets": 4,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Cable Crossover",
+          "sets": 4,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Cable Crossover",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Triceps Pushdown (Cable - Straight Bar)",
+          "sets": 4,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
