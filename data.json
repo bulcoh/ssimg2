@@ -913,5 +913,88 @@
         }
       ]
     }
+  },
+  "20260331": {
+    "strong": 73,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#1Deload",
+      "datetime": "2026년 3월 31일 화요일 오후 6:02",
+      "duration": 73,
+      "totalSets": 27,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Decline Bench Press (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Overhead Press (Barbell)",
+          "sets": 4,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Press Around (Cable)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Triceps Pushdown (Cable - Straight Bar)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 2,
+          "fails": 0
+        },
+        {
+          "name": "Cross-Body Triceps Extension",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Bench Press (Barbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
