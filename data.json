@@ -1183,5 +1183,74 @@
         }
       ]
     }
+  },
+  "20260403": {
+    "strong": 63,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#2Deload",
+      "datetime": "2026년 4월 3일 금요일 오후 1:08",
+      "duration": 63,
+      "totalSets": 21,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Deadlift (Barbell)",
+          "sets": 1,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Romanian Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Leg Press",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lying One Leg Curl",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lunge (Smith Machine)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
