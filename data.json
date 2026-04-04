@@ -1252,5 +1252,81 @@
         }
       ]
     }
+  },
+  "20260404": {
+    "strong": 106,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "Pull",
+      "datetime": "2026년 4월 4일 토요일 오후 12:09",
+      "duration": 106,
+      "totalSets": 18,
+      "exercises": [
+        {
+          "name": "Pull Up",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Negative)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Band)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Straight Arm Pulldown",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Single Reverse Fly (Cable)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Row (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over One Arm Row (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Cable)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 1,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
