@@ -1328,5 +1328,60 @@
         }
       ]
     }
+  },
+  "20260406": {
+    "strong": 51,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#1",
+      "datetime": "2026년 4월 6일 월요일 오후 1:50",
+      "duration": 51,
+      "totalSets": 12,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bench Press (Barbell)",
+          "sets": 1,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Skullcrusher (Barbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Cable Kickback",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
