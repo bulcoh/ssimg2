@@ -301,7 +301,7 @@
                     } else {
                     totalSets++;
                     if (isDrop) { dropSets++; dropReps.push(reps); }
-                    else if (isFail) failSets++;
+                    else if (isFail) { failSets++; setsInPara++; setReps.push(reps); }
                     else { setsInPara++; setReps.push(reps); }
                     }
                 } else if (line.startsWith('노트:')) {
