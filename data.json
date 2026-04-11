@@ -1652,5 +1652,60 @@
         }
       ]
     }
+  },
+  "20260411": {
+    "strong": 70,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#2",
+      "datetime": "2026년 4월 11일 토요일 오후 7:40",
+      "duration": 70,
+      "totalSets": 12,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hack Squat",
+          "sets": 2,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lying One Leg Curl",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking Lunge",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
