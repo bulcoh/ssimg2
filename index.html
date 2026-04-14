@@ -55,6 +55,8 @@
         .type-btn.active-C { border-color: #f9ca24; color: #f9ca24; background: rgba(249,202,36,0.10); }
         .type-btn.active-D { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.10); }
         .type-btn.active-E { border-color: #2ed573; color: #2ed573; background: rgba(46,213,115,0.10); }
+        .type-btn.active-F { border-color: #ff9f43; color: #ff9f43; background: rgba(255,159,67,0.10); }
+
         .type-label { font-size: 10px; display: block; margin-top: 2px; opacity: 0.8; }
 
         #resultContainer { width: 100%; max-width: 500px; display: none; margin-top: 20px; text-align: center; }
@@ -102,6 +104,10 @@
             TYPE E
             <span class="type-label">플릭</span>
         </button>
+                <button class="type-btn" id="typeF" onclick="selectType('F')">
+            TYPE F
+            <span class="type-label">F</span>
+        </button>
     </div>
 
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
@@ -128,7 +134,7 @@
 
     function selectType(type) {
         selectedType = type;
-        ['A','B','C','D','E'].forEach(t => {
+        ['A','B','C','D','E','F'].forEach(t => {
             const btn = document.getElementById('type' + t);
             btn.className = 'type-btn';
             if (t === type) btn.classList.add('active-' + t);
@@ -346,7 +352,10 @@
                         drawTypeD(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     } else if (selectedType === 'E') {
                         drawTypeE(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+                        
                     
+                    } else if (selectedType === 'F') {
+                        drawTypeF(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     } else {
                         drawTypeC(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     }
@@ -413,9 +422,9 @@
             // 워밍업(노란) + 일반(레드) + 드롭(파란) — 오른쪽부터 드롭,일반,워밍업 순
             const aWarms = ex.warms || 0;
             const aDrops = ex.drops || 0;
-            const aWarm = "▶".repeat(aWarms);
-            const aNorm = "▶".repeat(ex.sets);
-            const aDrop = "▶".repeat(aDrops);
+            const aWarm = "▶\uFE0E".repeat(aWarms);
+            const aNorm = "▶\uFE0E".repeat(ex.sets);
+            const aDrop = "▶\uFE0E".repeat(aDrops);
             const aDropW = ctx.measureText(aDrop).width;
             const aNormW = ctx.measureText(aNorm).width;
 
@@ -425,9 +434,9 @@
             for (var oi = oSets.length - 1; oi >= 0; oi--) {
                 const ot = oSets[oi];
                 ctx.fillStyle = ot.type==='warm' ? '#F0B83B' : ot.type==='drop' ? '#784CD8' : '#ff4757';
-                const oc = ctx.measureText('▶').width;
+                const oc = ctx.measureText('▶\uFE0E').width;
                 ox -= oc;
-                ctx.fillText('▶', ox, y);
+                ctx.fillText('▶\uFE0E', ox, y);
             }
 
         });
@@ -839,7 +848,7 @@
         // 기본 크기로 계산해보고 안 들어오면 줄임
         function calcLayout(R) {
             const gap = Math.round(R * 0.38);
-            const exGap = Math.round(R * 0.44);
+            const exGap = Math.round(R * 0.2);
             const exFont = Math.max(20, Math.round(R * 0.88));
             const maxPR = Math.floor((canvas.width - iX * 2 + gap) / (R * 2 + gap));
             const heights = exerciseList.map(function(ex) {
@@ -896,7 +905,7 @@
         ctx.fillRect(0, gradStart, canvas.width, canvas.height - gradStart);
  
         // 운동 목록 — 하단에서 위로 쌓기
-        let curY = canvas.height - 50 - totalListH;
+        let curY = canvas.height - 40 - totalListH;
         // 헤드와 겹치면 헤드 바로 아래부터 시작
         if (curY < headEnd) curY = headEnd;
  
@@ -982,7 +991,189 @@
     }
  
 
+    // ─── TYPE F : 플릭2 ──────────────────────────────────────────────────────
+    function drawTypeF(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080; canvas.height = 1350;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+        const iX = 70;
+        const rX = canvas.width - 70;
+        const headEnd = 240;
+        const signY = canvas.height - 22;
+        const availH = canvas.height - headEnd - 50;
+
+        // 원 크기 자동 결정 (E와 동일)
+        function calcLayout(R) {
+            const gap = Math.round(R * 0.38);
+            const exGap = Math.round(R * 0.5);
+            const exFont = Math.max(20, Math.round(R * 0.88));
+            const maxPR = Math.floor((canvas.width - iX * 2 + gap) / (R * 2 + gap));
+            const half = Math.ceil(exerciseList.length / 2);
+            const heights = exerciseList.map(function(ex) {
+            const total = (ex.orderedSets || []).length || ((ex.warms||0) + ex.sets + (ex.drops||0));
+            const lines = Math.max(1, Math.ceil(total / Math.floor(maxPR / 2)));
+            return exFont + 8 + lines * (R * 2 + 8) + exGap;
+});
+const leftH  = heights.slice(0, half).reduce(function(s,h){ return s+h; }, 0);
+const rightH = heights.slice(half).reduce(function(s,h){ return s+h; }, 0);
+const total  = Math.max(leftH, rightH);
+return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: total, half };
+
+
+        }
+
+        let L = calcLayout(36);
+        if (L.totalH > availH) L = calcLayout(30);
+        if (L.totalH > availH) L = calcLayout(25);
+        if (L.totalH > availH) L = calcLayout(20);
+
+        const { R, gap, exGap, exFont, maxPR, heights } = L;
+        const half = L.half || Math.ceil(exerciseList.length / 2);
+        const colW = Math.floor((canvas.width - iX * 2 - 40) / 2);
+        const col2X = iX + colW + 40;
+
+        const repsFont = Math.max(14, Math.round(R * 0.72));
+
+        // 상단 그라디언트
+        const topGrad = ctx.createLinearGradient(0, 0, 0, 420);
+        topGrad.addColorStop(0,   "rgba(0,0,0,0.82)");
+        topGrad.addColorStop(0.6, "rgba(0,0,0,0.4)");
+        topGrad.addColorStop(1,   "rgba(0,0,0,0)");
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, canvas.width, 420);
+
+        // 타이틀
+        ctx.fillStyle = "#ff4757";
+        ctx.font = "700 140px 'Archivo Black'";
+        ctx.textAlign = "center";
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, 158);
+
+        // 메타
+        ctx.fillStyle = "rgba(255,255,255,0.55)";
+        ctx.font = "400 30px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, 205);
+
+        // 구분선
+        ctx.strokeStyle = "rgba(255,255,255,0.2)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(iX, 226); ctx.lineTo(rX, 226); ctx.stroke();
+
+        // 하단 그라디언트
+        const totalListH = L.totalH;
+        const listStartY = canvas.height - 50 - totalListH;
+        const gradStart = Math.max(headEnd, listStartY - 80);
+        const botGrad = ctx.createLinearGradient(0, gradStart, 0, canvas.height);
+        botGrad.addColorStop(0, "rgba(0,0,0,0)");
+        botGrad.addColorStop(1, "rgba(0,0,0,0.72)");
+        ctx.fillStyle = botGrad;
+        ctx.fillRect(0, gradStart, canvas.width, canvas.height - gradStart);
+
+        // 운동 목록
+        let curY = canvas.height - 50 - totalListH;
+        if (curY < headEnd) curY = headEnd;
+
+
+
+        const leftStart  = canvas.height - 40 - heights.slice(0, half).reduce(function(s,h){return s+h;},0);
+        const rightStart = canvas.height - 40 - heights.slice(half).reduce(function(s,h){return s+h;},0);
+
+        exerciseList.forEach(function(ex, i) {
+            const isRight = i >= half;
+            const col = isRight ? 1 : 0;
+            const row = isRight ? i - half : i;
+            const startX = col === 0 ? iX : col2X;
+            const endX   = col === 0 ? iX + colW : col2X + colW;
+
+            // 이 운동의 Y 시작점
+            const colHeights = isRight ? heights.slice(half) : heights.slice(0, half);
+            const rowOffset  = colHeights.slice(0, row).reduce(function(s,h){return s+h;},0);
+            const ex_y = (isRight ? rightStart : leftStart) + rowOffset;
+
+            const wReps = ex.warmReps || [];
+            const sReps = ex.setReps  || [];
+            const dReps = ex.dropReps || [];
+            const allSets = ex.orderedSets && ex.orderedSets.length
+                ? ex.orderedSets
+                : (function() {
+                    var arr = [];
+                    for (var w=0; w<(ex.warms||0); w++) arr.push({type:'warm',  reps: wReps[w]||0});
+                    for (var s=0; s<ex.sets;       s++) arr.push({type:'normal', reps: sReps[s]||0});
+                    for (var d=0; d<(ex.drops||0); d++) arr.push({type:'drop',   reps: dReps[d]||0});
+                    return arr;
+                })();
+
+            const lines = Math.max(1, Math.ceil(allSets.length / maxPR));
+
+            for (var line = 0; line < lines; line++) {
+                const linesets = allSets.slice(line * maxPR, (line + 1) * maxPR);
+                const cY = ex_y + exFont + 8 + line * (R * 2 + 8);
+
+                // 운동명 — 첫 줄 좌측
+                if (line === 0) {
+                    ctx.fillStyle = "rgba(255,255,255,0.92)";
+                    ctx.font = "700 " + exFont + "px 'Inter'";
+                    ctx.textAlign = "left";
+                    let name = ex.name;
+                    const circlesW = linesets.length * (R * 2 + gap) - gap;
+                    const nameMaxW = colW - circlesW - 20;
+                    if (ctx.measureText(name).width > nameMaxW) {
+                        while (ctx.measureText(name + "..").width > nameMaxW) name = name.slice(0,-1);
+                        name += "..";
+                    }
+                    ctx.fillText(name, startX, cY + R + exFont * 0.36);
+                }
+
+                // 원들 — 우측정렬
+                const circlesW = linesets.length * (R * 2 + gap) - gap;
+                let cX = endX - circlesW;
+
+                linesets.forEach(function(s, si) {
+                    const color = s.type==='warm' ? '#F0B83B' : s.type==='drop' ? '#784CD8' : '#ff4757';
+                    ctx.beginPath();
+                    ctx.arc(cX + R, cY + R, R, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+
+                    let label;
+                    const globalIdx = line * maxPR + si;
+                    if (typeof s.reps === 'string' && s.reps.includes(':')) {
+                        label = s.reps;
+                    } else if (s.reps > 0) {
+                        label = String(s.reps);
+                    } else {
+                        label = s.type==='warm' ? 'W' : s.type==='drop' ? 'D' :
+                            String(allSets.slice(0, globalIdx+1).filter(function(t){return t.type==='normal';}).length);
+                    }
+
+                    const isTime = typeof label === 'string' && label.includes(':');
+                    const lFont = isTime ? Math.max(12, Math.round(repsFont*0.8)) : repsFont;
+                    ctx.fillStyle = "rgba(255,255,255,0.95)";
+                    ctx.font = "700 " + lFont + "px 'Inter'";
+                    ctx.textAlign = "center";
+                    ctx.fillText(label, cX + R, cY + R + lFont * 0.36);
+
+                    cX += R * 2 + gap;
+                });
+            }
+
+            // 노트
+            if (ex.note) {
+                const lastCY = ex_y + exFont + 8 + (lines - 1) * (R * 2 + 8);
+                ctx.fillStyle = "rgba(255,210,75,0.78)";
+                ctx.font = "400 " + Math.max(16, Math.round(exFont * 0.65)) + "px 'Inter'";
+                ctx.textAlign = "left";
+                ctx.fillText(ex.note, startX, lastCY + R * 2 + 20);
+            }
+        });
+
+        // 서명
+        ctx.fillStyle = "rgba(255,255,255,0.22)";
+        ctx.font = "400 22px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, signY);
+    }
 
 
 
