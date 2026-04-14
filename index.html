@@ -86,27 +86,27 @@
     <div class="type-selector">
         <button class="type-btn active-A" id="typeA" onclick="selectType('A')">
             TYPE A
-            <span class="type-label">클래식 카드</span>
+            <span class="type-label">Classic</span>
         </button>
         <button class="type-btn" id="typeB" onclick="selectType('B')">
             TYPE B
-            <span class="type-label">터미널</span>
+            <span class="type-label">Terminal</span>
         </button>
         <button class="type-btn" id="typeC" onclick="selectType('C')">
             TYPE C
-            <span class="type-label">매거진</span>
+            <span class="type-label">Magazine</span>
         </button>
         <button class="type-btn" id="typeD" onclick="selectType('D')">
             TYPE D
-            <span class="type-label">블러</span>
+            <span class="type-label">Dots</span>
         </button>
         <button class="type-btn" id="typeE" onclick="selectType('E')">
             TYPE E
-            <span class="type-label">플릭</span>
+            <span class="type-label">Fleek</span>
         </button>
                 <button class="type-btn" id="typeF" onclick="selectType('F')">
             TYPE F
-            <span class="type-label">F</span>
+            <span class="type-label">Fleek2</span>
         </button>
     </div>
 
@@ -446,9 +446,15 @@
         ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, summaryY);
         ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(margin, summaryY + 45); ctx.lineTo(canvas.width - margin, summaryY + 45); ctx.stroke();
-        ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 85px 'Archivo Black'";
-        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 45);
+        ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 95px 'Archivo Black'";
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 65);
+                // 하단 서명
+        ctx.fillStyle = "rgba(255,255,255,0.4)";
+        ctx.font = "400 22px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 15);
     }
+    
 
     // ─── TYPE B ─────────────────────────────────────────────────────────────
     function drawTypeB(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
@@ -996,23 +1002,23 @@
         canvas.width = 1080; canvas.height = 1350;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const iX = 70;
-        const rX = canvas.width - 70;
+        const iX = 40;
+        const rX = canvas.width - 40;
         const headEnd = 240;
         const signY = canvas.height - 22;
         const availH = canvas.height - headEnd - 50;
 
         // 원 크기 자동 결정 (E와 동일)
         function calcLayout(R) {
-            const gap = Math.round(R * 0.38);
+            const gap = Math.round(R * 0.1);
             const exGap = Math.round(R * 0.5);
-            const exFont = Math.max(20, Math.round(R * 0.88));
+            const exFont = Math.max(20, Math.round(R * 1.2));
             const maxPR = Math.floor((canvas.width - iX * 2 + gap) / (R * 2 + gap));
             const half = Math.ceil(exerciseList.length / 2);
             const heights = exerciseList.map(function(ex) {
             const total = (ex.orderedSets || []).length || ((ex.warms||0) + ex.sets + (ex.drops||0));
             const lines = Math.max(1, Math.ceil(total / Math.floor(maxPR / 2)));
-            return exFont + 8 + lines * (R * 2 + 8) + exGap;
+            return exFont + 8 + lines * (R * 1 + 2) + exGap;
 });
 const leftH  = heights.slice(0, half).reduce(function(s,h){ return s+h; }, 0);
 const rightH = heights.slice(half).reduce(function(s,h){ return s+h; }, 0);
@@ -1022,10 +1028,10 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
 
         }
 
-        let L = calcLayout(36);
-        if (L.totalH > availH) L = calcLayout(30);
-        if (L.totalH > availH) L = calcLayout(25);
-        if (L.totalH > availH) L = calcLayout(20);
+        let L = calcLayout(25);
+        if (L.totalH > availH) L = calcLayout(23);
+        if (L.totalH > availH) L = calcLayout(21);
+        if (L.totalH > availH) L = calcLayout(16);
 
         const { R, gap, exGap, exFont, maxPR, heights } = L;
         const half = L.half || Math.ceil(exerciseList.length / 2);
@@ -1076,8 +1082,10 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
 
 
 
-        const leftStart  = canvas.height - 40 - heights.slice(0, half).reduce(function(s,h){return s+h;},0);
-        const rightStart = canvas.height - 40 - heights.slice(half).reduce(function(s,h){return s+h;},0);
+        // 수정 후 (120~150 정도로 키워보세요)
+        const bottomMargin = 90; // 이 숫자를 키울수록 위로 올라갑니다.
+        const leftStart  = canvas.height - bottomMargin - heights.slice(0, half).reduce(function(s,h){return s+h;},0);
+        const rightStart = canvas.height - bottomMargin - heights.slice(half).reduce(function(s,h){return s+h;},0);
 
         exerciseList.forEach(function(ex, i) {
             const isRight = i >= half;
@@ -1108,7 +1116,7 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
 
             for (var line = 0; line < lines; line++) {
                 const linesets = allSets.slice(line * maxPR, (line + 1) * maxPR);
-                const cY = ex_y + exFont + 8 + line * (R * 2 + 8);
+                const cY = ex_y + exFont + 8 + line * (R * 1+2);
 
                 // 운동명 — 첫 줄 좌측
                 if (line === 0) {
@@ -1116,25 +1124,32 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                     ctx.font = "700 " + exFont + "px 'Inter'";
                     ctx.textAlign = "left";
                     let name = ex.name;
-                    const circlesW = linesets.length * (R * 2 + gap) - gap;
-                    const nameMaxW = colW - circlesW - 20;
+                    const circlesW = linesets.length * (R * 1.4 + gap) - gap;
+                    const nameMaxW = Math.max(60, colW - circlesW - 20);
                     if (ctx.measureText(name).width > nameMaxW) {
-                        while (ctx.measureText(name + "..").width > nameMaxW) name = name.slice(0,-1);
+                        while (name.length > 1 && ctx.measureText(name + "..").width > nameMaxW) name = name.slice(0,-1);
                         name += "..";
                     }
                     ctx.fillText(name, startX, cY + R + exFont * 0.36);
                 }
 
                 // 원들 — 우측정렬
-                const circlesW = linesets.length * (R * 2 + gap) - gap;
+                const circlesW = linesets.length * (R * 1.4 + gap) - gap;
                 let cX = endX - circlesW;
 
                 linesets.forEach(function(s, si) {
                     const color = s.type==='warm' ? '#F0B83B' : s.type==='drop' ? '#784CD8' : '#ff4757';
-                    ctx.beginPath();
-                    ctx.arc(cX + R, cY + R, R, 0, Math.PI * 2);
+                    // --- 여기부터 수정 시작 ---
+                     const rectW = R * 1.4; // 가로 길이를 반지름의 2.4배로 (원래 2)
+                    const rectH = R * 2; // 세로 길이를 반지름의 1.8배로 (원래 2)
+                    const cornerRadius = 8; // 둥근 모서리 반경
+
                     ctx.fillStyle = color;
+                    ctx.beginPath();
+                    // cX, cY는 이미 계산되어 있으므로 그대로 사용하되, 둥근 사각형 그리기
+                    ctx.roundRect(cX, cY + (R - rectH/2), rectW, rectH, cornerRadius);
                     ctx.fill();
+                    // --- 수정 끝 ---
 
                     let label;
                     const globalIdx = line * maxPR + si;
@@ -1148,13 +1163,34 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                     }
 
                     const isTime = typeof label === 'string' && label.includes(':');
-                    const lFont = isTime ? Math.max(12, Math.round(repsFont*0.8)) : repsFont;
+                  
+                    const lFont = isTime ? Math.round(repsFont * 0.8) : Math.round(repsFont * 1.2);
                     ctx.fillStyle = "rgba(255,255,255,0.95)";
                     ctx.font = "700 " + lFont + "px 'Inter'";
                     ctx.textAlign = "center";
-                    ctx.fillText(label, cX + R, cY + R + lFont * 0.36);
+                    
+                    if (isTime) {
+                            // --- 시간일 경우: 두 줄로 나누어 출력 ---
+                            const parts = label.split(':'); // ':'를 기준으로 앞뒤를 나눕니다.
+                            const topText = parts[0] + ':';
+                            const botText = parts[1];
+                            
+                            // 폰트 크기를 조금 작게 조절 (박스 안에 두 줄이 들어가야 하므로)
+                            const timeFontSize = Math.round(repsFont * 1); 
+                            ctx.font = "700 " + timeFontSize + "px 'Inter'";
 
-                    cX += R * 2 + gap;
+                            // 위쪽 줄 (분:)
+                            ctx.fillText(topText, cX + rectW / 2, cY + R - (timeFontSize * 0.2));
+                            // 아래쪽 줄 (초)
+                            ctx.fillText(botText, cX + rectW / 2, cY + R + (timeFontSize * 0.9));
+
+                        } else {
+                            // --- 일반 숫자일 경우: 기존처럼 한 줄 출력 ---
+                            const normalFontSize = Math.round(repsFont * 1.2);
+                            ctx.font = "700 " + normalFontSize + "px 'Inter'";
+                            ctx.fillText(label, cX + rectW / 2, cY + R + normalFontSize * 0.36);
+                        }
+                    cX += rectW + gap;
                 });
             }
 
