@@ -1969,5 +1969,60 @@
         }
       ]
     }
+  },
+  "20260417": {
+    "strong": 84,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#2",
+      "datetime": "2026년 4월 17일 금요일 오후 9:20",
+      "duration": 84,
+      "totalSets": 13,
+      "exercises": [
+        {
+          "name": "Side Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Row (Cable)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shrug (Barbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bicep Curl (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over Row (Barbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
