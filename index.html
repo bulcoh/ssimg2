@@ -1376,6 +1376,10 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
 
 
             // 데이터 폴리곤
+            ctx.save();
+            ctx.shadowColor = "rgba(0,0,0,0.7)";
+            ctx.shadowBlur = 12;
+
             ctx.beginPath();
             PART_ORDER.forEach(function(part, i) {
                 var ratio = Math.min(scores[part] / maxVal, 1);
@@ -1384,11 +1388,14 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                 else ctx.lineTo(p[0], p[1]);
             });
             ctx.closePath();
-            ctx.fillStyle = "rgba(255,71,87,0.35)";
+
+            ctx.fillStyle = "rgba(255,71,87,0.5)";
             ctx.fill();
+
             ctx.strokeStyle = "#ff4757";
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3.5;
             ctx.stroke();
+            ctx.restore();
 
             // 데이터 포인트 점
             PART_ORDER.forEach(function(part, i) {
