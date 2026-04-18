@@ -362,7 +362,18 @@
                     } else if (selectedType === 'F') {
                         drawTypeF(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     } else if (selectedType === 'G') {
-                        drawTypeG(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+
+                        drawTypeG(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList).then(function() {
+                            resultImg.src = canvas.toDataURL('image/png');
+                            resultContainer.style.display = 'block';
+                            const pushBtn = document.getElementById('pushGithubBtn');
+                            const snapParsed = parsed;
+                            pushBtn.onclick = function() { currentParsed = snapParsed; pushToGithub('strong', currentMinutes, currentFileDate); };
+                            pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
+                            pushBtn.classList.remove('btn-done');
+                        });
+                        return;
+
                     } else {
                         drawTypeC(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     }
@@ -1223,6 +1234,11 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
         canvas.width = 1080; canvas.height = 1350;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+    // ★★★ [수정 1] 배경 이미지 위에 어두운 오버레이 추가 ★★★
+        // 이미지 전체에 40% 불투명도의 검은색을 덮습니다.
+        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         const iX = 70;
         const rX = canvas.width - 70;
 
@@ -1272,7 +1288,7 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
         const REPO = "bulcoh/ssimg2";
         const MAP_URL = "https://raw.githubusercontent.com/" + REPO + "/main/exercise_map.csv?t=" + Date.now();
 
-        fetch(MAP_URL).then(function(r){ return r.text(); }).then(function(csv) {
+        return fetch(MAP_URL).then(function(r){ return r.text(); }).then(function(csv) {
             var exMap = {};
             csv.split('\n').slice(1).forEach(function(line) {
                 var p = line.split(',');
@@ -1313,6 +1329,12 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                         cy + r * ratio * Math.sin(angle(i))];
             };
 
+
+
+// ★★★ [수정 2] 배경 거미줄 안내선 (그리드) 시각화 강화 ★★★
+        // 선을 더 굵고(lineWidth: 1.5) 선명하게(opacity: 0.15) 변경했습니다.
+        // 안쪽을 채우던 옅은 색은 제거하여 거미줄 선이 더 잘 보이게 했습니다.
+
             // 배경 원형 그리드 (4단계)
             [0.25, 0.5, 0.75, 1.0].forEach(function(ratio) {
                 ctx.beginPath();
@@ -1322,13 +1344,10 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                     else ctx.lineTo(p[0], p[1]);
                 }
                 ctx.closePath();
-                ctx.strokeStyle = "rgba(255,255,255,0.08)";
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = "rgba(255,255,255,0.2)";
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
-                if (ratio === 0.25 || ratio === 0.5 || ratio === 0.75) {
-                    ctx.fillStyle = "rgba(255,255,255,0.02)";
-                    ctx.fill();
-                }
+                //if (ratio === 0.25 || ratio === 0.5 || ratio === 0.75) {ctx.fillStyle = "rgb(255,255,255,0.2)";ctx.fill();}
             });
 
             // 축선
@@ -1337,10 +1356,24 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
                 ctx.lineTo(p[0], p[1]);
-                ctx.strokeStyle = "rgba(255,255,255,0.08)";
+                ctx.strokeStyle = "rgba(255,255,255,0.15)";
                 ctx.lineWidth = 1;
                 ctx.stroke();
             }
+
+    // ★★★ [수정 3] 14각형 외부 테두리 라인 추가 ★★★
+            // 데이터가 표시되는 가장 바깥쪽 1.0 비율에 진한 빨간색 테두리를 그립니다.
+            ctx.beginPath();
+            for (var i=0; i<n; i++) {
+                var p = pt(i, 1.0);
+                if (i===0) ctx.moveTo(p[0], p[1]);
+                else ctx.lineTo(p[0], p[1]);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = "rgba(255, 71, 87, 0.5)"; // 메인 색상에 투명도 50%
+            ctx.lineWidth = 3; // 굵은 테두리
+            ctx.stroke();
+
 
             // 데이터 폴리곤
             ctx.beginPath();
@@ -1351,7 +1384,7 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                 else ctx.lineTo(p[0], p[1]);
             });
             ctx.closePath();
-            ctx.fillStyle = "rgba(255,71,87,0.18)";
+            ctx.fillStyle = "rgba(255,71,87,0.35)";
             ctx.fill();
             ctx.strokeStyle = "#ff4757";
             ctx.lineWidth = 2.5;
