@@ -1421,12 +1421,22 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
 
                 // 세트수 (값 있는 것만)
                 if (scores[part] > 0) {
-                    ctx.fillStyle = "#ff4757";
+                    // 부위 이름의 너비를 계산하여 그 중심점을 찾습니다.
+                    const labelWidth = ctx.measureText(abbr).width;
+                    let numX = p[0];
+
+                    // 정렬 방식에 따라 X 좌표 보정 (이름 바로 아래 정중앙에 오도록)
+                    if (align === 'left') numX = p[0] + (labelWidth / 2);
+                    else if (align === 'right') numX = p[0] - (labelWidth / 2);
+
+                    ctx.textAlign = "center"; // 숫자만큼은 무조건 center
+
+                    ctx.fillStyle = "#ffaaaa";
                     ctx.font = "400 20px 'Inter'";
                     ctx.fillText(scores[part] % 1 === 0
                         ? scores[part]
                         : scores[part].toFixed(1),
-                        p[0], p[1] + 26);
+                        numX, p[1] + 26);
                 }
             });
 
