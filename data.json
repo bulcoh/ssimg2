@@ -2024,5 +2024,74 @@
         }
       ]
     }
+  },
+  "20260418": {
+    "strong": 92,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#2",
+      "datetime": "2026년 4월 18일 토요일 오후 2:29",
+      "duration": 92,
+      "totalSets": 16,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking Lunge",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lying One Leg Curl",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Flat Knee Raise",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
