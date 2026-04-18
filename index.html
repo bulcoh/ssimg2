@@ -56,6 +56,7 @@
         .type-btn.active-D { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.10); }
         .type-btn.active-E { border-color: #2ed573; color: #2ed573; background: rgba(46,213,115,0.10); }
         .type-btn.active-F { border-color: #ff9f43; color: #ff9f43; background: rgba(255,159,67,0.10); }
+        .type-btn.active-G { border-color: #00d2ff; color: #00d2ff; background: rgba(0,210,255,0.10); }
 
         .type-label { font-size: 10px; display: block; margin-top: 2px; opacity: 0.8; }
 
@@ -108,6 +109,10 @@
             TYPE F
             <span class="type-label">Fleek2</span>
         </button>
+        <button class="type-btn" id="typeG" onclick="selectType('G')">
+    TYPE G
+    <span class="type-label">graph</span>
+</button>
     </div>
 
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
@@ -134,7 +139,7 @@
 
     function selectType(type) {
         selectedType = type;
-        ['A','B','C','D','E','F'].forEach(t => {
+        ['A','B','C','D','E','F','G'].forEach(t => {
             const btn = document.getElementById('type' + t);
             btn.className = 'type-btn';
             if (t === type) btn.classList.add('active-' + t);
@@ -356,6 +361,8 @@
                     
                     } else if (selectedType === 'F') {
                         drawTypeF(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
+                    } else if (selectedType === 'G') {
+                        drawTypeG(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     } else {
                         drawTypeC(img, parsed.workoutTitle, parsed.dateTime, duration, parsed.totalSets, parsed.exerciseList);
                     }
@@ -1211,7 +1218,199 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
         ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, signY);
     }
 
+    // ─── TYPE G : 레이더 차트 ────────────────────────────────────────────────
+    function drawTypeG(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080; canvas.height = 1350;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+        const iX = 70;
+        const rX = canvas.width - 70;
+
+        // ── 상단 그라디언트 ──
+        const topGrad = ctx.createLinearGradient(0, 0, 0, 420);
+        topGrad.addColorStop(0,   "rgba(0,0,0,0.82)");
+        topGrad.addColorStop(0.6, "rgba(0,0,0,0.4)");
+        topGrad.addColorStop(1,   "rgba(0,0,0,0)");
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, canvas.width, 420);
+
+        // 타이틀
+        ctx.fillStyle = "#ff4757";
+        ctx.font = "700 140px 'Archivo Black'";
+        ctx.textAlign = "center";
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, 158);
+
+        // 메타
+        ctx.fillStyle = "rgba(255,255,255,0.55)";
+        ctx.font = "400 30px 'Inter'";
+        ctx.textAlign = "center";
+        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, 205);
+
+        // 구분선
+        ctx.strokeStyle = "rgba(255,255,255,0.2)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(iX, 226); ctx.lineTo(rX, 226); ctx.stroke();
+
+        // ── exercise_map.csv 를 GitHub에서 읽어오는 대신
+        //    파서에서 이미 name 기반이므로 하드코딩 매핑 사용 ──
+        // main부위 매핑 (exercise_map.csv 기반)
+        // 실제 사용시엔 아래 매핑을 exercise_map에 맞게 확장 가능
+        const PART_ORDER = [
+            'Calf','Hamstring','Quads','Glute','Core','Lower Back',
+            'Lat','Traps','Shoulder','Chest','Triceps','Biceps','Forearm','Cardio'
+        ];
+        const PART_ABBR = {
+            'Calf':'clf','Hamstring':'hmstrng','Quads':'qds','Glute':'glt',
+            'Core':'cr','Lower Back':'lbck','Lat':'lts','Traps':'trps',
+            'Shoulder':'shldr','Chest':'chst','Triceps':'trcps',
+            'Biceps':'bcps','Forearm':'frm','Cardio':'crd'
+        };
+
+        // GitHub에서 exercise_map.csv 읽기 (비동기)
+        // 없으면 빈 맵으로 진행
+        const REPO = "bulcoh/ssimg2";
+        const MAP_URL = "https://raw.githubusercontent.com/" + REPO + "/main/exercise_map.csv?t=" + Date.now();
+
+        fetch(MAP_URL).then(function(r){ return r.text(); }).then(function(csv) {
+            var exMap = {};
+            csv.split('\n').slice(1).forEach(function(line) {
+                var p = line.split(',');
+                if (!p[0] || !p[0].trim()) return;
+                exMap[p[0].trim()] = { main:(p[1]||'').trim(), sub:(p[2]||'').trim() };
+            });
+            drawGChart(exMap);
+        }).catch(function() {
+            drawGChart({});
+        });
+
+        function drawGChart(exMap) {
+            // 부위별 세트 합산
+            var scores = {};
+            PART_ORDER.forEach(function(p){ scores[p] = 0; });
+
+            exerciseList.forEach(function(ex) {
+                var map = exMap[ex.name];
+                if (!map) return;
+                var sets = ex.sets + (ex.drops||0) + (ex.fails||0);
+                if (map.main && scores[map.main] !== undefined) scores[map.main] += sets * 1.0;
+                if (map.sub  && scores[map.sub]  !== undefined) scores[map.sub]  += sets * 0.5;
+            });
+
+            var maxVal = Math.max.apply(null, Object.values(scores).concat([1]));
+
+            // ── 레이더 차트 ──
+            var n = PART_ORDER.length;
+            var cx = canvas.width / 2;
+            var cy = canvas.height / 2 + 60; // 중앙보다 살짝 아래
+            var r = 320; // 반지름
+
+            var angle = function(i) {
+                return (Math.PI * 2 / n) * i - Math.PI / 2;
+            };
+            var pt = function(i, ratio) {
+                return [cx + r * ratio * Math.cos(angle(i)),
+                        cy + r * ratio * Math.sin(angle(i))];
+            };
+
+            // 배경 원형 그리드 (4단계)
+            [0.25, 0.5, 0.75, 1.0].forEach(function(ratio) {
+                ctx.beginPath();
+                for (var i=0; i<n; i++) {
+                    var p = pt(i, ratio);
+                    if (i===0) ctx.moveTo(p[0], p[1]);
+                    else ctx.lineTo(p[0], p[1]);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = "rgba(255,255,255,0.08)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                if (ratio === 0.25 || ratio === 0.5 || ratio === 0.75) {
+                    ctx.fillStyle = "rgba(255,255,255,0.02)";
+                    ctx.fill();
+                }
+            });
+
+            // 축선
+            for (var i=0; i<n; i++) {
+                var p = pt(i, 1);
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(p[0], p[1]);
+                ctx.strokeStyle = "rgba(255,255,255,0.08)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 데이터 폴리곤
+            ctx.beginPath();
+            PART_ORDER.forEach(function(part, i) {
+                var ratio = Math.min(scores[part] / maxVal, 1);
+                var p = pt(i, Math.max(ratio, 0.03)); // 최소 점 표시
+                if (i===0) ctx.moveTo(p[0], p[1]);
+                else ctx.lineTo(p[0], p[1]);
+            });
+            ctx.closePath();
+            ctx.fillStyle = "rgba(255,71,87,0.18)";
+            ctx.fill();
+            ctx.strokeStyle = "#ff4757";
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // 데이터 포인트 점
+            PART_ORDER.forEach(function(part, i) {
+                var ratio = Math.min(scores[part] / maxVal, 1);
+                var p = pt(i, Math.max(ratio, 0.03));
+                ctx.beginPath();
+                ctx.arc(p[0], p[1], scores[part] > 0 ? 8 : 4, 0, Math.PI*2);
+                ctx.fillStyle = scores[part] > 0 ? "#ff4757" : "rgba(255,255,255,0.2)";
+                ctx.fill();
+            });
+
+            // 부위 라벨 + 세트수
+            ctx.font = "700 24px 'Inter'";
+            PART_ORDER.forEach(function(part, i) {
+                var p = pt(i, 1.22);
+                var abbr = PART_ABBR[part] || part;
+
+                // 라벨 위치에 따라 정렬
+                var ang = angle(i);
+                var align = 'center';
+                if (Math.cos(ang) > 0.3) align = 'left';
+                if (Math.cos(ang) < -0.3) align = 'right';
+
+                ctx.textAlign = align;
+                ctx.fillStyle = scores[part] > 0
+                    ? "rgba(255,255,255,0.9)"
+                    : "rgba(255,255,255,0.35)";
+                ctx.font = "700 24px 'Inter'";
+                ctx.fillText(abbr, p[0], p[1]);
+
+                // 세트수 (값 있는 것만)
+                if (scores[part] > 0) {
+                    ctx.fillStyle = "#ff4757";
+                    ctx.font = "400 20px 'Inter'";
+                    ctx.fillText(scores[part] % 1 === 0
+                        ? scores[part]
+                        : scores[part].toFixed(1),
+                        p[0], p[1] + 26);
+                }
+            });
+
+            // 하단 그라디언트 (서명용)
+            var botGrad = ctx.createLinearGradient(0, canvas.height-120, 0, canvas.height);
+            botGrad.addColorStop(0, "rgba(0,0,0,0)");
+            botGrad.addColorStop(1, "rgba(0,0,0,0.6)");
+            ctx.fillStyle = botGrad;
+            ctx.fillRect(0, canvas.height-120, canvas.width, 120);
+
+            // 서명
+            ctx.fillStyle = "rgba(255,255,255,0.22)";
+            ctx.font = "400 22px 'Inter'";
+            ctx.textAlign = "center";
+            ctx.fillText("SHARE STRONG IMAGE V2", canvas.width/2, canvas.height - 22);
+        }
+    }   
 
     // ─── 유틸: 둥근 사각형 ───────────────────────────────────────────────────
     function roundRect(ctx, x, y, w, h, r) {
