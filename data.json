@@ -2093,5 +2093,95 @@
         }
       ]
     }
+  },
+  "20260426": {
+    "strong": 82,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "Leg/rcvr",
+      "datetime": "2026년 4월 26일 일요일 오전 11:34",
+      "duration": 82,
+      "totalSets": 24,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hip Abductor (Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hip Adductor (Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Stiff Leg Deadlift (Barbell)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking Lunge",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lying One Leg Curl",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Windmill (Kettlebell)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
