@@ -264,10 +264,12 @@ function renderCal(y,m){
 
 // 부위별 세트
 function calcScores(entries){
+    const EXCLUDE = ['Plank', 'Walking']; // 지표 제외 종목
   const s={};PARTS.forEach(p=>s[p]=0);
   entries.forEach(([,v])=>{
     if(!v.workout)return;
     v.workout.exercises.forEach(ex=>{
+            if(EXCLUDE.includes(ex.name)) return; // 제외
       const map=exMap[ex.name];if(!map)return;
       const sets=(ex.sets||0)+(ex.drops||0)+(ex.fails||0);
       if(map.main&&s[map.main]!==undefined)s[map.main]+=sets;
@@ -341,6 +343,30 @@ function renderRadar(ym){
       </div>
       <div class="rbi-val">${Math.round(cur[p])}</div>`;
     bars.appendChild(item);
+    //
+      // SVG → Canvas 변환으로 html2canvas 호환
+setTimeout(function() {
+  const svgEl = document.getElementById('radarSvg');
+  const svgData = new XMLSerializer().serializeToString(svgEl);
+  const svgBlob = new Blob([svgData], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function() {
+    const c = document.createElement('canvas');
+    c.width = svgEl.clientWidth * 2;
+    c.height = svgEl.clientHeight * 2;
+    const cx = c.getContext('2d');
+    cx.scale(2, 2);
+    cx.drawImage(img, 0, 0, svgEl.clientWidth, svgEl.clientHeight);
+    URL.revokeObjectURL(url);
+    const imgEl = document.createElement('img');
+    imgEl.src = c.toDataURL();
+    imgEl.style.width = '100%';
+    svgEl.parentElement.replaceChild(imgEl, svgEl);
+  };
+  img.src = url;
+}, 100);
+
   });
 }
 
@@ -409,11 +435,13 @@ function renderTrend(){
 
 // TOP5
 function renderTop5(){
+   const EXCLUDE = ['Plank', 'Walking'];
   const entries=mEntries(curYM);
   const exS={};
   entries.forEach(([,v])=>{
     if(!v.workout)return;
     v.workout.exercises.forEach(ex=>{
+        if(EXCLUDE.includes(ex.name)) return; // 제외
       const t=(ex.sets||0)+(ex.drops||0)+(ex.fails||0);
       exS[ex.name]=(exS[ex.name]||0)+t;
     });
