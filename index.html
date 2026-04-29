@@ -75,9 +75,11 @@
     <div class="btn-group">
         <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영 추가</button>
         <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기 추가</button>
+            <button class="btn btn-sub" onclick="loadTestData()" style="background:#333;color:#888;">🧪 테스트 모드</button>
     </div>
 
     <button class="btn btn-sub" onclick="pasteLog()">📋 클립보드 붙여넣기</button>
+
     <input type="file" id="imageInput" accept="image/*" style="display:none">
     <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center;">
         🖼️ 사진 선택하기
@@ -252,6 +254,96 @@
         } catch (err) { alert("붙여넣기 권한이 필요합니다."); }
     }
     
+    function loadTestData() {
+    const testLog = `LEGS#2
+2026년 3월 14일 토요일 오후 12:24
+
+Plank
+세트 1: 1:00
+세트 2: 0:40
+세트 3: 0:40
+
+Deadlift (Barbell)
+W1: 20 kg × 20 [워밍업]
+W2: 60 kg × 7 [워밍업]
+W3: 80 kg × 5 [워밍업]
+W4: 90 kg × 3 [워밍업]
+세트 1: 95 kg × 3 @ 8.5
+세트 2: 50 kg x 10 [드롭 세트]
+세트 3: 60 kg x 10 [실패]
+
+Romanian Deadlift (Barbell)
+W1: 20kg x 20 [워밍업]
+세트 1: 75 kg × 6
+세트 2: 60 kg × 10 [드롭 세트]
+세트 3: 75 kg x 6
+세트 4: 60 kg x 10 [드롭 세트]
+세트 5: 80 kg x 3 [실패]
+
+노트: 무릎부상
+
+Lying One Leg Curl
+W1: 20 kg × 10 [워밍업]
+세트 1: 25 kg × 12
+세트 2: 26.25 kg × 10
+세트 3: 26.25 kg × 8 @ 9.5
+
+Leg Extension (Single Leg)
+W1: 15 kg × 10 [워밍업]
+세트 1: 20 kg × 12
+세트 2: 20 kg × 12
+세트 3: 20 kg × 8
+
+노트: 무릎 잠김
+
+Lunge (Smith Muchine)
+W1: 20 kg × 10 [워밍업]
+세트 1: 25 kg × 12
+세트 2: 25 kg × 12
+세트 3: 25 kg × 12
+
+Standing Calf Raise (Bodyweight)
+W1: 12 렙 [워밍업]
+
+Standing Calf Raise (Dumbbell)
+세트 1: 5 kg × 12
+세트 2: 5 kg × 15
+세트 3: 5 kg × 12
+
+Hanging Leg Raise
+W1: 14 렙 [워밍업]
+세트 1: 17 렙
+세트 2: 13 렙
+세트 3: 13 렙
+
+Walking
+세트 1: 10:00
+https://link.strong.app/swnxgzke`;
+
+    document.getElementById('logInput').value = testLog;
+
+    // sample.heic 자동 로드
+    fetch('sample.heic')
+        .then(function(r) { return r.blob(); })
+        .then(function(blob) {
+            const file = new File([blob], 'sample.heic', { type: blob.type, lastModified: blob.lastModified });
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            const input = document.getElementById('imageInput');
+            input.files = dt.files;
+
+            const label = document.getElementById('fileLabel');
+            label.innerText = "✅ 사진 선택 완료";
+            label.classList.add('btn-done');
+
+            setTimeout(processWorkout, 300);
+        })
+        .catch(function() {
+            alert('sample.heic 파일이 같은 폴더에 없어!');
+        });
+}
+
+
     window.addEventListener("load", async () => {
         try {
             const text = await navigator.clipboard.readText();
