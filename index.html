@@ -1318,8 +1318,8 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
             // ── 레이더 차트 ──
             var n = PART_ORDER.length;
             var cx = canvas.width / 2;
-            var cy = canvas.height / 2 + 60; // 중앙보다 살짝 아래
-            var r = 320; // 반지름
+            var cy = canvas.height / 2 -20 ; 
+            var r = 260; // 반지름
 
             var angle = function(i) {
                 return (Math.PI * 2 / n) * i - Math.PI / 2;
@@ -1410,7 +1410,7 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
             // 부위 라벨 + 세트수
             ctx.font = "700 24px 'Inter'";
             PART_ORDER.forEach(function(part, i) {
-                var p = pt(i, 1.22);
+                var p = pt(i, 1.2);
                 var abbr = PART_ABBR[part] || part;
 
                 // 라벨 위치에 따라 정렬
@@ -1433,10 +1433,10 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
                     let numX = p[0];
 
                     // 정렬 방식에 따라 X 좌표 보정 (이름 바로 아래 정중앙에 오도록)
-                    if (align === 'left') numX = p[0] + (labelWidth / 2);
-                    else if (align === 'right') numX = p[0] - (labelWidth / 2);
+                   // if (align === 'left') numX = p[0] + (labelWidth / 2);
+                    //else if (align === 'right') numX = p[0] - (labelWidth / 2);
 
-                    ctx.textAlign = "center"; // 숫자만큼은 무조건 center
+                    //ctx.textAlign = "center"; // 숫자만큼은 무조건 center
 
                     ctx.fillStyle = "#ffaaaa";
                     ctx.font = "400 20px 'Inter'";
@@ -1453,6 +1453,72 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
             botGrad.addColorStop(1, "rgba(0,0,0,0.6)");
             ctx.fillStyle = botGrad;
             ctx.fillRect(0, canvas.height-120, canvas.width, 120);
+
+
+// ── 하단 운동 태그 ──
+var tagFont = "700 22px 'Inter'";
+ctx.font = tagFont;
+var tagPadX = 20, tagGap = 10, tagH = 46;
+var tagLineH = tagH + tagGap;
+var tagStartY = canvas.height - 180; // 서명 위 영역
+var tagMaxW = canvas.width - iX * 2;
+
+// 줄별 그룹화
+var tagRows2 = [], curRow2 = [], curRowW2 = 0;
+exerciseList.forEach(function(ex) {
+    var tw = ctx.measureText(ex.name).width + tagPadX * 2;
+    if (curRow2.length > 0 && curRowW2 + tw + tagGap > tagMaxW) {
+        tagRows2.push({ tags: curRow2, w: curRowW2 - tagGap });
+        curRow2 = []; curRowW2 = 0;
+    }
+    curRow2.push({ ex: ex, tw: tw });
+    curRowW2 += tw + tagGap;
+});
+if (curRow2.length > 0) tagRows2.push({ tags: curRow2, w: curRowW2 - tagGap });
+
+// 태그 시작 Y (줄 수에 따라 위로 올림)
+var tagTotalH = tagRows2.length * tagLineH;
+var tagY = canvas.height - 60 - tagTotalH;
+
+tagRows2.forEach(function(row) {
+    var tx = iX;
+    row.tags.forEach(function(item) {
+        var ex = item.ex;
+        var tw = item.tw;
+        var textX = tx + tagPadX;
+
+        // 태그 배경
+        ctx.fillStyle = "rgba(255,255,255,0.10)";
+        roundRect(ctx, tx, tagY, tw, tagH, 7);
+        ctx.fill();
+
+        // 텍스트 (특수문자 빨간색)
+        ctx.font = tagFont;
+        ctx.textAlign = "left";
+        var charX = textX;
+        for (var ci = 0; ci < ex.name.length; ci++) {
+            var ch = ex.name[ci];
+            ctx.fillStyle = /[^a-zA-Z ]/.test(ch) ? "#ff4757" : "rgba(255,255,255,0.85)";
+            ctx.fillText(ch, charX, tagY + 30);
+            charX += ctx.measureText(ch).width;
+        }
+
+        // 세트 블록
+        var bW = 7, bH = 5, bGap = 3;
+        var oSets = ex.orderedSets || [];
+        var bx = textX;
+        oSets.slice(0, 6).forEach(function(os) {
+            ctx.fillStyle = os.type==='warm' ? '#F0B83B' : os.type==='drop' ? '#784CD8' : '#ff4757';
+            ctx.fillRect(bx, tagY + 38, bW, bH);
+            bx += bW + bGap;
+        });
+
+        tx += tw + tagGap;
+    });
+    tagY += tagLineH;
+});
+
+
 
             // 서명
             ctx.fillStyle = "rgba(255,255,255,0.22)";
