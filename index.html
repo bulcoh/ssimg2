@@ -255,94 +255,94 @@
     }
     
     function loadTestData() {
-    const testLog = `LEGS#2
-2026년 3월 14일 토요일 오후 12:24
+        const testLog = `LEGS#2
+        2026년 3월 14일 토요일 오후 12:24
 
-Plank
-세트 1: 1:00
-세트 2: 0:40
-세트 3: 0:40
+        Plank
+        세트 1: 1:00
+        세트 2: 0:40
+        세트 3: 0:40
 
-Deadlift (Barbell)
-W1: 20 kg × 20 [워밍업]
-W2: 60 kg × 7 [워밍업]
-W3: 80 kg × 5 [워밍업]
-W4: 90 kg × 3 [워밍업]
-세트 1: 95 kg × 3 @ 8.5
-세트 2: 50 kg x 10 [드롭 세트]
-세트 3: 60 kg x 10 [실패]
+        Deadlift (Barbell)
+        W1: 20 kg × 20 [워밍업]
+        W2: 60 kg × 7 [워밍업]
+        W3: 80 kg × 5 [워밍업]
+        W4: 90 kg × 3 [워밍업]
+        세트 1: 95 kg × 3 @ 8.5
+        세트 2: 50 kg x 10 [드롭 세트]
+        세트 3: 60 kg x 10 [실패]
 
-Romanian Deadlift (Barbell)
-W1: 20kg x 20 [워밍업]
-세트 1: 75 kg × 6
-세트 2: 60 kg × 10 [드롭 세트]
-세트 3: 75 kg x 6
-세트 4: 60 kg x 10 [드롭 세트]
-세트 5: 80 kg x 3 [실패]
+        Romanian Deadlift (Barbell)
+        W1: 20kg x 20 [워밍업]
+        세트 1: 75 kg × 6
+        세트 2: 60 kg × 10 [드롭 세트]
+        세트 3: 75 kg x 6
+        세트 4: 60 kg x 10 [드롭 세트]
+        세트 5: 80 kg x 3 [실패]
 
-노트: 무릎부상
+        노트: 무릎부상
 
-Lying One Leg Curl
-W1: 20 kg × 10 [워밍업]
-세트 1: 25 kg × 12
-세트 2: 26.25 kg × 10
-세트 3: 26.25 kg × 8 @ 9.5
+        Lying One Leg Curl
+        W1: 20 kg × 10 [워밍업]
+        세트 1: 25 kg × 12
+        세트 2: 26.25 kg × 10
+        세트 3: 26.25 kg × 8 @ 9.5
 
-Leg Extension (Single Leg)
-W1: 15 kg × 10 [워밍업]
-세트 1: 20 kg × 12
-세트 2: 20 kg × 12
-세트 3: 20 kg × 8
+        Leg Extension (Single Leg)
+        W1: 15 kg × 10 [워밍업]
+        세트 1: 20 kg × 12
+        세트 2: 20 kg × 12
+        세트 3: 20 kg × 8
 
-노트: 무릎 잠김
+        노트: 무릎 잠김
 
-Lunge (Smith Muchine)
-W1: 20 kg × 10 [워밍업]
-세트 1: 25 kg × 12
-세트 2: 25 kg × 12
-세트 3: 25 kg × 12
+        Lunge (Smith Muchine)
+        W1: 20 kg × 10 [워밍업]
+        세트 1: 25 kg × 12
+        세트 2: 25 kg × 12
+        세트 3: 25 kg × 12
 
-Standing Calf Raise (Bodyweight)
-W1: 12 렙 [워밍업]
+        Standing Calf Raise (Bodyweight)
+        W1: 12 렙 [워밍업]
 
-Standing Calf Raise (Dumbbell)
-세트 1: 5 kg × 12
-세트 2: 5 kg × 15
-세트 3: 5 kg × 12
+        Standing Calf Raise (Dumbbell)
+        세트 1: 5 kg × 12
+        세트 2: 5 kg × 15
+        세트 3: 5 kg × 12
 
-Hanging Leg Raise
-W1: 14 렙 [워밍업]
-세트 1: 17 렙
-세트 2: 13 렙
-세트 3: 13 렙
+        Hanging Leg Raise
+        W1: 14 렙 [워밍업]
+        세트 1: 17 렙
+        세트 2: 13 렙
+        세트 3: 13 렙
 
-Walking
-세트 1: 10:00
-https://link.strong.app/swnxgzke`;
+        Walking
+        세트 1: 10:00
+        https://link.strong.app/swnxgzke`;
 
-    document.getElementById('logInput').value = testLog;
+            document.getElementById('logInput').value = testLog;
 
-    // sample.heic 자동 로드
-    fetch('sample.heic')
-        .then(function(r) { return r.blob(); })
-        .then(function(blob) {
-            const file = new File([blob], 'sample.heic', { type: blob.type, lastModified: blob.lastModified });
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            const input = document.getElementById('imageInput');
-            input.files = dt.files;
+            // sample.heic 자동 로드
+            fetch('sample.heic')
+                .then(function(r) { return r.blob(); })
+                .then(function(blob) {
+                    const file = new File([blob], 'sample.heic', { type: blob.type, lastModified: blob.lastModified });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    const input = document.getElementById('imageInput');
+                    input.files = dt.files;
 
-            const label = document.getElementById('fileLabel');
-            label.innerText = "✅ 사진 선택 완료";
-            label.classList.add('btn-done');
+                    const label = document.getElementById('fileLabel');
+                    label.innerText = "✅ 사진 선택 완료";
+                    label.classList.add('btn-done');
 
-            setTimeout(processWorkout, 300);
-        })
-        .catch(function() {
-            alert('sample.heic 파일이 같은 폴더에 없어!');
-        });
-}
-
+                    setTimeout(processWorkout, 300);
+                })
+                .catch(function() {
+                    alert('sample.heic 파일이 같은 폴더에 없어!');
+                });
+        }
+        window._testPhotoTime = new Date('2026-03-14T13:30:00');
 
     window.addEventListener("load", async () => {
         try {
@@ -428,7 +428,7 @@ https://link.strong.app/swnxgzke`;
         const file = document.getElementById('imageInput').files[0];
         if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
 
-        const photoTime = new Date(file.lastModified);
+          const photoTime = window._testPhotoTime || new Date(file.lastModified);
         const parsed = parseWorkout(rawText, photoTime);
         currentMinutes = parsed.minutes;
         currentFileDate = parsed.fileDate;
@@ -1331,7 +1331,7 @@ return { R, gap, exGap, exFont, maxPR: Math.floor(maxPR / 2), heights, totalH: t
         ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const iX = 70;
+        const iX = 30;
         const rX = canvas.width - 70;
 
         // ── 상단 그라디언트 ──
@@ -1573,7 +1573,7 @@ var tagTotalH = tagRows2.length * tagLineH;
 var tagY = canvas.height - 60 - tagTotalH;
 
 tagRows2.forEach(function(row) {
-    var tx = iX;
+    var tx = Math.round((canvas.width - row.w) / 2);
     row.tags.forEach(function(item) {
         var ex = item.ex;
         var tw = item.tw;
