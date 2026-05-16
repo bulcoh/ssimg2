@@ -3162,5 +3162,60 @@
         }
       ]
     }
+  },
+  "20260516": {
+    "strong": 100,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "Hot체(정모)",
+      "datetime": "2026년 5월 16일 토요일 오후 12:08",
+      "duration": 100,
+      "totalSets": 16,
+      "exercises": [
+        {
+          "name": "Leg Press",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Leg Extension (Single Leg)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hip Abductor (Machine)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Stepbox Wide Squat (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bulgarian Split Squat",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "One Leg Deadlift (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
