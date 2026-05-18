@@ -3217,5 +3217,81 @@
         }
       ]
     }
+  },
+  "20260518": {
+    "strong": 89,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#1",
+      "datetime": "2026년 5월 18일 월요일 오후 6:47",
+      "duration": 89,
+      "totalSets": 14,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bench Press (Barbell)",
+          "sets": 1,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Bench Press (Smith Machine)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Kettlebell Band Lateral Raise",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Skullcrusher (Barbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Cable Kickback",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
