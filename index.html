@@ -33,11 +33,14 @@
         /* --- 타입 선택 UI --- */
         .type-selector {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 14px;
         }
         .type-btn {
-            flex: 1;
+            /* flex: 1; */
+            width: calc(25% - 6px); 
+            box-sizing: border-box;
             padding: 10px 0;
             border-radius: 12px;
             border: 2px solid #444;
