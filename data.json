@@ -3700,5 +3700,81 @@
         }
       ]
     }
+  },
+  "20260526": {
+    "strong": 92,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#1",
+      "datetime": "2026년 5월 26일 화요일 오후 5:05",
+      "duration": 92,
+      "totalSets": 15,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 3,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pendlay Row (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over Row (Barbell)",
+          "sets": 0,
+          "warms": 0,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Reverse Fly (Machine)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Curl (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 1,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bicycle Crunch",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
