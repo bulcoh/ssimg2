@@ -3776,5 +3776,53 @@
         }
       ]
     }
+  },
+  "20260527": {
+    "strong": 66,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#1",
+      "datetime": "2026년 5월 27일 수요일 오후 3:53",
+      "duration": 66,
+      "totalSets": 7,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 1,
+          "warms": 5,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Romanian Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lunge (Smith Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
