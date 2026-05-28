@@ -353,12 +353,26 @@ https://link.strong.app/swnxgzke`;
         window._testPhotoTime = new Date('2026-03-14T13:30:00');
 
 window.addEventListener("load", async () => {
-    // 💡 주소창에 ?log=내용 이 있으면 자동으로 입력창에 넣어주는 코드
+    // 1. 우선 주소창에 파라미터가 있는지 체크 (기존 아이폰 단축어용 백업)
     const urlParams = new URLSearchParams(window.location.search);
     const URLLog = urlParams.get('log');
+    
     if (URLLog) {
         document.getElementById("logInput").value = decodeURIComponent(URLLog);
-        console.log("매크로 로그 자동 주입 성공!");
+    } else {
+        // 2. 주소창에 아무것도 없다면? 스마트폰 클립보드에서 직접 글자 긁어오기!
+        try {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                const clipboardText = await navigator.clipboard.readText();
+                // 대충 스트롱 로그처럼 생긴 글자일 때만 자동 주입 (빈 값이나 엄한 글자 방지)
+                if (clipboardText && clipboardText.trim().length > 0) {
+                    document.getElementById("logInput").value = clipboardText;
+                    console.log("클립보드에서 자동으로 로그를 읽어왔습니다!");
+                }
+            }
+        } catch (err) {
+            console.log("클립보드 읽기 실패 (권한 필요): ", err);
+        }
     }
 });
     
