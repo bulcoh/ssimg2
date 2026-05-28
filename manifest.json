@@ -1,0 +1,15 @@
+{
+  "name": "SSimage 2",
+  "short_name": "SSimg2",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#ff4757",
+  "share_target": {
+    "action": ".",
+    "method": "GET",
+    "params": {
+      "text": "log"
+    }
+  }
+}
