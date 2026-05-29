@@ -26,6 +26,9 @@
     font-family: 'Noto Sans KR', sans-serif;
     min-height: 100vh;
     padding: 20px 14px 40px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   header {
@@ -71,6 +74,7 @@
     letter-spacing: 1px;
     margin: 12px 0 5px;
     padding-left: 2px;
+    height: 15px;
   }
 
   .week-row {
@@ -120,6 +124,7 @@
     z-index: 4;
     line-height: 1;
     color: var(--text-dim);
+    forced-color-adjust: none;
   }
 
   .day-cell.today .day-num { color: #fff; font-weight: 500; }
