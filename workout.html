@@ -72,9 +72,9 @@
     font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 1px;
-    margin: 12px 0 5px;
+    margin: 0;
     padding-left: 2px;
-    height: 15px;
+    height: 4px;
   }
 
   .week-row {
@@ -282,6 +282,7 @@ fetch(JSON_URL)
 
     weeks.forEach(week => {
       // html += `<div class="week-label">${weekLabel(week)}</div>`;
+      html += `<div class="week-label">&nbsp;</div>`;
       html += `<div class="week-row">`;
 
       week.forEach(d => {
