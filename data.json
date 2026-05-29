@@ -3893,5 +3893,88 @@
         }
       ]
     }
+  },
+  "20260529": {
+    "strong": 88,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#2",
+      "datetime": "2026년 5월 29일 금요일 오후 5:16",
+      "duration": 88,
+      "totalSets": 21,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Straight Arm Pulldown",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 2,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Kelso Shrug",
+          "sets": 0,
+          "warms": 0,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Shrug (Trapbar)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Cable)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 2,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise In 3 Degrees",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
