@@ -16,6 +16,7 @@
     --bar: #329EA1;
     --sat-text: #4a9eff;
     --sun-text: #d15454;
+    --grid-color: #44444a;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,7 +112,8 @@
     position: absolute;
     left: 0; right: 0;
     height: 1px;
-    background: rgba(255,255,255,0.10);
+    background: var(--grid-color) !important;
+    forced-color-adjust: none;
   }
 
   /* 날짜 숫자 — 바 위에 오버레이 */
@@ -123,7 +125,7 @@
     font-weight: 400;
     z-index: 4;
     line-height: 1;
-    color: var(--text-dim);
+    color: var(--text-dim)!important;
     forced-color-adjust: none;
   }
 
@@ -145,8 +147,9 @@
   .bar-fill {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: var(--bar);
+    background: var(--bar) !important;
     z-index: 2;
+    forced-color-adjust: none;
   }
 
   .day-cell.today .bar-fill { background: #329EA1; }
