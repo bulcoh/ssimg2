@@ -92,7 +92,14 @@
   .day-cell {
     position: relative;
     border-radius: 5px;
-    background: var(--surface);
+    background-color: var(--surface);
+    background-image: repeating-linear-gradient(
+    to top,
+    transparent,
+    transparent calc(100% / 11 - 1px),
+    #44444a calc(100% / 11 - 1px),
+    #44444a calc(100% / 11)
+  );
     border: 1px solid var(--border);
     overflow: hidden;
     height: 80px;
@@ -106,13 +113,7 @@
   z-index: 5;
 }
 
-  /* 그리드선 — 셀 전체 기준, 10분 간격 */
-  .grid-lines {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-  }
+
 
   .grid-line {
     position: absolute;
@@ -240,16 +241,6 @@ document.getElementById('dateNow').textContent =
   now.getFullYear() + '.' + ('0'+(now.getMonth()+1)).slice(-2) + '.' + ('0'+now.getDate()).slice(-2)
   + ' ' + WDS_KO[now.getDay()];
 
-// 10분 간격 그리드선: 셀 전체 높이(80px) 기준
-function gridLines() {
-  let html = '<div class="grid-lines">';
-  for (let m = 10; m < MAX_MIN; m += 10) {
-    const bottom = Math.floor(m / MAX_MIN * CELL_H);
-    html += `<div class="grid-line" style="bottom:${bottom}px"></div>`;
-  }
-  html += '</div>';
-  return html;
-}
 
 function getWeeks() {
   const today = new Date(now);
@@ -322,7 +313,7 @@ fetch(JSON_URL)
         }
 
         html += `<div class="${cls}">
-          ${gridLines()}
+         
           <div class="day-num">${d.getDate()}</div>
           ${monthBadge}
           ${barHTML}
