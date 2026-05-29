@@ -95,9 +95,11 @@
   }
 
 .day-cell.today {
-  outline: 3px solid rgb(50, 168, 151);
-  outline-offset: -3px;
+  /*outline: 3px solid rgb(50, 168, 151);
+  outline-offset: -3px; */
+  box-shadow: 0 0 0 2px rgb(50, 168, 151);
   background: #1e1e24;
+  z-index: 5;
 }
 
   /* 그리드선 — 셀 전체 기준, 10분 간격 */
@@ -123,7 +125,7 @@
     left: 5px;
     font-size: 10px;
     font-weight: 400;
-    z-index: 4;
+    z-index: 6;
     line-height: 1;
     color: var(--text-dim)!important;
     forced-color-adjust: none;
