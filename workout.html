@@ -4,8 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>운동 로그</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+/*  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap'); */
+
 
   :root {
     --bg: #000000;
@@ -112,10 +116,11 @@
 
   .grid-line {
     position: absolute;
-    left: 0; right: 0;
-    height: 1px;
-    background: var(--grid-color) !important;
-    forced-color-adjust: none;
+    left: 0;
+    width: 100%;
+    min-height: 1px;
+    background-color: #44444a;
+    opacity: .9;
   }
 
   /* 날짜 숫자 — 바 위에 오버레이 */
@@ -240,7 +245,7 @@ document.getElementById('dateNow').textContent =
 function gridLines() {
   let html = '<div class="grid-lines">';
   for (let m = 10; m < MAX_MIN; m += 10) {
-    const bottom = Math.round(m / MAX_MIN * CELL_H);
+    const bottom = Math.floor(m / MAX_MIN * CELL_H);
     html += `<div class="grid-line" style="bottom:${bottom}px"></div>`;
   }
   html += '</div>';
