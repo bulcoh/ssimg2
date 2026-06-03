@@ -4183,5 +4183,67 @@
         }
       ]
     }
+  },
+  "20260603": {
+    "strong": 190,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#1",
+      "datetime": "2026년 6월 3일 수요일 오후 4:54",
+      "duration": 190,
+      "totalSets": 9,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 1,
+          "warms": 5,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Romanian Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lunge (Smith Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Back Extension",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
