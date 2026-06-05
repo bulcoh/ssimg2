@@ -518,6 +518,7 @@ window.addEventListener("load", async () => {
     }
 
     function processWorkout() {
+        let parsed;
         const rawText = document.getElementById('logInput').value;
         const file = document.getElementById('imageInput').files[0];
         if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
@@ -558,7 +559,7 @@ window.addEventListener("load", async () => {
         }
     }
 
-    const parsed = parseWorkout(rawText, photoTime);
+    parsed = parseWorkout(rawText, photoTime);
 
 })();
         currentMinutes = parsed.minutes;
