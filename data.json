@@ -4307,5 +4307,67 @@
         }
       ]
     }
+  },
+  "20260605": {
+    "strong": 238,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#2",
+      "datetime": "2026년 6월 5일 금요일 오후 6:40",
+      "duration": 238,
+      "totalSets": 16,
+      "exercises": [
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Shrug (Barbell)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over Row (Barbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise In 3 Degrees",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
