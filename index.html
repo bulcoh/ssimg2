@@ -517,51 +517,47 @@ window.addEventListener("load", async () => {
         return { workoutTitle, dateTime, fileDate, minutes, totalSets, exerciseList, cooldownMins };
     }
 
-    function processWorkout() {
-        let parsed;
+    async function processWorkout() {
         const rawText = document.getElementById('logInput').value;
         const file = document.getElementById('imageInput').files[0];
         if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
 
 
-(async () => {
+let photoTime;
 
-    let photoTime;
+// 테스트 모드
+if (file.name === 'sample.jpg' && window._testPhotoTime) {
+    photoTime = window._testPhotoTime;
+} else {
+    try {
+        const buffer = await file.arrayBuffer();
+        const tags = ExifReader.load(buffer);
 
-    // 테스트 모드 예외
-    if (file.name === 'sample.jpg' && window._testPhotoTime) {
-        photoTime = window._testPhotoTime;
-    } else {
-        try {
-            const buffer = await file.arrayBuffer();
-            const tags = ExifReader.load(buffer);
+        const exifDate =
+            tags.DateTimeOriginal?.description ||
+            tags.DateTime?.description;
 
-            const exifDate =
-                tags.DateTimeOriginal?.description ||
-                tags.DateTime?.description;
+        if (exifDate) {
+            const fixedDate = exifDate.replace(
+                /^(\d+):(\d+):(\d+)/,
+                '$1-$2-$3'
+            );
 
-            if (exifDate) {
-                // "2026:03:14 13:30:00"
-                const fixedDate = exifDate.replace(
-                    /^(\d+):(\d+):(\d+)/,
-                    '$1-$2-$3'
-                );
-
-                photoTime = new Date(fixedDate);
-            } else {
-                console.warn('EXIF 없음 → lastModified fallback');
-                photoTime = new Date(file.lastModified);
-            }
-
-        } catch (err) {
-            console.error('EXIF 읽기 실패', err);
+            photoTime = new Date(fixedDate);
+            console.log("EXIF 촬영시간:", photoTime);
+        } else {
+            console.warn("EXIF 없음 → lastModified 사용");
             photoTime = new Date(file.lastModified);
         }
+
+    } catch (err) {
+        console.error("EXIF 읽기 실패", err);
+        photoTime = new Date(file.lastModified);
     }
+}
 
-    parsed = parseWorkout(rawText, photoTime);
+const parsed = parseWorkout(rawText, photoTime);
 
-})();
         currentMinutes = parsed.minutes;
         currentFileDate = parsed.fileDate;
         currentParsed = parsed;
