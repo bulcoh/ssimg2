@@ -70,6 +70,9 @@
         .guide { color: #888; font-size: 13px; margin-top: 15px; line-height: 1.5; }
     </style>
     <link rel="manifest" href="manifest.json">
+
+    <script src="https://cdn.jsdelivr.net/npm/exifreader/dist/exif-reader.min.js"></script>
+
 </head>
 <body>
 
@@ -518,15 +521,46 @@ window.addEventListener("load", async () => {
         const rawText = document.getElementById('logInput').value;
         const file = document.getElementById('imageInput').files[0];
         if (!rawText || !file) return alert("텍스트와 사진을 모두 넣어주세요!");
-let photoTime = new Date(file.lastModified);
-    
-    // 만약 파일 이름이 sample.jpg이거나, 특정 조건에서만 테스트 시간을 쓰게 하려면:
+
+
+(async () => {
+
+    let photoTime;
+
+    // 테스트 모드 예외
     if (file.name === 'sample.jpg' && window._testPhotoTime) {
         photoTime = window._testPhotoTime;
+    } else {
+        try {
+            const buffer = await file.arrayBuffer();
+            const tags = ExifReader.load(buffer);
+
+            const exifDate =
+                tags.DateTimeOriginal?.description ||
+                tags.DateTime?.description;
+
+            if (exifDate) {
+                // "2026:03:14 13:30:00"
+                const fixedDate = exifDate.replace(
+                    /^(\d+):(\d+):(\d+)/,
+                    '$1-$2-$3'
+                );
+
+                photoTime = new Date(fixedDate);
+            } else {
+                console.warn('EXIF 없음 → lastModified fallback');
+                photoTime = new Date(file.lastModified);
+            }
+
+        } catch (err) {
+            console.error('EXIF 읽기 실패', err);
+            photoTime = new Date(file.lastModified);
+        }
     }
 
+    const parsed = parseWorkout(rawText, photoTime);
 
-        const parsed = parseWorkout(rawText, photoTime);
+})();
         currentMinutes = parsed.minutes;
         currentFileDate = parsed.fileDate;
         currentParsed = parsed;
