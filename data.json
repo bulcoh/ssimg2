@@ -4376,7 +4376,8 @@
     "run": 20
   },
   "20260612": {
-    "strong": 83,
+    "strong": 73,
+    "cooldown": 10,
     "swim": 0,
     "run": 19,
     "workout": {
