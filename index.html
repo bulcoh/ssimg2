@@ -269,9 +269,9 @@ if (type === 'strong') {
             body: JSON.stringify({ message: `Update ${type} at ${dateStr}`, content: encodedContent, sha: sha })
         });
         if (putRes.ok) {
-            
+            alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!`);
             await rebuildLogTxt(currentData);
-             alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!`);
+            
 
         } else {
             const errorDetail = await putRes.json();
