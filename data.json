@@ -4452,9 +4452,52 @@
     }
   },
   "20260613": {
-    "strong": 0,
+    "strong": 48,
     "cooldown": 0,
     "swim": 0,
-    "run": 0
+    "run": 0,
+    "workout": {
+      "title": "LOWER DL",
+      "datetime": "2026년 6월 13일 토요일 오후 8:13",
+      "duration": 48,
+      "totalSets": 8,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bulgarian Split Squat",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Back Extension",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
