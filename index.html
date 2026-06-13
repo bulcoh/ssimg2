@@ -212,22 +212,35 @@
         }
 
         // 버튼별 저장 규칙
-        if (type === 'strong') {
-            // 웨이트는 덮어쓰기
-            currentData[dateStr].strong = mins;
+if (type === 'strong') {
 
-            // strong 유산소 = 무조건 cooldown
-            currentData[dateStr].cooldown =
-                currentParsed?.cooldownMins || 0;
+    const oldData =
+        currentData[dateStr] || {};
 
-        } else if (type === 'swim') {
-            // 수영은 자기 것만 덮어쓰기
-            currentData[dateStr].swim = mins;
+    currentData[dateStr] = {
+        strong: mins,
 
-        } else if (type === 'run') {
-            // 달리기는 자기 것만 덮어쓰기
-            currentData[dateStr].run = mins;
-        }
+        // cooldown 강제 생성
+        cooldown: Number(
+            currentParsed?.cooldownMins
+        ) || 0,
+
+        // 기존 수영/달리기 유지
+        swim: oldData.swim || 0,
+        run: oldData.run || 0,
+
+        // 기존 workout 유지
+        workout: oldData.workout || null
+    };
+
+} else if (type === 'swim') {
+
+    currentData[dateStr].swim = mins;
+
+} else if (type === 'run') {
+
+    currentData[dateStr].run = mins;
+}
         
 
         if (type === 'strong' && currentParsed) {
