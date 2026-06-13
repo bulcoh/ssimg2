@@ -198,8 +198,38 @@
                 currentData = JSON.parse(content);
             }
         } catch (e) { console.log("기존 데이터 없음 또는 에러:", e); }
-        if (!currentData[dateStr]) currentData[dateStr] = { strong: 0, swim: 0, run: 0 };
-        currentData[dateStr][type] = mins;
+        if (!currentData[dateStr])
+            currentData[dateStr] = {
+                strong: 0,
+                cooldown: 0,
+                swim: 0,
+                run: 0
+            };
+
+        // 구버전 호환
+        if (currentData[dateStr].cooldown === undefined) {
+            currentData[dateStr].cooldown = 0;
+        }
+
+        // 버튼별 저장 규칙
+        if (type === 'strong') {
+            // 웨이트는 덮어쓰기
+            currentData[dateStr].strong = mins;
+
+            // strong 유산소 = 무조건 cooldown
+            currentData[dateStr].cooldown =
+                currentParsed?.cooldownMins || 0;
+
+        } else if (type === 'swim') {
+            // 수영은 자기 것만 덮어쓰기
+            currentData[dateStr].swim = mins;
+
+        } else if (type === 'run') {
+            // 달리기는 자기 것만 덮어쓰기
+            currentData[dateStr].run = mins;
+        }
+        
+
         if (type === 'strong' && currentParsed) {
             currentData[dateStr].workout = {
                 title: currentParsed.workoutTitle,
@@ -226,7 +256,10 @@
             body: JSON.stringify({ message: `Update ${type} at ${dateStr}`, content: encodedContent, sha: sha })
         });
         if (putRes.ok) {
+            
+            await rebuildLogTxt(currentData);
             alert(`✅ ${type} ${mins}분 저장 완료!`);
+
         } else {
             const errorDetail = await putRes.json();
             if (putRes.status === 401 || putRes.status === 403) {
@@ -391,7 +424,7 @@ async function recordManual(type) {
         .replace(/-/g, '');
         
     await pushToGithub(type, cardio, dateStr); // 기존 json 저장
-    await pushCardioToLog(cardio, dateStr);
+    //await pushCardioToLog(cardio, dateStr);
 }
 
     document.getElementById('imageInput').onchange = function() {
@@ -694,7 +727,9 @@ const parsed = parseWorkout(rawText, photoTime);
                             resultContainer.style.display = 'block';
                             const pushBtn = document.getElementById('pushGithubBtn');
                             const snapParsed = parsed;
-                            pushBtn.onclick = function() { currentParsed = snapParsed; pushToGithub('strong', currentMinutes, currentFileDate);pushLogTxt(currentMinutes, snapParsed.cooldownMins, currentFileDate); };
+                            pushBtn.onclick = function() { currentParsed = snapParsed; pushToGithub('strong', currentMinutes, currentFileDate);
+                            //pushLogTxt(currentMinutes, snapParsed.cooldownMins, currentFileDate); 
+                            };
                             pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
                             pushBtn.classList.remove('btn-done');
                         });
@@ -706,7 +741,9 @@ const parsed = parseWorkout(rawText, photoTime);
                                 resultContainer.style.display = 'block';
                                 const pushBtn = document.getElementById('pushGithubBtn');
                                 const snapParsed = parsed;
-                                pushBtn.onclick = function() { currentParsed = snapParsed; pushToGithub('strong', currentMinutes, currentFileDate);pushLogTxt(currentMinutes, snapParsed.cooldownMins, currentFileDate); };
+                                pushBtn.onclick = function() { currentParsed = snapParsed; pushToGithub('strong', currentMinutes, currentFileDate);
+                                //pushLogTxt(currentMinutes, snapParsed.cooldownMins, currentFileDate);
+                             };
                                 pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
                                 pushBtn.classList.remove('btn-done');
                             });
@@ -724,7 +761,7 @@ const parsed = parseWorkout(rawText, photoTime);
                     pushBtn.onclick = () => {
                         currentParsed = snapParsed;
                         pushToGithub('strong', currentMinutes, currentFileDate);
-                         pushLogTxt(currentMinutes, snapParsed.cooldownMins, currentFileDate);
+                         //pushLogTxt(currentMinutes, snapParsed.cooldownMins, currentFileDate);
                     };
                     pushBtn.innerText = "🚀 깃허브로 데이터 쏘기";
                     pushBtn.classList.remove('btn-done');
@@ -734,6 +771,103 @@ const parsed = parseWorkout(rawText, photoTime);
         };
         reader.readAsDataURL(file);
     }
+
+
+    async function rebuildLogTxt(currentData) {
+        if (!checkToken()) return;
+
+        const lines = [];
+
+        const sortedDates =
+            Object.keys(currentData).sort();
+
+        for (const dateStr of sortedDates) {
+
+            const item =
+                currentData[dateStr];
+
+            const strong =
+                item.strong || 0;
+
+            const cardio =
+                (item.cooldown || 0) +
+                (item.swim || 0) +
+                (item.run || 0);
+
+            const formattedDate =
+                dateStr.replace(
+                    /(\d{4})(\d{2})(\d{2})/,
+                    '$1-$2-$3'
+                );
+
+            lines.push(
+                `${formattedDate},${strong},${cardio}`
+            );
+        }
+
+        const content =
+            lines.join('\n') + '\n';
+
+        const encoded =
+            btoa(unescape(
+                encodeURIComponent(content)
+            ));
+
+        const url =
+            `https://api.github.com/repos/${GITHUB_REPO}/contents/log.txt`;
+
+        let sha = "";
+
+        try {
+            const res = await fetch(url, {
+                headers: {
+                    Authorization:
+                        `Bearer ${GITHUB_TOKEN}`
+                }
+            });
+
+            if (res.ok) {
+                const json =
+                    await res.json();
+
+                sha = json.sha;
+            }
+        } catch (e) {
+            console.log(
+                "log.txt sha load fail",
+                e
+            );
+        }
+
+        const putRes =
+            await fetch(url, {
+                method: "PUT",
+                headers: {
+                    Authorization:
+                        `Bearer ${GITHUB_TOKEN}`,
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    message:
+                        "Rebuild log.txt",
+                    content: encoded,
+                    sha
+                })
+            });
+
+        if (!putRes.ok) {
+            const err =
+                await putRes.json();
+
+            console.error(
+                "log.txt rebuild fail",
+                err
+            );
+        }
+    }
+
+
 
     function downloadData() {
         const fileName = `ssimg_${currentFileDate}_${currentMinutes}.txt`;
