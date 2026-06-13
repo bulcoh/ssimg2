@@ -6,7 +6,7 @@
     <title>SSimage 2</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        * { -webkit-user-select: none; -webkit-touch-callout: none; }
+        * { -webkit-user-select: none; -webkit-touch-callout: none;user-select: none;  }
         
         body { font-family: 'Inter', sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
         
@@ -16,10 +16,10 @@
         textarea { 
             width: 100%; height: 100px; background: #333; border: 1px solid #444; color: #fff; 
             padding: 10px; border-radius: 10px; margin-bottom: 10px; resize: none; outline: none; box-sizing: border-box;
-            -webkit-user-select: text; font-size: 16px;
+            -webkit-user-select: text; font-size: 16px;user-select: none; 
         }
         
-        .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; box-sizing: border-box; }
+        .btn { background: #ff4757; color: white; padding: 18px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; margin-bottom: 10px; -webkit-appearance: none; box-sizing: border-box; appearance: none; }
         .btn-sub { background: #444; font-size: 16px; }
         
         .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -51,7 +51,7 @@
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            -webkit-appearance: none;
+            -webkit-appearance: none;appearance: none; 
         }
         .type-btn.active-A { border-color: #ff4757; color: #ff4757; background: rgba(255,71,87,0.12); }
         .type-btn.active-B { border-color: #00d2ff; color: #00d2ff; background: rgba(0,210,255,0.10); }
@@ -217,7 +217,7 @@ if (type === 'strong') {
     const oldData =
         currentData[dateStr] || {};
 
-    const cooldownVal = Number(currentParsed?.cooldownMins) || 0;
+
 
     currentData[dateStr] = {
         strong: mins - cooldownVal,
@@ -260,6 +260,7 @@ if (type === 'strong') {
                 })
             };
         }
+        const cooldownVal = Number(currentParsed?.cooldownMins) || 0;
         const jsonStr = JSON.stringify(currentData, null, 2);
         const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
             function(match, p1) { return String.fromCharCode('0x' + p1); }));
