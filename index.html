@@ -270,8 +270,9 @@ if (type === 'strong') {
         });
         if (putRes.ok) {
             alert(`✅ putRes.ok 진입함! status: ${putRes.status}`);
+            alert(`✅ 저장 완료! ${mins} ${cooldownVal}`);
             await rebuildLogTxt(currentData);
-            alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!`);
+            alert(`리빌드도완료`);
         } else {
             const errorDetail = await putRes.json();
             if (putRes.status === 401 || putRes.status === 403) {
