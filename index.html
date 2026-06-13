@@ -269,10 +269,9 @@ if (type === 'strong') {
             body: JSON.stringify({ message: `Update ${type} at ${dateStr}`, content: encodedContent, sha: sha })
         });
         if (putRes.ok) {
-            alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!`);
+            alert(`✅ putRes.ok 진입함! status: ${putRes.status}`);
             await rebuildLogTxt(currentData);
-            
-
+            alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!`);
         } else {
             const errorDetail = await putRes.json();
             if (putRes.status === 401 || putRes.status === 403) {
