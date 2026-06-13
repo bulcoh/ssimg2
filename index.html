@@ -217,13 +217,13 @@ if (type === 'strong') {
     const oldData =
         currentData[dateStr] || {};
 
+    const cooldownVal = Number(currentParsed?.cooldownMins) || 0;
+
     currentData[dateStr] = {
-        strong: mins,
+        strong: mins - cooldownVal,
 
         // cooldown 강제 생성
-        cooldown: Number(
-            currentParsed?.cooldownMins
-        ) || 0,
+        cooldown: cooldownVal,
 
         // 기존 수영/달리기 유지
         swim: oldData.swim || 0,
