@@ -4500,5 +4500,47 @@
         }
       ]
     }
+  },
+  "20260615": {
+    "strong": 28,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "Push",
+      "datetime": "2026년 6월 15일 월요일 오후 5:22",
+      "duration": 28,
+      "totalSets": 10,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Plate Loaded)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
