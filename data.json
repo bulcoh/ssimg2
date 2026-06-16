@@ -4542,5 +4542,61 @@
         }
       ]
     }
+  },
+  "20260616": {
+    "strong": 45,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#1",
+      "datetime": "2026년 6월 16일 화요일 오후 5:58",
+      "duration": 45,
+      "totalSets": 11,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over Row (Barbell)",
+          "sets": 0,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pullover (Dumbbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Wide-Grip Row (Cable)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
