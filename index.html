@@ -617,7 +617,7 @@ window.addEventListener("load", async () => {
                     const isDrop = line.includes('[드롭') || /^D\d*:/i.test(line);
                     const isFail = line.includes('[실패]');
                     const timeMatch = line.match(/(\d+):(\d+)/);
-                    const repsMatch = line.match(/[×x]\s*(\d+)|(\d+)\s*렙/i);
+                    const repsMatch = line.match(/[×x]\s*(\d+)|(\d+)\s*(?:렙|회)/i);
                     const reps = timeMatch
                         ? timeMatch[1] + ':' + timeMatch[2]
                         : repsMatch ? parseInt(repsMatch[1]||repsMatch[2]) : 0;
