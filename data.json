@@ -5342,9 +5342,66 @@
     }
   },
   "20260630": {
-    "strong": 0,
+    "strong": 51,
     "cooldown": 0,
     "swim": 0,
-    "run": 19
+    "run": 19,
+    "workout": {
+      "title": "PULL#1",
+      "datetime": "2026년 6월 30일 화요일 오후 11:09",
+      "duration": 51,
+      "totalSets": 23,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Straight Arm Pulldown",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 5,
+          "warms": 0,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Face Pull (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Cable)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 3,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
