@@ -5774,5 +5774,82 @@
         }
       ]
     }
+  },
+  "20260707": {
+    "strong": 75,
+    "cooldown": 10,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#1",
+      "datetime": "2026년 7월 7일 화요일 오후 12:42",
+      "duration": 85,
+      "totalSets": 27,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 5,
+          "warms": 0,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 4,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Straight Arm Pulldown",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Cable)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 3,
+          "fails": 0
+        },
+        {
+          "name": "Face Pull (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over Row (Barbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bicycle Crunch",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
