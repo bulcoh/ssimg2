@@ -5998,5 +5998,75 @@
         }
       ]
     }
+  },
+  "20260710": {
+    "strong": 86,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#2",
+      "datetime": "2026년 7월 10일 금요일 오후 10:33",
+      "duration": 86,
+      "totalSets": 21,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Kneeling Lat Pulldown (Cable)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 1,
+          "warms": 2,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Kroc Row",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Wide-Grip Row (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Curl (Dumbbell)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Reverse Fly (Machine)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Bicycle Crunch",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
