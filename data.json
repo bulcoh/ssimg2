@@ -6068,5 +6068,96 @@
         }
       ]
     }
+  },
+  "20260713": {
+    "strong": 86,
+    "cooldown": 10,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#1",
+      "datetime": "2026년 7월 13일 월요일 오후 6:35",
+      "duration": 96,
+      "totalSets": 23,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bench Press (Barbell)",
+          "sets": 1,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Overhead Press (Dumbbell)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Press Around (Cable)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Triceps Pushdown (Cable - Straight Bar)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Overhead Press (Barbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 4,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
