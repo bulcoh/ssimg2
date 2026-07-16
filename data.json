@@ -6313,5 +6313,89 @@
         }
       ]
     }
+  },
+  "20260716": {
+    "strong": 75,
+    "cooldown": 10,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#2",
+      "datetime": "2026년 7월 16일 목요일 오후 8:54",
+      "duration": 85,
+      "totalSets": 25,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Bench Press (Barbell)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Machine)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Skullcrusher (Barbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Chest Dip (Assisted)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Overhead Press (Barbell)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Front Raise (Plate)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
