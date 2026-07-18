@@ -6401,7 +6401,7 @@
   "20260718": {
     "strong": 86,
     "cooldown": 0,
-    "swim": 0,
+    "swim": 32,
     "run": 0,
     "workout": {
       "title": "PULL#2",
