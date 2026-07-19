@@ -283,10 +283,11 @@ if (type === 'strong') {
         }
     }
 
-async function pushLogTxt(mins, cooldown, dateStr) {
+async function pushLogTxt(mins, cooldown, dateStr, cardio) {
     if (!checkToken()) return;
     const formattedDate = dateStr.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
-    const newLine = `${formattedDate},${mins - cooldown},${cooldown}`;
+    const effectiveCardio = (cooldown || 0) + (cardio || 0);
+    const newLine = `${formattedDate},${mins - (cooldown||0)},${effectiveCardio}`;
     
     const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/log.txt`;
     let sha = "";
@@ -437,6 +438,9 @@ async function recordManual(type) {
         .replace(/-/g, '');
         
     await pushToGithub(type, cardio, dateStr); // 기존 json 저장
+    if (type === 'swim' || type === 'run') {
+    await pushLogTxt(0, 0, dateStr, cardioMins);
+}
     //await pushCardioToLog(cardio, dateStr);
 }
 
