@@ -6479,7 +6479,7 @@
     "strong": 80,
     "cooldown": 0,
     "swim": 0,
-    "run": 0,
+    "run": 1,
     "workout": {
       "title": "LEGS#2",
       "datetime": "2026년 7월 19일 일요일 오후 4:04",
