@@ -6643,6 +6643,69 @@
       ]
     }
   },
+  "20260729": {
+    "strong": 85,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS RCVR",
+      "datetime": "2026년 7월 29일 수요일 오후 5:54",
+      "duration": 85,
+      "totalSets": 15,
+      "exercises": [
+        {
+          "name": "Side Plank",
+          "sets": 0,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 0,
+          "warms": 4,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "One Leg Deadlift (Kettlebell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Stepbox Wide Squat (Dumbbell)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Good Morning (Barbell)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
+  },
   "20260730": {
     "strong": 74,
     "cooldown": 10,
