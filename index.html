@@ -437,10 +437,7 @@ async function recordManual(type) {
         .split('T')[0]
         .replace(/-/g, '');
         
-    await pushToGithub(type, cardio, dateStr); // 기존 json 저장
-    if (type === 'swim' || type === 'run') {
-    await pushCardioToLog(cardio, dateStr);
-}
+    await pushToGithub(type, cardio, dateStr);
     //await pushCardioToLog(cardio, dateStr);
 }
 
