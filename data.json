@@ -7008,9 +7008,59 @@
     }
   },
   "20260804": {
-    "strong": 0,
+    "strong": 44,
     "cooldown": 0,
     "swim": 0,
-    "run": 0
+    "run": 0,
+    "workout": {
+      "title": "PULL#1",
+      "datetime": "2026년 8월 4일 화요일 오후 6:02",
+      "duration": 44,
+      "totalSets": 13,
+      "exercises": [
+        {
+          "name": "Shrug (Barbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pendlay Row (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Reverse Fly (Machine)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Incline Curl (Dumbbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
