@@ -190,7 +190,7 @@
         let sha = "";
         let currentData = {};
         try {
-            const res = await fetch(url, { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
+            const res = await fetch(url + '?t=' + Date.now(), { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
             if (res.ok) {
                 const json = await res.json();
                 sha = json.sha;
@@ -833,12 +833,7 @@ const parsed = parseWorkout(rawText, photoTime);
         let sha = "";
 
         try {
-            const res = await fetch(url, {
-                headers: {
-                    Authorization:
-                        `Bearer ${GITHUB_TOKEN}`
-                }
-            });
+            const res = await fetch(url + '?t=' + Date.now(), { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
 
             if (res.ok) {
                 const json =
