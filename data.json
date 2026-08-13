@@ -7564,7 +7564,7 @@
     "strong": 71,
     "cooldown": 0,
     "swim": 0,
-    "run": 0,
+    "run": 20,
     "workout": {
       "title": "PUSH#2",
       "datetime": "2026년 8월 13일 목요일 오후 5:23",
