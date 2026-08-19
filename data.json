@@ -7958,5 +7958,54 @@
         }
       ]
     }
+  },
+  "20260819": {
+    "strong": 52,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "LEGS#1",
+      "datetime": "2026년 8월 19일 수요일 오후 7:52",
+      "duration": 52,
+      "totalSets": 7,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Barbell)",
+          "sets": 1,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Romanian Deadlift (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Stepbox Wide Squat (Dumbbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Standing Calf Raise (Machine)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    }
   }
 }
