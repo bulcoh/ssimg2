@@ -1418,5 +1418,957 @@
       "title": "Rest",
       "exercises": []
     }
+  },
+  "WEEK5": {
+    "Mon": {
+      "title": "PUSH#1",
+      "exercises": [
+        {
+          "name": "Low Incline DB Press",
+          "w": "2",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "Low Incline Machine Press",
+          "sub2": "Low Incline Smith Machine Press",
+          "note": "벤치 각도를 15도로 설정하고, 내리는 동작(네거티브)에서는 팔꿈치를 몸쪽으로 모으고 밀어 올릴 때는 바깥으로 펼치세요."
+        },
+        {
+          "name": "Machine Shoulder Press",
+          "w": "2",
+          "sets": "3",
+          "reps": "15",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "DB Shoulder Press",
+          "sub2": "Standing DB Arnold Press",
+          "note": "반복 사이에 멈추지 마세요. 삼각근에 부드럽고 통제된 긴장을 유지합니다."
+        },
+        {
+          "name": "Cable Crossover Ladder",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Flat-To-Incline DB Flye",
+          "sub2": "Pec Deck",
+          "note": "한 세트는 낮은 케이블 위치에서, 한 세트는 중간 높이에서, 그리고 한 세트는 높은 케이블 위치에서 수행하세요."
+        },
+        {
+          "name": "A1: Lean-In Constant Tension DB Lateral Raise",
+          "w": "1",
+          "sets": "3",
+          "reps": "15",
+          "rpe": "10",
+          "rest": "0 min",
+          "sub1": "Constant-Tension Cable Lateral Raise",
+          "sub2": "Constant-Tension Machine Lateral Raise",
+          "note": "벤치에 몸을 기대어 레이즈를 수행하세요. 하단에서 팔을 옆구리에 붙여 휴식하지 말고 계속 긴장을 유지하세요."
+        },
+        {
+          "name": "A2: Side Delt Static Stretch (30s)",
+          "w": "0",
+          "sets": "3",
+          "reps": "30s HOLD",
+          "rpe": "N/A",
+          "rest": "0 min",
+          "sub1": "N/A",
+          "sub2": "N/A",
+          "note": "30초 동안 측면 삼각근 스트레칭 상태를 유지하세요. 스트레칭 강도는 10점 만점에 약 7점 정도로 유지해야 합니다."
+        },
+        {
+          "name": "Overhead Triceps Extension",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "DB Floor Skull Crusher",
+          "sub2": "DB French Press",
+          "note": "양팔을 동시에 수행하며, 내리는 동작(네거티브)에서 저항을 느끼며 버티세요."
+        },
+        {
+          "name": "Med-Ball Close Grip Push Up",
+          "w": "0",
+          "sets": "1",
+          "reps": "AMRAP",
+          "rpe": "10",
+          "rest": "0 min",
+          "sub1": "Close-Grip Push Up",
+          "sub2": "Kneeling Modified Push Up",
+          "note": "메디신 볼 위에 손을 올리고 부드럽고 통제된 자세로 푸쉬업을 수행하세요."
+        }
+      ]
+    },
+    "Tue": {
+      "title": "PULL#1",
+      "exercises": [
+        {
+          "name": "1-Arm Half Kneeling Lat Pulldown",
+          "w": "1",
+          "sets": "2",
+          "reps": "20",
+          "rpe": "9",
+          "rest": "1-2 min",
+          "sub1": "1-Arm Lat Pull-In",
+          "sub2": "Cable Lat Pullover",
+          "note": "가슴을 높게 들고, 팔꿈치를 몸통에 가깝게 붙이세요. 광배근을 쥐어짜며 무게를 움직이는 데 집중합니다."
+        },
+        {
+          "name": "Omni-Grip Lat Pulldown",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "Omni-Grip Pull-Up",
+          "sub2": "Chin-Up",
+          "note": "한 세트는 넓은 그립(오버핸드), 한 세트는 중간 너비 그립(오버핸드), 한 세트는 좁은 그립(언더핸드)으로 수행하세요."
+        },
+        {
+          "name": "Machine Low Row",
+          "w": "2",
+          "sets": "4",
+          "reps": "20",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "Helms Row",
+          "sub2": "Incline Chest-Supported DB Row",
+          "note": "매 반복 시 견갑골을 서로 모아주는 것에 집중하세요."
+        },
+        {
+          "name": "Cable Shrug-In",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "DB Shrug",
+          "sub2": "Plate Shrug",
+          "note": "두 개의 케이블 손잡이를 낮게 설정하고 위와 안쪽 방향으로 슈러그를 하세요. 상부 승모근을 쥐어짜며 무게를 움직입니다."
+        },
+        {
+          "name": "Reverse Pec Deck",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Reverse Cable Flye",
+          "sub2": "Bent-Over Reverse DB Flye",
+          "note": "무게를 \"뒤쪽\"이 아닌 \"바깥쪽\"으로 휘두르세요."
+        },
+        {
+          "name": "EZ-Bar Curl (Heavy)",
+          "w": "2",
+          "sets": "1",
+          "reps": "4-6",
+          "rpe": "9",
+          "rest": "1-2 min",
+          "sub1": "DB Curl",
+          "sub2": "Cable Curl",
+          "note": "바벨을 \"위쪽\"이 아니라 \"바깥쪽\"으로 호를 그리며 들어 올리고, 이두근을 쥐어짜는 데 집중하세요."
+        },
+        {
+          "name": "A1: EZ-Bar Modified Bicep 21's",
+          "w": "0",
+          "sets": "2",
+          "reps": "21",
+          "rpe": "10",
+          "rest": "0 min",
+          "sub1": "DB Curl 21's",
+          "sub2": "Cable Curl 21's",
+          "note": "앉아서 7회, 서서 전체 가동 범위로 7회, 가동 범위 하단 절반만 사용하는 부분 반복으로 7회를 수행하세요. (21 컬 변형)"
+        },
+        {
+          "name": "A2: Bicep Static Stretch (30s)",
+          "w": "0",
+          "sets": "2",
+          "reps": "30s HOLD",
+          "rpe": "N/A",
+          "rest": "0 min",
+          "sub1": "N/A",
+          "sub2": "N/A",
+          "note": "30초 동안 이두근 스트레칭 상태를 유지하세요. 스트레칭 강도는 10점 만점에 약 7점 정도로 유지해야 합니다."
+        }
+      ]
+    },
+    "Wed": {
+      "title": "LEGS#1",
+      "exercises": [
+        {
+          "name": "Front Squat",
+          "w": "2-3",
+          "sets": "3",
+          "reps": "15",
+          "rpe": "7-8",
+          "rest": "2-3 min",
+          "sub1": "High-Bar Box Squat",
+          "sub2": "Goblet Squat",
+          "note": "매우 도전적인 동작들이니 힘내서 밀어붙입시다! 정해진 횟수를 채우지 못할 정도로 너무 무거운 무게를 쓰지는 마세요. 무게 욕심을 버리고 상체를 곧게 세우는 데 집중하세요."
+        },
+        {
+          "name": "Dumbbell RDL",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "Barbell RDL",
+          "sub2": "45° Hyperextension",
+          "note": "햄스트링의 스트레칭을 강조하고, 요추가 굽어지지 않게 주의하세요."
+        },
+        {
+          "name": "Walking Lunge",
+          "w": "1",
+          "sets": "3",
+          "reps": "10",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "DB Step-Up",
+          "sub2": "Goblet Squat",
+          "note": "중간 정도의 보폭을 취하고, 뒷다리로 밀어내는 힘을 최소화하세요."
+        },
+        {
+          "name": "Slow Seated Leg Curl (3 up, 3 down)",
+          "w": "1",
+          "sets": "3",
+          "reps": "8",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Lying Leg Curl",
+          "sub2": "Nordic Ham Curl",
+          "note": "느린 템포로 들어 올리세요. 올리는 동작(수축)에 3초, 내리는 동작(이완)에 3초를 소요해야 합니다."
+        },
+        {
+          "name": "Leg Press Toe Press",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Seated Calf Raise",
+          "sub2": "Standing Calf Raise",
+          "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
+        },
+        {
+          "name": "LLPT Plank",
+          "w": "0",
+          "sets": "2",
+          "reps": "30s",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Ab Wheel Rollout",
+          "sub2": "Plank",
+          "note": "둔근을 수축하고 팔꿈치를 눈높이 아래에 위치시켜 플랭크의 난이도를 높이세요."
+        }
+      ]
+    },
+    "Thu": {
+      "title": "PUSH#2",
+      "exercises": [
+        {
+          "name": "Bench Press (Top Set)",
+          "w": "3-4",
+          "sets": "1",
+          "reps": "2-4",
+          "rpe": "8-9",
+          "rest": "3-4 min",
+          "sub1": "DB Bench Press",
+          "sub2": "Machine Chest Press",
+          "note": "편안한 아치를 만들고, 가슴에서 잠시 멈춘 뒤 매 횟수마다 폭발적으로 밀어 올리세요."
+        },
+        {
+          "name": "Bench Press (Back Off AMRAP)",
+          "w": "0",
+          "sets": "1",
+          "reps": "AMRAP",
+          "rpe": "10",
+          "rest": "3-4 min",
+          "sub1": "DB Bench Press",
+          "sub2": "Machine Chest Press",
+          "note": "가장 무겁게 수행했던 세트 무게의 약 60%를 사용하고, 가능한 한 많은 횟수(AMRAP)를 수행하세요. 이 세트에서는 1020회 이상의 범위에 있어야 합니다! 보조자와 안전 바를 반드시 활용하세요."
+        },
+        {
+          "name": "Standing Dumbbell Arnold Press",
+          "w": "2",
+          "sets": "3",
+          "reps": "15",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "Seated DB Shoulder Press",
+          "sub2": "Machine Shoulder Press",
+          "note": "팔꿈치를 몸 앞에 두고 손바닥이 몸을 향하게 시작하세요. 덤벨을 위로 밀면서 손바닥이 정면을 향하도록 회전시킵니다."
+        },
+        {
+          "name": "Weighted Dip",
+          "w": "1",
+          "sets": "3",
+          "reps": "15-20",
+          "rpe": "10",
+          "rest": "2-3 min",
+          "sub1": "Machine Chest Press",
+          "sub2": "DB Bench Press",
+          "note": "팔꿈치를 45도 각도로 모으고, 상체를 앞으로 15도 정도 기울이세요. 그립은 어깨너비 또는 그보다 약간 넓게 잡습니다."
+        },
+        {
+          "name": "Machine Lateral Raise (+ Myoreps)",
+          "w": "1",
+          "sets": "3",
+          "reps": "12-15",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "DB Lateral Raise (+ Myoreps)",
+          "sub2": "Cable Lateral Raise (+ Myoreps)",
+          "note": "마지막 세트에만 마이오렙을 적용하세요: 1215회에서 실패 지점에 도달한 후, 약 5초간 휴식하고 다시 4회를 수행합니다. 다시 5초간 휴식 후 또 4회를 수행하세요. 4회를 다 채우지 못할 때까지 이 과정을 반복합니다."
+        },
+        {
+          "name": "Triceps Pressdown",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Cable Triceps Kickback",
+          "sub2": "DB Triceps Kickback",
+          "note": "삼두근을 쥐어짜며 무게를 움직이는 데 집중하세요."
+        },
+        {
+          "name": "1-Arm Bottom-Half Overhead Cable Tricep Extensions",
+          "w": "0",
+          "sets": "3",
+          "reps": "20-30",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "DB Bottom-Half Skull Crusher",
+          "sub2": "EZ Bar Bottom-Half Skull Crusher",
+          "note": "오버헤드 케이블 삼두 신전(익스텐션)을 수행하되, 가동 범위의 상단 절반은 제외하세요 (철저히 근육이 늘어나는 스트레칭 구간에서만 움직이세요)."
+        }
+      ]
+    },
+    "Fri": {
+      "title": "PULL#2",
+      "exercises": [
+        {
+          "name": "Pull-Up",
+          "w": "2",
+          "sets": "6",
+          "reps": "3",
+          "rpe": "7-8",
+          "rest": "15 sec",
+          "sub1": "Lat Pulldown",
+          "sub2": "Machine Pulldown",
+          "note": "6회 클러스터 세트: 3회 수행 후 15초 휴식을 한 세트로 하여 총 6번 반복하세요. 자세는 부드럽고 통제된 상태를 유지해야 합니다."
+        },
+        {
+          "name": "Wide-Grip Cable Row",
+          "w": "2",
+          "sets": "10",
+          "reps": "3",
+          "rpe": "7-8",
+          "rest": "15 sec",
+          "sub1": "Wide-Grip Machine Row",
+          "sub2": "Wide-Grip T-Bar Row",
+          "note": "10회 클러스터 세트: 3회 수행 후 15초 휴식을 한 세트로 하여 총 10번 반복하세요. 자세를 엄격하게 유지합니다."
+        },
+        {
+          "name": "SLOW Barbell Row (3 up, 3 down)",
+          "w": "1",
+          "sets": "3",
+          "reps": "6",
+          "rpe": "7-8",
+          "rest": "2-3 min",
+          "sub1": "SLOW DB Row",
+          "sub2": "SLOW Machine Row",
+          "note": "올리는 동작(수축)에 3초, 내리는 동작(이완)에 3초를 소요하세요. 등의 움직임을 충분히 느끼고, 무게 욕심을 버리세요."
+        },
+        {
+          "name": "Bayesian Cable Curl",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "DB Incline Curl",
+          "sub2": "DB Curl",
+          "note": "가동 범위 내내 팔꿈치를 몸통 뒤쪽에 고정하고, 이두근을 쥐어짜는 데 집중하세요. 세트 수는 팔당 기준입니다."
+        },
+        {
+          "name": "Bottom-Half Preacher Curl",
+          "w": "0",
+          "sets": "3",
+          "reps": "15",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Bottom-Half Spider Curl",
+          "sub2": "Bottom-Half Bayesian Curl",
+          "note": "프리처 컬을 수행하되, 가동 범위의 상단 절반은 제외하세요 (근육이 늘어나는 스트레칭 구간에서만 움직이세요)."
+        },
+        {
+          "name": "Rope Facepull",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Reverse Pec Deck",
+          "sub2": "Bent-Over Reverse DB Flye",
+          "note": "팔꿈치를 위와 바깥쪽으로 끌어올리며 견갑골을 서로 강하게 맞닿게 하세요."
+        }
+      ]
+    },
+    "Sat": {
+      "title": "LEGS#2",
+      "exercises": [
+        {
+          "name": "Deadlift",
+          "w": "3-4",
+          "sets": "2",
+          "reps": "8",
+          "rpe": "9",
+          "rest": "3-4 min",
+          "sub1": "Trap Bar Deadlift",
+          "sub2": "Barbell Hip Thrust",
+          "note": "광배근을 단단히 고정하고 가슴을 높게 드세요. 들어 올리기 전에 바벨의 유격을 미리 잡아 팽팽하게 만드세요."
+        },
+        {
+          "name": "Leg Press",
+          "w": "2-3",
+          "sets": "2",
+          "reps": "20",
+          "rpe": "9",
+          "rest": "2-3 min",
+          "sub1": "Goblet Squat",
+          "sub2": "Walking Lunge",
+          "note": "발판 위에서 발을 중간 너비로 벌리고, 요추가 말리지 않도록 주의하세요."
+        },
+        {
+          "name": "Leg Extension",
+          "w": "1",
+          "sets": "5",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "DB Step-Up",
+          "sub2": "Goblet Squat",
+          "note": "대퇴사두근을 쥐어짜며 무게를 움직이는 데 집중하세요."
+        },
+        {
+          "name": "Lying Leg Curl",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Seated Leg Curl",
+          "sub2": "Nordic Ham Curl",
+          "note": "햄스트링을 쥐어짜며 무게를 움직이는 데 집중하세요."
+        },
+        {
+          "name": "Seated Calf Raise",
+          "w": "1",
+          "sets": "3",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Standing Calf Raise",
+          "sub2": "Leg Press Toe Press",
+          "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
+        },
+        {
+          "name": "Corpse Crunch",
+          "w": "0",
+          "sets": "2",
+          "reps": "20",
+          "rpe": "10",
+          "rest": "1-2 min",
+          "sub1": "Plate-Weighted Crunch",
+          "sub2": "Cable Crunch",
+          "note": "크런치를 할 때 상부 등을 바닥에서 완전히 떼고 12초간 멈춘 뒤 다시 내려가세요. 목을 무리하게 잡아당기지 마세요."
+        },
+        {
+          "name": "week5 2번 반복",
+          "w": "",
+          "sets": "",
+          "reps": "",
+          "rpe": "",
+          "rest": "",
+          "sub1": "",
+          "sub2": "",
+          "note": "week5의 루틴으로 5주 6주 진행, week6루틴을 7주차에 진행(디로딩)"
+        }
+      ]
+    },
+    "Sun": {
+      "title": "Rest",
+      "exercises": []
+    }
+  },
+  "WEEK6": {
+    "Mon": {
+      "title": "PUSH#1",
+      "exercises": [
+        {
+          "name": "Low Incline DB Press",
+          "w": "2",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Low Incline Machine Press",
+          "sub2": "Low Incline Smith Machine Press",
+          "note": "벤치 각도를 15도로 설정하고, 내리는 동작(네거티브)에서는 팔꿈치를 몸쪽으로 모으고 밀어 올릴 때는 바깥으로 펼치세요."
+        },
+        {
+          "name": "Machine Shoulder Press",
+          "w": "2",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "DB Shoulder Press",
+          "sub2": "Standing DB Arnold Press",
+          "note": "반복 사이에 멈추지 마세요. 삼각근에 부드럽고 통제된 긴장을 유지합니다."
+        },
+        {
+          "name": "Cable Crossover Ladder",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Flat-To-Incline DB Flye",
+          "sub2": "Pec Deck",
+          "note": "한 세트는 낮은 케이블 위치에서, 한 세트는 중간 높이에서, 그리고 한 세트는 높은 케이블 위치에서 수행하세요."
+        },
+        {
+          "name": "A1: Lean-In Constant Tension DB Lateral Raise",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "7",
+          "rest": "0 min",
+          "sub1": "Constant-Tension Cable Lateral Raise",
+          "sub2": "Constant-Tension Machine Lateral Raise",
+          "note": "벤치에 몸을 기대어 레이즈를 수행하세요. 하단에서 팔을 옆구리에 붙여 휴식하지 말고 계속 긴장을 유지하세요."
+        },
+        {
+          "name": "A2: Side Delt Static Stretch (30s)",
+          "w": "0",
+          "sets": "2",
+          "reps": "30s HOLD",
+          "rpe": "N/A",
+          "rest": "0 min",
+          "sub1": "N/A",
+          "sub2": "N/A",
+          "note": "30초 동안 측면 삼각근 스트레칭 상태를 유지하세요. 스트레칭 강도는 10점 만점에 약 7점 정도로 유지해야 합니다."
+        },
+        {
+          "name": "Overhead Triceps Extension",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Floor Skull Crusher",
+          "sub2": "DB French Press",
+          "note": "양팔을 동시에 수행하며, 내리는 동작(네거티브)에서 저항을 느끼며 버티세요."
+        },
+        {
+          "name": "Med-Ball Close Grip Push Up",
+          "w": "0",
+          "sets": "1",
+          "reps": "AMRAP",
+          "rpe": "7",
+          "rest": "0 min",
+          "sub1": "Close-Grip Push Up",
+          "sub2": "Kneeling Modified Push Up",
+          "note": "메디신 볼 위에 손을 올리고 부드럽고 통제된 자세로 푸쉬업을 수행하세요."
+        }
+      ]
+    },
+    "Tue": {
+      "title": "PULL#1",
+      "exercises": [
+        {
+          "name": "1-Arm Half Kneeling Lat Pulldown",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "1-2 min",
+          "sub1": "1-Arm Lat Pull-In",
+          "sub2": "Cable Lat Pullover",
+          "note": "가슴을 높게 들고, 팔꿈치를 몸통에 가깝게 붙이세요. 광배근을 쥐어짜며 무게를 움직이는 데 집중합니다."
+        },
+        {
+          "name": "Omni-Grip Lat Pulldown",
+          "w": "1",
+          "sets": "3",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Omni-Grip Pull-Up",
+          "sub2": "Chin-Up",
+          "note": "한 세트는 넓은 그립(오버핸드), 한 세트는 중간 너비 그립(오버핸드), 한 세트는 좁은 그립(언더핸드)으로 수행하세요."
+        },
+        {
+          "name": "Machine Low Row",
+          "w": "2",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Helms Row",
+          "sub2": "Incline Chest-Supported DB Row",
+          "note": "매 반복 시 견갑골을 서로 모아주는 것에 집중하세요."
+        },
+        {
+          "name": "Cable Shrug-In",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Shrug",
+          "sub2": "Plate Shrug",
+          "note": "두 개의 케이블 손잡이를 낮게 설정하고 위와 안쪽 방향으로 슈러그를 하세요. 상부 승모근을 쥐어짜며 무게를 움직입니다."
+        },
+        {
+          "name": "Reverse Pec Deck",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Reverse Cable Flye",
+          "sub2": "Bent-Over Reverse DB Flye",
+          "note": "무게를 \"뒤쪽\"이 아닌 \"바깥쪽\"으로 휘두르세요."
+        },
+        {
+          "name": "EZ-Bar Curl (Heavy)",
+          "w": "2",
+          "sets": "1",
+          "reps": "4-6",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Curl",
+          "sub2": "Cable Curl",
+          "note": "바벨을 \"위쪽\"이 아니라 \"바깥쪽\"으로 호를 그리며 들어 올리고, 이두근을 쥐어짜는 데 집중하세요."
+        },
+        {
+          "name": "A1: EZ-Bar Modified Bicep 21's",
+          "w": "0",
+          "sets": "1",
+          "reps": "21",
+          "rpe": "7",
+          "rest": "0 min",
+          "sub1": "DB Curl 21's",
+          "sub2": "Cable Curl 21's",
+          "note": "앉아서 7회, 서서 전체 가동 범위로 7회, 가동 범위 하단 절반만 사용하는 부분 반복으로 7회를 수행하세요. (21 컬 변형)"
+        },
+        {
+          "name": "A2: Bicep Static Stretch (30s)",
+          "w": "0",
+          "sets": "1",
+          "reps": "30s HOLD",
+          "rpe": "N/A",
+          "rest": "0 min",
+          "sub1": "N/A",
+          "sub2": "N/A",
+          "note": "30초 동안 이두근 스트레칭 상태를 유지하세요. 스트레칭 강도는 10점 만점에 약 7점 정도로 유지해야 합니다."
+        }
+      ]
+    },
+    "Wed": {
+      "title": "LEGS#1",
+      "exercises": [
+        {
+          "name": "Front Squat",
+          "w": "2-3",
+          "sets": "2",
+          "reps": "10",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "High-Bar Box Squat",
+          "sub2": "Goblet Squat",
+          "note": "매우 도전적인 동작들이니 힘내서 밀어붙입시다! 정해진 횟수를 채우지 못할 정도로 너무 무거운 무게를 쓰지는 마세요. 무게 욕심을 버리고 상체를 곧게 세우는 데 집중하세요."
+        },
+        {
+          "name": "Dumbbell RDL",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Barbell RDL",
+          "sub2": "45° Hyperextension",
+          "note": "햄스트링의 스트레칭을 강조하고, 요추가 굽어지지 않게 주의하세요."
+        },
+        {
+          "name": "Walking Lunge",
+          "w": "1",
+          "sets": "2",
+          "reps": "8",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "DB Step-Up",
+          "sub2": "Goblet Squat",
+          "note": "중간 정도의 보폭을 취하고, 뒷다리로 밀어내는 힘을 최소화하세요."
+        },
+        {
+          "name": "Slow Seated Leg Curl (3 up, 3 down)",
+          "w": "1",
+          "sets": "2",
+          "reps": "8",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Lying Leg Curl",
+          "sub2": "Nordic Ham Curl",
+          "note": "느린 템포로 들어 올리세요. 올리는 동작(수축)에 3초, 내리는 동작(이완)에 3초를 소요해야 합니다."
+        },
+        {
+          "name": "Leg Press Toe Press",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Seated Calf Raise",
+          "sub2": "Standing Calf Raise",
+          "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
+        },
+        {
+          "name": "LLPT Plank",
+          "w": "0",
+          "sets": "1",
+          "reps": "30s",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Ab Wheel Rollout",
+          "sub2": "Plank",
+          "note": "둔근을 수축하고 팔꿈치를 눈높이 아래에 위치시켜 플랭크의 난이도를 높이세요."
+        }
+      ]
+    },
+    "Thu": {
+      "title": "PUSH#2",
+      "exercises": [
+        {
+          "name": "Bench Press (Top Set)",
+          "w": "3-4",
+          "sets": "1",
+          "reps": "2-4",
+          "rpe": "8-9",
+          "rest": "3-4 min",
+          "sub1": "DB Bench Press",
+          "sub2": "Machine Chest Press",
+          "note": "편안한 아치를 만들고, 가슴에서 잠시 멈춘 뒤 매 횟수마다 폭발적으로 밀어 올리세요."
+        },
+        {
+          "name": "Standing Dumbbell Arnold Press",
+          "w": "2",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Seated DB Shoulder Press",
+          "sub2": "Machine Shoulder Press",
+          "note": "팔꿈치를 몸 앞에 두고 손바닥이 몸을 향하게 시작하세요. 덤벨을 위로 밀면서 손바닥이 정면을 향하도록 회전시킵니다."
+        },
+        {
+          "name": "Weighted Dip",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Machine Chest Press",
+          "sub2": "DB Bench Press",
+          "note": "팔꿈치를 45도 각도로 모으고, 상체를 앞으로 15도 정도 기울이세요. 그립은 어깨너비 또는 그보다 약간 넓게 잡습니다."
+        },
+        {
+          "name": "Machine Lateral Raise (+ Myoreps)",
+          "w": "1",
+          "sets": "2",
+          "reps": "12-15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Lateral Raise (+ Myoreps)",
+          "sub2": "Cable Lateral Raise (+ Myoreps)",
+          "note": "마지막 세트에만 마이오렙을 적용하세요: 1215회에서 실패 지점에 도달한 후, 약 5초간 휴식하고 다시 4회를 수행합니다. 다시 5초간 휴식 후 또 4회를 수행하세요. 4회를 다 채우지 못할 때까지 이 과정을 반복합니다."
+        },
+        {
+          "name": "Triceps Pressdown",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Cable Triceps Kickback",
+          "sub2": "DB Triceps Kickback",
+          "note": "삼두근을 쥐어짜며 무게를 움직이는 데 집중하세요."
+        },
+        {
+          "name": "1-Arm Bottom-Half Overhead Cable Tricep Extensions",
+          "w": "0",
+          "sets": "2",
+          "reps": "15-20",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Bottom-Half Skull Crusher",
+          "sub2": "EZ Bar Bottom-Half Skull Crusher",
+          "note": "오버헤드 케이블 삼두 신전(익스텐션)을 수행하되, 가동 범위의 상단 절반은 제외하세요 (철저히 근육이 늘어나는 스트레칭 구간에서만 움직이세요)."
+        }
+      ]
+    },
+    "Fri": {
+      "title": "PULL#2",
+      "exercises": [
+        {
+          "name": "Pull-Up",
+          "w": "2",
+          "sets": "4",
+          "reps": "3",
+          "rpe": "6",
+          "rest": "15 sec",
+          "sub1": "Lat Pulldown",
+          "sub2": "Machine Pulldown",
+          "note": "6회 클러스터 세트: 3회 수행 후 15초 휴식을 한 세트로 하여 총 6번 반복하세요. 자세는 부드럽고 통제된 상태를 유지해야 합니다."
+        },
+        {
+          "name": "Wide-Grip Cable Row",
+          "w": "2",
+          "sets": "6",
+          "reps": "3",
+          "rpe": "6",
+          "rest": "15 sec",
+          "sub1": "Wide-Grip Machine Row",
+          "sub2": "Wide-Grip T-Bar Row",
+          "note": "10회 클러스터 세트: 3회 수행 후 15초 휴식을 한 세트로 하여 총 10번 반복하세요. 자세를 엄격하게 유지합니다."
+        },
+        {
+          "name": "SLOW Barbell Row (3 up, 3 down)",
+          "w": "1",
+          "sets": "2",
+          "reps": "6",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "SLOW DB Row",
+          "sub2": "SLOW Machine Row",
+          "note": "올리는 동작(수축)에 3초, 내리는 동작(이완)에 3초를 소요하세요. 등의 움직임을 충분히 느끼고, 무게 욕심을 버리세요."
+        },
+        {
+          "name": "Bayesian Cable Curl",
+          "w": "1",
+          "sets": "2",
+          "reps": "12",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Incline Curl",
+          "sub2": "DB Curl",
+          "note": "가동 범위 내내 팔꿈치를 몸통 뒤쪽에 고정하고, 이두근을 쥐어짜는 데 집중하세요. 세트 수는 팔당 기준입니다."
+        },
+        {
+          "name": "Bottom-Half Preacher Curl",
+          "w": "0",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Bottom-Half Spider Curl",
+          "sub2": "Bottom-Half Bayesian Curl",
+          "note": "프리처 컬을 수행하되, 가동 범위의 상단 절반은 제외하세요 (근육이 늘어나는 스트레칭 구간에서만 움직이세요)."
+        },
+        {
+          "name": "Rope Facepull",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Reverse Pec Deck",
+          "sub2": "Bent-Over Reverse DB Flye",
+          "note": "팔꿈치를 위와 바깥쪽으로 끌어올리며 견갑골을 서로 강하게 맞닿게 하세요."
+        }
+      ]
+    },
+    "Sat": {
+      "title": "LEGS#2",
+      "exercises": [
+        {
+          "name": "Deadlift",
+          "w": "3-4",
+          "sets": "1",
+          "reps": "8",
+          "rpe": "6",
+          "rest": "3-4 min",
+          "sub1": "Trap Bar Deadlift",
+          "sub2": "Barbell Hip Thrust",
+          "note": "광배근을 단단히 고정하고 가슴을 높게 드세요. 들어 올리기 전에 바벨의 유격을 미리 잡아 팽팽하게 만드세요."
+        },
+        {
+          "name": "Leg Press",
+          "w": "2-3",
+          "sets": "1",
+          "reps": "12",
+          "rpe": "6",
+          "rest": "2-3 min",
+          "sub1": "Goblet Squat",
+          "sub2": "Walking Lunge",
+          "note": "발판 위에서 발을 중간 너비로 벌리고, 요추가 말리지 않도록 주의하세요."
+        },
+        {
+          "name": "Leg Extension",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "DB Step-Up",
+          "sub2": "Goblet Squat",
+          "note": "대퇴사두근을 쥐어짜며 무게를 움직이는 데 집중하세요."
+        },
+        {
+          "name": "Lying Leg Curl",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Seated Leg Curl",
+          "sub2": "Nordic Ham Curl",
+          "note": "햄스트링을 쥐어짜며 무게를 움직이는 데 집중하세요."
+        },
+        {
+          "name": "Seated Calf Raise",
+          "w": "1",
+          "sets": "2",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Standing Calf Raise",
+          "sub2": "Leg Press Toe Press",
+          "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
+        },
+        {
+          "name": "Corpse Crunch",
+          "w": "0",
+          "sets": "1",
+          "reps": "15",
+          "rpe": "7",
+          "rest": "1-2 min",
+          "sub1": "Plate-Weighted Crunch",
+          "sub2": "Cable Crunch",
+          "note": "크런치를 할 때 상부 등을 바닥에서 완전히 떼고 12초간 멈춘 뒤 다시 내려가세요. 목을 무리하게 잡아당기지 마세요."
+        }
+      ]
+    },
+    "Sun": {
+      "title": "Rest",
+      "exercises": []
+    }
   }
 }
