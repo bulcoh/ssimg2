@@ -1,6 +1,6 @@
 {
   "WEEK1": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -96,7 +96,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -179,7 +179,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -275,7 +275,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -371,7 +371,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -469,7 +469,7 @@
     }
   },
   "WEEK2": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -565,7 +565,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -648,7 +648,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -744,7 +744,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -840,7 +840,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -938,7 +938,7 @@
     }
   },
   "WEEK3": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -1034,7 +1034,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -1117,7 +1117,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -1213,7 +1213,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -1309,7 +1309,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -1407,7 +1407,7 @@
     }
   },
   "WEEK4": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -1503,7 +1503,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -1586,7 +1586,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -1682,7 +1682,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -1778,7 +1778,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -1876,7 +1876,7 @@
     }
   },
   "WEEK5": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -1972,7 +1972,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -2055,7 +2055,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -2151,7 +2151,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -2247,7 +2247,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -2345,7 +2345,7 @@
     }
   },
   "WEEK6": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -2441,7 +2441,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -2524,7 +2524,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -2620,7 +2620,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -2716,7 +2716,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -2814,7 +2814,7 @@
     }
   },
   "WEEK7": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -2910,7 +2910,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -2993,7 +2993,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -3089,7 +3089,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -3185,7 +3185,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -3283,7 +3283,7 @@
     }
   },
   "WEEK8": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -3379,7 +3379,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -3462,7 +3462,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -3558,7 +3558,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -3654,7 +3654,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -3752,7 +3752,7 @@
     }
   },
   "WEEK9": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -3848,7 +3848,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -3931,7 +3931,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4027,7 +4027,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4123,7 +4123,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4221,7 +4221,7 @@
     }
   },
   "WEEK10": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -4317,7 +4317,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -4400,7 +4400,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4496,7 +4496,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4592,7 +4592,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4690,7 +4690,7 @@
     }
   },
   "WEEK11": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -4786,7 +4786,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -4869,7 +4869,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -4965,7 +4965,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -5061,7 +5061,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -5159,7 +5159,7 @@
     }
   },
   "WEEK12": {
-    "Day 1": {
+    "Day1": {
       "title": "UPPER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -5255,7 +5255,7 @@
         }
       ]
     },
-    "Day 2": {
+    "Day2": {
       "title": "LOWER (STRENGTH FOCUS)",
       "exercises": [
         {
@@ -5338,7 +5338,7 @@
         }
       ]
     },
-    "Day 3": {
+    "Day3": {
       "title": "PULL (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -5434,7 +5434,7 @@
         }
       ]
     },
-    "Day 4": {
+    "Day4": {
       "title": "PUSH (HYPERTROPHY FOCUS)",
       "exercises": [
         {
@@ -5530,7 +5530,7 @@
         }
       ]
     },
-    "Day 5": {
+    "Day5": {
       "title": "LEGS (HYPERTROPHY FOCUS)",
       "exercises": [
         {
