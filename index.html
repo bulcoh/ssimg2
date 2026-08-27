@@ -123,7 +123,7 @@
             TYPE G
             <span class="type-label">graph</span>
         </button>
-        <button class="type-btn" id="typeH" onclick="selectType('H')">
+        <button class="type-btn active-H" id="typeH" onclick="selectType('H')">
     TYPE H
     <span class="type-label">레이더2</span>
 </button>
@@ -148,7 +148,7 @@
 
     let currentMinutes = 0;
     let currentFileDate = "";
-    let selectedType = 'A';
+    let selectedType = 'H';
     let currentParsed = null;
 
     function selectType(type) {
@@ -889,150 +889,73 @@ const parsed = parseWorkout(rawText, photoTime);
 
     // ─── TYPE A (기존 오리지널) ───────────────────────────────────────────────
     function drawTypeA(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
-    canvas.width = 1080; canvas.height = 1350;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.width = 1080; canvas.height = 1350; 
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const cardH = canvas.height * 0.55;
+        const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
+        grad.addColorStop(0, "rgba(0,0,0,0)");
+        grad.addColorStop(0.3, "rgba(0,0,0,0.5)");
+        grad.addColorStop(1, "rgba(0,0,0,0.8)"); 
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
 
-    // 오버레이 최소화
-    ctx.fillStyle = "rgba(0,0,0,0.02)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const margin = 70;
+        const colW = (canvas.width - margin * 2) / 2 - 30;
+        const rowHeight = 70;
+        const bottomY = canvas.height - 180; 
+        const half = Math.ceil(exerciseList.length / 2);
 
-    const iX = 70;
-    const rX = canvas.width - 70;
-
-    // 상단 그라디언트
-    const topGrad = ctx.createLinearGradient(0, 0, 0, 420);
-    topGrad.addColorStop(0,   "rgba(0,0,0,0.82)");
-    topGrad.addColorStop(0.6, "rgba(0,0,0,0.4)");
-    topGrad.addColorStop(1,   "rgba(0,0,0,0)");
-    ctx.fillStyle = topGrad;
-    ctx.fillRect(0, 0, canvas.width, 420);
-
-    ctx.fillStyle = "#ff4757";
-    ctx.font = "700 140px 'Archivo Black'";
-    ctx.textAlign = "center";
-    ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, 158);
-
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.font = "400 30px 'Inter'";
-    ctx.textAlign = "center";
-    ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, 205);
-
-    ctx.strokeStyle = "rgba(255,255,255,0.2)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(iX, 226); ctx.lineTo(rX, 226); ctx.stroke();
-
-    const PART_ORDER = [
-        'Calf','Hamstring','Quads','Glute','Core','Lower Back',
-        'Lat','Traps','Shoulder','Chest','Triceps','Biceps','Forearm','Cardio'
-    ];
-    const PART_ABBR = {
-        'Calf':'clf','Hamstring':'hmstrng','Quads':'qds','Glute':'glt',
-        'Core':'cr','Lower Back':'lbck','Lat':'lts','Traps':'trps',
-        'Shoulder':'shldr','Chest':'chst','Triceps':'trcps',
-        'Biceps':'bcps','Forearm':'frm','Cardio':'crd'
-    };
-
-    const REPO = "bulcoh/ssimg2";
-    const MAP_URL = "https://raw.githubusercontent.com/" + REPO + "/main/exercise_map.csv?t=" + Date.now();
-
-    return fetch(MAP_URL).then(function(r){ return r.text(); }).then(function(csv) {
-        var exMap = {};
-        csv.split('\n').slice(1).forEach(function(line) {
-            var p = line.split(',');
-            if (!p[0] || !p[0].trim()) return;
-            exMap[p[0].trim()] = { main:(p[1]||'').trim(), sub:(p[2]||'').trim() };
-        });
-        drawHChart(exMap);
-    }).catch(function() {
-        drawHChart({});
-    });
-
-    function drawHChart(exMap) {
-        var scores = {};
-        PART_ORDER.forEach(function(p){ scores[p] = 0; });
-
-        exerciseList.forEach(function(ex) {
-            var map = exMap[ex.name];
-            if (!map) return;
-            var sets = ex.sets + (ex.drops||0) + (ex.fails||0);
-            if (map.main && scores[map.main] !== undefined) scores[map.main] += sets * 1.0;
-            if (map.sub  && scores[map.sub]  !== undefined) scores[map.sub]  += sets * 0.5;
-        });
-
-        var maxVal = Math.max.apply(null, Object.values(scores).concat([1]));
-
-
-        // 하단 운동 태그 (가운데 정렬)
-        var tagFont = "700 22px 'Inter'";
-        ctx.font = tagFont;
-        var tagPadX = 20, tagGap = 10, tagH = 46, tagLineH = 56;
-        var tagMaxW = canvas.width - iX * 2;
-
-        var tagRows = [], curRow = [], curRowW = 0;
-        exerciseList.forEach(function(ex) {
-            var tw = ctx.measureText(ex.name).width + tagPadX * 2;
-            if (curRow.length > 0 && curRowW + tw + tagGap > tagMaxW) {
-                tagRows.push({ tags: curRow, w: curRowW - tagGap });
-                curRow = []; curRowW = 0;
+        exerciseList.forEach((ex, i) => {
+            let isRightCol = i >= half;
+            let rowIdx = isRightCol ? i - half : i;
+            const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
+            let x = margin + (isRightCol ? colW + 60 : 0);
+            let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
+            ctx.textAlign = "left"; ctx.fillStyle = "white"; ctx.font = "700 25px 'Inter'";
+            let name = ex.name;
+            if (ctx.measureText(name).width > colW - 150) {
+                while (ctx.measureText(name + "..").width > colW - 200) { name = name.slice(0, -1); }
+                name += "..";
             }
-            curRow.push({ ex: ex, tw: tw });
-            curRowW += tw + tagGap;
-        });
-        if (curRow.length > 0) tagRows.push({ tags: curRow, w: curRowW - tagGap });
+            ctx.fillText(name, x, y);
+            ctx.textAlign = "right";
+            ctx.font = "700 " + (ex.sets > 5 ? 22 : 28) + "px 'Inter'";
+            // 워밍업(노란) + 일반(레드) + 드롭(파란) — 오른쪽부터 드롭,일반,워밍업 순
+            const aWarms = ex.warms || 0;
+            const aDrops = ex.drops || 0;
+            const aWarm = "▶\uFE0E".repeat(aWarms);
+            const aNorm = "▶\uFE0E".repeat(ex.sets);
+            const aDrop = "▶\uFE0E".repeat(aDrops);
+            const aDropW = ctx.measureText(aDrop).width;
+            const aNormW = ctx.measureText(aNorm).width;
 
-        var tagTotalH = tagRows.length * tagLineH;
-        var tagY = canvas.height - 55 - tagTotalH;
+            // orderedSets 순서대로 오른쪽부터 역순으로 그리기
+            const oSets = ex.orderedSets || [];
+            let ox = x + colW;
+            for (var oi = oSets.length - 1; oi >= 0; oi--) {
+                const ot = oSets[oi];
+                ctx.fillStyle = ot.type==='warm' ? '#F0B83B' : ot.type==='drop' ? '#784CD8' : '#ff4757';
+                const oc = ctx.measureText('▶\uFE0E').width;
+                ox -= oc;
+                ctx.fillText('▶\uFE0E', ox, y);
+            }
 
-        // 하단 그라디언트
-        var botGrad = ctx.createLinearGradient(0, tagY - 60, 0, canvas.height);
-        botGrad.addColorStop(0, "rgba(0,0,0,0)");
-        botGrad.addColorStop(1, "rgba(0,0,0,0.65)");
-        ctx.fillStyle = botGrad;
-        ctx.fillRect(0, tagY - 60, canvas.width, canvas.height - (tagY - 60));
-
-        tagRows.forEach(function(row) {
-            var tx = Math.round((canvas.width - row.w) / 2); // 가운데 정렬
-            row.tags.forEach(function(item) {
-                var ex = item.ex;
-                var tw = item.tw;
-                var textX = tx + tagPadX;
-
-                ctx.fillStyle = "rgba(255,255,255,0.10)";
-                roundRect(ctx, tx, tagY, tw, tagH, 7);
-                ctx.fill();
-
-                ctx.font = tagFont;
-                ctx.textAlign = "left";
-                var charX = textX;
-                for (var ci = 0; ci < ex.name.length; ci++) {
-                    var ch = ex.name[ci];
-                    ctx.fillStyle = /[^a-zA-Z ]/.test(ch) ? "#ff4757" : "rgba(255,255,255,0.85)";
-                    ctx.fillText(ch, charX, tagY + 30);
-                    charX += ctx.measureText(ch).width;
-                }
-
-                var bW = 7, bH = 5, bGap = 3;
-                var oSets = ex.orderedSets || [];
-                var bx = textX;
-                oSets.slice(0, 6).forEach(function(os) {
-                    ctx.fillStyle = os.type==='warm' ? '#F0B83B' : os.type==='drop' ? '#784CD8' : '#ff4757';
-                    ctx.fillRect(bx, tagY + 38, bW, bH);
-                    bx += bW + bGap;
-                });
-
-                tx += tw + tagGap;
-            });
-            tagY += tagLineH;
         });
 
-        // 서명
-        ctx.fillStyle = "rgba(255,255,255,0.22)";
+        const summaryY = canvas.height - 180 - (Math.max(half, exerciseList.length - half) - 1) * rowHeight - 110; 
+        ctx.textAlign = "center"; ctx.fillStyle = "#ccc"; ctx.font = "400 32px 'Inter'";
+        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, summaryY);
+        ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(margin, summaryY + 45); ctx.lineTo(canvas.width - margin, summaryY + 45); ctx.stroke();
+        ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 95px 'Archivo Black'";
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 65);
+                // 하단 서명
+        ctx.fillStyle = "rgba(255,255,255,0.4)";
         ctx.font = "400 22px 'Inter'";
         ctx.textAlign = "center";
-        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 22);
+        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 15);
     }
-}
+    
 
     // ─── TYPE B ─────────────────────────────────────────────────────────────
     function drawTypeB(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
@@ -1289,12 +1212,15 @@ const parsed = parseWorkout(rawText, photoTime);
     }
 
     // ─── TYPE D : 상단 타이틀 + 운동 태그 줄줄이 ─────────────────────────────
+    // 상단: 그라디언트 위에 타이틀 크게 + 메타
+    // 운동 종목을 태그처럼 가로로 줄줄이 (넘치면 다음 줄)
+    // 중앙은 사진 뻥 뚫림
     function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         // 살짝 전체 어둡게
-        ctx.fillStyle = "rgba(0,0,0,0.02)";
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const iX = 60;
@@ -1341,14 +1267,14 @@ const parsed = parseWorkout(rawText, photoTime);
         // ── 타이틀 ──
         ctx.fillStyle = "#ff4757";
         ctx.font = "700 " + fs + "px 'Archivo Black'";
-        ctx.textAlign = "center";
+        ctx.textAlign = "left";
         ctx.fillText(workoutTitle.toUpperCase(), iX, fs + 20);
 
         // ── 메타 ──
         ctx.fillStyle = "rgba(255,255,255,0.48)";
         ctx.font = "400 30px 'Inter'";
         ctx.textAlign = "center";
-        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", iX, fs + 72);
+        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, fs + 20);
 
         // ── 태그 줄별 좌측정렬 ──
         let ty = fs + 72 + 36;
@@ -1371,13 +1297,14 @@ const parsed = parseWorkout(rawText, photoTime);
             ctx.fill();
 
             // 텍스트 (태그 상단에서 30px 아래)
-            ctx.textAlign = "left";
+            ctx.textAlign = "center";
+
             ctx.font = tagFont;
             let charX = textX;
             for (let c = 0; c < ex.name.length; c++) {
                 const ch = ex.name[c];
                 ctx.fillStyle = /[^a-zA-Z ]/.test(ch) ? "#ff4757" : "rgba(255,255,255,0.88)";
-                ctx.fillText(ch, charX, ty + 30);
+                ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, fs + 72);
                 charX += ctx.measureText(ch).width;
             }
 
@@ -1391,6 +1318,15 @@ const parsed = parseWorkout(rawText, photoTime);
                 ctx.fillRect(bx, ty + 42, bW, bH);
                 bx += bW + bGap;
             });
+            //let bx = textX;
+            //ctx.fillStyle = "#F0B83B";
+            //for (let s = 0; s < Math.min(warms, 6); s++) ctx.fillRect(bx + s*(bW+bGap), ty + 42, bW, bH);
+            //bx += Math.min(warms, 6) * (bW + bGap);
+            //ctx.fillStyle = "#ff4757";
+            //for (let s = 0; s < Math.min(ex.sets, 6); s++) ctx.fillRect(bx + s*(bW+bGap), ty + 42, bW, bH);
+           // bx += Math.min(ex.sets, 6) * (bW + bGap);
+            //ctx.fillStyle = "#784CD8";
+           // for (let s = 0; s < Math.min(drops, 6); s++) ctx.fillRect(bx + s*(bW+bGap), ty + 42, bW, bH);
 
            tx += tw + tagGap;
         }); // row.tags.forEach
@@ -1404,6 +1340,7 @@ const parsed = parseWorkout(rawText, photoTime);
         ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 25);
     }
 
+    
     // ─── TYPE E : 플릭 스타일 ────────────────────────────────────────────────
     function drawTypeE(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350;
@@ -1560,6 +1497,7 @@ const parsed = parseWorkout(rawText, photoTime);
         ctx.textAlign = "center";
         ctx.fillText("SHARE STRONG IMAGE V2", canvas.width/2, signY);
     }
+ 
 
     // ─── TYPE F : 플릭2 ──────────────────────────────────────────────────────
     function drawTypeF(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
@@ -2075,73 +2013,151 @@ tagRows2.forEach(function(row) {
     }   
 
 // ─── TYPE H : 레이더 차트 (좌측 소형) ───────────────────────────────────
-    function drawTypeH(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
-        canvas.width = 1080; canvas.height = 1350; 
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        const cardH = canvas.height * 0.55;
-        const grad = ctx.createLinearGradient(0, canvas.height - cardH, 0, canvas.height);
-        grad.addColorStop(0, "rgba(0,0,0,0)");
-        grad.addColorStop(0.3, "rgba(0,0,0,0.5)");
-        grad.addColorStop(1, "rgba(0,0,0,0.8)"); 
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, canvas.height - cardH, canvas.width, cardH);
+function drawTypeH(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+    canvas.width = 1080; canvas.height = 1350;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const margin = 70;
-        const colW = (canvas.width - margin * 2) / 2 - 30;
-        const rowHeight = 70;
-        const bottomY = canvas.height - 180; 
-        const half = Math.ceil(exerciseList.length / 2);
+    // 오버레이 최소화
+    ctx.fillStyle = "rgba(0,0,0,0.02)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        exerciseList.forEach((ex, i) => {
-            let isRightCol = i >= half;
-            let rowIdx = isRightCol ? i - half : i;
-            const totalRowsInCol = isRightCol ? (exerciseList.length - half) : half;
-            let x = margin + (isRightCol ? colW + 60 : 0);
-            let y = bottomY - (totalRowsInCol - 1 - rowIdx) * rowHeight;
-            ctx.textAlign = "left"; ctx.fillStyle = "white"; ctx.font = "700 25px 'Inter'";
-            let name = ex.name;
-            if (ctx.measureText(name).width > colW - 150) {
-                while (ctx.measureText(name + "..").width > colW - 200) { name = name.slice(0, -1); }
-                name += "..";
-            }
-            ctx.fillText(name, x, y);
-            ctx.textAlign = "right";
-            ctx.font = "700 " + (ex.sets > 5 ? 22 : 28) + "px 'Inter'";
-            // 워밍업(노란) + 일반(레드) + 드롭(파란) — 오른쪽부터 드롭,일반,워밍업 순
-            const aWarms = ex.warms || 0;
-            const aDrops = ex.drops || 0;
-            const aWarm = "▶\uFE0E".repeat(aWarms);
-            const aNorm = "▶\uFE0E".repeat(ex.sets);
-            const aDrop = "▶\uFE0E".repeat(aDrops);
-            const aDropW = ctx.measureText(aDrop).width;
-            const aNormW = ctx.measureText(aNorm).width;
+    const iX = 70;
+    const rX = canvas.width - 70;
 
-            // orderedSets 순서대로 오른쪽부터 역순으로 그리기
-            const oSets = ex.orderedSets || [];
-            let ox = x + colW;
-            for (var oi = oSets.length - 1; oi >= 0; oi--) {
-                const ot = oSets[oi];
-                ctx.fillStyle = ot.type==='warm' ? '#F0B83B' : ot.type==='drop' ? '#784CD8' : '#ff4757';
-                const oc = ctx.measureText('▶\uFE0E').width;
-                ox -= oc;
-                ctx.fillText('▶\uFE0E', ox, y);
-            }
+    // 상단 그라디언트
+    const topGrad = ctx.createLinearGradient(0, 0, 0, 420);
+    topGrad.addColorStop(0,   "rgba(0,0,0,0.82)");
+    topGrad.addColorStop(0.6, "rgba(0,0,0,0.4)");
+    topGrad.addColorStop(1,   "rgba(0,0,0,0)");
+    ctx.fillStyle = topGrad;
+    ctx.fillRect(0, 0, canvas.width, 420);
 
+    ctx.fillStyle = "#ff4757";
+    ctx.font = "700 140px 'Archivo Black'";
+    ctx.textAlign = "center";
+    ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, 158);
+
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.font = "400 30px 'Inter'";
+    ctx.textAlign = "center";
+    ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, 205);
+
+    ctx.strokeStyle = "rgba(255,255,255,0.2)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(iX, 226); ctx.lineTo(rX, 226); ctx.stroke();
+
+    const PART_ORDER = [
+        'Calf','Hamstring','Quads','Glute','Core','Lower Back',
+        'Lat','Traps','Shoulder','Chest','Triceps','Biceps','Forearm','Cardio'
+    ];
+    const PART_ABBR = {
+        'Calf':'clf','Hamstring':'hmstrng','Quads':'qds','Glute':'glt',
+        'Core':'cr','Lower Back':'lbck','Lat':'lts','Traps':'trps',
+        'Shoulder':'shldr','Chest':'chst','Triceps':'trcps',
+        'Biceps':'bcps','Forearm':'frm','Cardio':'crd'
+    };
+
+    const REPO = "bulcoh/ssimg2";
+    const MAP_URL = "https://raw.githubusercontent.com/" + REPO + "/main/exercise_map.csv?t=" + Date.now();
+
+    return fetch(MAP_URL).then(function(r){ return r.text(); }).then(function(csv) {
+        var exMap = {};
+        csv.split('\n').slice(1).forEach(function(line) {
+            var p = line.split(',');
+            if (!p[0] || !p[0].trim()) return;
+            exMap[p[0].trim()] = { main:(p[1]||'').trim(), sub:(p[2]||'').trim() };
+        });
+        drawHChart(exMap);
+    }).catch(function() {
+        drawHChart({});
+    });
+
+    function drawHChart(exMap) {
+        var scores = {};
+        PART_ORDER.forEach(function(p){ scores[p] = 0; });
+
+        exerciseList.forEach(function(ex) {
+            var map = exMap[ex.name];
+            if (!map) return;
+            var sets = ex.sets + (ex.drops||0) + (ex.fails||0);
+            if (map.main && scores[map.main] !== undefined) scores[map.main] += sets * 1.0;
+            if (map.sub  && scores[map.sub]  !== undefined) scores[map.sub]  += sets * 0.5;
         });
 
-        const summaryY = canvas.height - 180 - (Math.max(half, exerciseList.length - half) - 1) * rowHeight - 110; 
-        ctx.textAlign = "center"; ctx.fillStyle = "#ccc"; ctx.font = "400 32px 'Inter'";
-        ctx.fillText(dateTime + "  |  " + duration + "  |  TOTAL " + totalSets + " SETS", canvas.width / 2, summaryY);
-        ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(margin, summaryY + 45); ctx.lineTo(canvas.width - margin, summaryY + 45); ctx.stroke();
-        ctx.textAlign = "center"; ctx.fillStyle = "#ff4757"; ctx.font = "700 95px 'Archivo Black'";
-        ctx.fillText(workoutTitle.toUpperCase(), canvas.width / 2, canvas.height - 65);
-                // 하단 서명
-        ctx.fillStyle = "rgba(255,255,255,0.4)";
+        var maxVal = Math.max.apply(null, Object.values(scores).concat([1]));
+
+
+        // 하단 운동 태그 (가운데 정렬)
+        var tagFont = "700 22px 'Inter'";
+        ctx.font = tagFont;
+        var tagPadX = 20, tagGap = 10, tagH = 46, tagLineH = 56;
+        var tagMaxW = canvas.width - iX * 2;
+
+        var tagRows = [], curRow = [], curRowW = 0;
+        exerciseList.forEach(function(ex) {
+            var tw = ctx.measureText(ex.name).width + tagPadX * 2;
+            if (curRow.length > 0 && curRowW + tw + tagGap > tagMaxW) {
+                tagRows.push({ tags: curRow, w: curRowW - tagGap });
+                curRow = []; curRowW = 0;
+            }
+            curRow.push({ ex: ex, tw: tw });
+            curRowW += tw + tagGap;
+        });
+        if (curRow.length > 0) tagRows.push({ tags: curRow, w: curRowW - tagGap });
+
+        var tagTotalH = tagRows.length * tagLineH;
+        var tagY = canvas.height - 55 - tagTotalH;
+
+        // 하단 그라디언트
+        var botGrad = ctx.createLinearGradient(0, tagY - 60, 0, canvas.height);
+        botGrad.addColorStop(0, "rgba(0,0,0,0)");
+        botGrad.addColorStop(1, "rgba(0,0,0,0.65)");
+        ctx.fillStyle = botGrad;
+        ctx.fillRect(0, tagY - 60, canvas.width, canvas.height - (tagY - 60));
+
+        tagRows.forEach(function(row) {
+            var tx = Math.round((canvas.width - row.w) / 2); // 가운데 정렬
+            row.tags.forEach(function(item) {
+                var ex = item.ex;
+                var tw = item.tw;
+                var textX = tx + tagPadX;
+
+                ctx.fillStyle = "rgba(255,255,255,0.10)";
+                roundRect(ctx, tx, tagY, tw, tagH, 7);
+                ctx.fill();
+
+                ctx.font = tagFont;
+                ctx.textAlign = "left";
+                var charX = textX;
+                for (var ci = 0; ci < ex.name.length; ci++) {
+                    var ch = ex.name[ci];
+                    ctx.fillStyle = /[^a-zA-Z ]/.test(ch) ? "#ff4757" : "rgba(255,255,255,0.85)";
+                    ctx.fillText(ch, charX, tagY + 30);
+                    charX += ctx.measureText(ch).width;
+                }
+
+                var bW = 7, bH = 5, bGap = 3;
+                var oSets = ex.orderedSets || [];
+                var bx = textX;
+                oSets.slice(0, 6).forEach(function(os) {
+                    ctx.fillStyle = os.type==='warm' ? '#F0B83B' : os.type==='drop' ? '#784CD8' : '#ff4757';
+                    ctx.fillRect(bx, tagY + 38, bW, bH);
+                    bx += bW + bGap;
+                });
+
+                tx += tw + tagGap;
+            });
+            tagY += tagLineH;
+        });
+
+        // 서명
+        ctx.fillStyle = "rgba(255,255,255,0.22)";
         ctx.font = "400 22px 'Inter'";
         ctx.textAlign = "center";
-        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 15);
+        ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, canvas.height - 22);
     }
+}
 
     // ─── 유틸: 둥근 사각형 ───────────────────────────────────────────────────
     function roundRect(ctx, x, y, w, h, r) {
