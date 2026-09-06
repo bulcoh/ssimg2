@@ -8439,7 +8439,7 @@
     "strong": 70,
     "cooldown": 0,
     "swim": 0,
-    "run": 0,
+    "run": 15,
     "workout": {
       "title": "LEGS RCVR",
       "datetime": "2026년 9월 6일 일요일 오후 3:40",
