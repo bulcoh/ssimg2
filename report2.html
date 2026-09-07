@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SSimage 2 - 월간 리포트</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
     * { box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: #111; color: #eee; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
@@ -13,7 +13,20 @@
 
     .nav { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
     .nav button { background: #333; color: #eee; border: none; border-radius: 10px; padding: 10px 18px; font-size: 18px; cursor: pointer; }
-    .nav span { font-weight: 700; font-size: 18px; min-width: 120px; text-align: center; }
+    .nav span { font-weight: 700; font-size: 18px; min-width: 130px; text-align: center; }
+
+    /* 컨셉 선택 */
+    .concept-selector { display: flex; gap: 8px; width: 100%; max-width: 1080px; margin-bottom: 16px; }
+    .concept-btn {
+        flex: 1; padding: 10px 4px; border-radius: 12px; border: 2px solid #444;
+        background: #2a2a2a; color: #888; font-weight: bold; font-size: 13px;
+        cursor: pointer; text-align: center;
+    }
+    .concept-btn .c-label { font-size: 10px; display: block; margin-top: 2px; opacity: 0.8; font-weight: 400; }
+    .concept-btn.active-1 { border-color: #ff4757; color: #ff4757; background: rgba(255,71,87,0.12); }
+    .concept-btn.active-2 { border-color: #00d2ff; color: #00d2ff; background: rgba(0,210,255,0.10); }
+    .concept-btn.active-3 { border-color: #ff3131; color: #ffde59; background: rgba(255,49,49,0.12); }
+    .concept-btn.active-4 { border-color: #ffb347; color: #ffb347; background: rgba(255,140,20,0.12); }
 
     .btn { background: #ff4757; color: white; padding: 14px 20px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; margin-bottom: 16px; }
     .btn:disabled { background: #555; cursor: default; }
@@ -25,41 +38,122 @@
 
     #calendar {
         width: 1080px;
-        background: #161616;
         padding: 40px;
         font-family: 'Inter', sans-serif;
+        display: flex;
+        flex-direction: column;
     }
+    .cal-header { order: 1; }
+    .cal-body { order: 2; }
+    .cal-footer { order: 3; text-align: center; font-size: 16px; margin-top: 26px; }
 
-    .cal-title { font-family: 'Archivo Black', sans-serif; color: #ff4757; font-size: 46px; text-align: center; margin-bottom: 4px; }
-    .cal-sub { text-align: center; color: rgba(255,255,255,0.4); font-size: 16px; margin-bottom: 26px; }
+    .cal-title { font-size: 46px; text-align: center; margin-bottom: 6px; letter-spacing: 1px; }
+    .cal-stats { text-align: center; font-size: 15px; margin-bottom: 26px; line-height: 1.8; }
+    .cal-stats .stat-line { }
 
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 10px; }
-    .cal-weekdays div { text-align: center; font-weight: 700; font-size: 15px; color: rgba(255,255,255,0.5); }
+    .cal-weekdays div { text-align: center; font-weight: 700; font-size: 16px; }
 
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
     .day-cell {
         position: relative;
-        aspect-ratio: 3 / 4;
-        background: #202020;
-        border-radius: 10px;
+        aspect-ratio: 1 / 1;
         overflow: hidden;
     }
-    .day-cell.empty { background: transparent; }
-    .day-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .day-cell.empty { background: transparent !important; border: none !important; }
+    .day-cell img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; cursor: zoom-in; }
     .day-num {
         position: absolute; top: 6px; left: 8px;
-        font-weight: 700; font-size: 18px; color: #fff;
-        text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        font-weight: 700; font-size: 17px;
         z-index: 2;
     }
-    .day-cell.no-record .day-num { color: rgba(255,255,255,0.25); text-shadow: none; }
     .day-cell.has-img::after {
         content: "";
-        position: absolute; left: 0; right: 0; bottom: 0; height: 40%;
-        background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+        position: absolute; left: 0; right: 0; bottom: 0; height: 35%;
+        background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+        pointer-events: none;
     }
 
-    .cal-footer { text-align: center; color: rgba(255,255,255,0.2); font-size: 16px; margin-top: 26px; }
+    /* ── 컨셉 1: Classic (Red / Black) ── */
+    #calendar[data-theme="1"] {
+        background: #161616;
+    }
+    #calendar[data-theme="1"] .cal-title { font-family: 'Noto Sans TC', sans-serif; font-weight: 900; color: #ff4757; }
+    #calendar[data-theme="1"] .cal-stats { color: rgba(255,255,255,0.55); }
+    #calendar[data-theme="1"] .cal-weekdays div { color: rgba(255,255,255,0.5); }
+    #calendar[data-theme="1"] .day-cell { background: #202020; border-radius: 10px; }
+    #calendar[data-theme="1"] .day-num { color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+    #calendar[data-theme="1"] .cal-footer { color: rgba(255,255,255,0.2); }
+
+    /* ── 컨셉 2: Neon (Cyan / Purple) ── */
+    #calendar[data-theme="2"] {
+        background-color: #0a0e1a;
+        background-image: radial-gradient(rgba(0,210,255,0.10) 1px, transparent 1px);
+        background-size: 16px 16px;
+    }
+    #calendar[data-theme="2"] .cal-title { font-family: 'Noto Sans TC', sans-serif; font-weight: 900; color: #00e5ff; text-shadow: 0 0 20px rgba(0,210,255,0.65), 0 0 46px rgba(120,76,216,0.4); }
+    #calendar[data-theme="2"] .cal-stats { color: rgba(180,230,255,0.7); }
+    #calendar[data-theme="2"] .cal-weekdays div { color: #00d2ff; opacity: 0.8; }
+    #calendar[data-theme="2"] .day-cell { background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.35); border-radius: 14px; box-shadow: 0 0 12px rgba(0,210,255,0.08) inset; }
+    #calendar[data-theme="2"] .day-num { color: #b6f3ff; text-shadow: 0 0 8px rgba(0,210,255,0.8); }
+    #calendar[data-theme="2"] .cal-footer { color: rgba(0,210,255,0.35); }
+
+    /* ── 컨셉 3: Pop Collage (업로드 레퍼런스 기반) ── */
+    #calendar[data-theme="3"] {
+        background-color: #0b0b0b;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,49,49,0.14) 0px, rgba(255,49,49,0.14) 10px, transparent 10px, transparent 40px),
+            repeating-linear-gradient(135deg, rgba(46,213,115,0.10) 0px, rgba(46,213,115,0.10) 6px, transparent 6px, transparent 46px),
+            radial-gradient(rgba(255,222,89,0.16) 2px, transparent 2px);
+        background-size: auto, auto, 22px 22px;
+    }
+    #calendar[data-theme="3"] .cal-title {
+        font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
+        color: #ffde59;
+        -webkit-text-stroke: 3px #111;
+        text-shadow: 4px 4px 0 #ff3131, 8px 8px 0 rgba(0,0,0,0.35);
+    }
+    #calendar[data-theme="3"] .cal-stats { color: #f5f5f5; font-weight: 700; }
+    #calendar[data-theme="3"] .cal-weekdays div {
+        color: #111; background: #ffde59; border: 3px solid #111;
+        border-radius: 50%; width: 34px; height: 34px; line-height: 30px;
+        margin: 0 auto; font-weight: 900;
+    }
+    #calendar[data-theme="3"] .day-cell { background: rgba(0,0,0,0.55); border: 3px solid #ffde59; border-radius: 12px; }
+    #calendar[data-theme="3"] .day-cell.has-img { border: 4px solid #111; box-shadow: 0 0 0 3px #ffde59; border-radius: 14px; }
+    #calendar[data-theme="3"] .day-cell.empty { background: transparent; border: none; }
+    #calendar[data-theme="3"] .day-num { color: #ffde59; -webkit-text-stroke: 1px #111; font-weight: 900; }
+    #calendar[data-theme="3"] .day-cell img { filter: saturate(1.3) contrast(1.1); }
+    #calendar[data-theme="3"] .cal-footer { color: #ffde59; font-weight: 700; letter-spacing: 2px; }
+
+    /* ── 컨셉 4: Indigo Glow (업로드 레퍼런스 기반) ── */
+    #calendar[data-theme="4"] {
+        background:
+            radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            radial-gradient(ellipse at 50% 12%, #2b2470 0%, #16123f 38%, #05040d 78%);
+        background-size: 3px 3px, auto;
+    }
+    #calendar[data-theme="4"] .cal-title {
+        font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
+        color: #ffb347;
+        text-shadow: 0 0 22px rgba(255,140,20,0.65), 0 0 55px rgba(255,80,20,0.35);
+    }
+    #calendar[data-theme="4"] .cal-stats { color: rgba(205,200,255,0.65); }
+    #calendar[data-theme="4"] .cal-weekdays div { color: rgba(255,179,71,0.8); letter-spacing: 2px; }
+    #calendar[data-theme="4"] .day-cell { background: rgba(255,255,255,0.03); border: 1px solid rgba(120,120,200,0.25); border-radius: 14px; }
+    #calendar[data-theme="4"] .day-cell.has-img { border: 1px solid rgba(255,170,60,0.55); box-shadow: 0 0 20px rgba(255,140,20,0.28); border-radius: 16px; }
+    #calendar[data-theme="4"] .day-cell.empty { background: transparent; border: none; }
+    #calendar[data-theme="4"] .day-num { color: rgba(255,222,180,0.9); text-shadow: 0 0 8px rgba(255,140,20,0.55); }
+    #calendar[data-theme="4"] .day-cell img { filter: contrast(1.08) saturate(1.1); }
+    #calendar[data-theme="4"] .cal-footer { color: rgba(255,170,60,0.4); letter-spacing: 2px; }
+
+    /* 이미지 팝업 모달 */
+    #imgModal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+        z-index: 999; align-items: center; justify-content: center; padding: 20px;
+    }
+    #imgModal.open { display: flex; }
+    #imgModal img { max-width: 100%; max-height: 90vh; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
 </style>
 </head>
 <body>
@@ -72,26 +166,43 @@
     <button onclick="changeMonth(1)">▶</button>
 </div>
 
+<div class="concept-selector">
+    <button class="concept-btn active-1" id="concept1" onclick="selectConcept(1)">컨셉 1<span class="c-label">Classic</span></button>
+    <button class="concept-btn" id="concept2" onclick="selectConcept(2)">컨셉 2<span class="c-label">Neon</span></button>
+    <button class="concept-btn" id="concept3" onclick="selectConcept(3)">컨셉 3<span class="c-label">Pop</span></button>
+    <button class="concept-btn" id="concept4" onclick="selectConcept(4)">컨셉 4<span class="c-label">Glow</span></button>
+</div>
+
 <button class="btn" id="downloadBtn" onclick="downloadCalendarImage()">🖼️ 이미지로 저장</button>
 <div class="status" id="statusMsg">데이터 불러오는 중...</div>
 
 <div class="calendar-scroll">
-    <div id="calendar">
-        <div class="cal-title" id="calTitle">-</div>
-        <div class="cal-sub" id="calSub"></div>
-        <div class="cal-weekdays">
-            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+    <div id="calendar" data-theme="1">
+        <div class="cal-header">
+            <div class="cal-title" id="calTitle">-</div>
+            <div class="cal-stats" id="calStats"></div>
+            <div class="cal-weekdays">
+                <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+            </div>
         </div>
-        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-body">
+            <div class="cal-grid" id="calGrid"></div>
+        </div>
         <div class="cal-footer">SHARE STRONG IMAGE V2</div>
     </div>
+</div>
+
+<div id="imgModal" onclick="closeImgModal()">
+    <img id="imgModalPic" src="" alt="">
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
     const GITHUB_REPO = "bulcoh/ssimg2";
     let allData = {};
+    let exMap = {};
     let viewYear, viewMonth; // viewMonth: 0-indexed
+    let currentConcept = 1;
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -107,10 +218,33 @@
             const res = await fetch(url);
             if (!res.ok) throw new Error('fetch failed: ' + res.status);
             allData = await res.json();
-            statusEl.textContent = "";
         } catch (e) {
             console.error(e);
             statusEl.textContent = "⚠️ data.json을 불러오지 못했습니다 (빈 캘린더로 표시)";
+        }
+    }
+
+    async function loadExerciseMap() {
+        try {
+            const url = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/exercise_map.csv?t=${Date.now()}`;
+            const res = await fetch(url);
+            if (!res.ok) return;
+            const csv = await res.text();
+            csv.split('\n').slice(1).forEach(function(line) {
+                const p = line.split(',');
+                if (!p[0] || !p[0].trim()) return;
+                exMap[p[0].trim()] = { main: (p[1]||'').trim(), sub: (p[2]||'').trim() };
+            });
+        } catch (e) { console.warn('exercise_map.csv 로드 실패', e); }
+    }
+
+    function selectConcept(n) {
+        currentConcept = n;
+        document.getElementById('calendar').dataset.theme = String(n);
+        for (let i = 1; i <= 4; i++) {
+            const btn = document.getElementById('concept' + i);
+            btn.className = 'concept-btn';
+            if (i === n) btn.classList.add('active-' + n);
         }
     }
 
@@ -121,16 +255,56 @@
         renderCalendar();
     }
 
+    function computeMonthStats(year, month) {
+        const exerciseTotals = {};
+        const partTotals = {};
+        let recordDays = 0;
+
+        Object.keys(allData).forEach(function(dateStr) {
+            if (dateStr.length !== 8) return;
+            const y = parseInt(dateStr.slice(0, 4));
+            const m = parseInt(dateStr.slice(4, 6)) - 1;
+            if (y !== year || m !== month) return;
+
+            const record = allData[dateStr];
+            if (!record) return;
+            const hasAnyActivity = (record.strong > 0) || (record.swim > 0) || (record.run > 0) || record.workout;
+            if (hasAnyActivity) recordDays++;
+
+            if (!record.workout || !record.workout.exercises) return;
+            record.workout.exercises.forEach(function(ex) {
+                const sets = (ex.sets || 0) + (ex.drops || 0) + (ex.fails || 0);
+                exerciseTotals[ex.name] = (exerciseTotals[ex.name] || 0) + sets;
+                const map = exMap[ex.name];
+                if (map) {
+                    if (map.main) partTotals[map.main] = (partTotals[map.main] || 0) + sets * 1.0;
+                    if (map.sub) partTotals[map.sub] = (partTotals[map.sub] || 0) + sets * 0.5;
+                }
+            });
+        });
+
+        let topExercise = null, topExerciseSets = 0;
+        Object.keys(exerciseTotals).forEach(function(name) {
+            if (exerciseTotals[name] > topExerciseSets) { topExerciseSets = exerciseTotals[name]; topExercise = name; }
+        });
+
+        let topPart = null, topPartSets = 0;
+        Object.keys(partTotals).forEach(function(part) {
+            if (partTotals[part] > topPartSets) { topPartSets = partTotals[part]; topPart = part; }
+        });
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        return { recordDays, daysInMonth, topExercise, topExerciseSets, topPart, topPartSets };
+    }
+
+    function fmtSets(n) { return n % 1 === 0 ? n : n.toFixed(1); }
+
     function renderCalendar() {
-        const monthNames = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
-        document.getElementById('monthLabel').textContent = `${viewYear}년 ${monthNames[viewMonth]}`;
-        document.getElementById('calTitle').textContent = `${viewYear} ${monthNames[viewMonth].toUpperCase()}`;
+        document.getElementById('monthLabel').textContent = `${viewYear}年 ${viewMonth + 1}月`;
+        document.getElementById('calTitle').textContent = `${viewYear}年 ${viewMonth + 1}月`;
 
         const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-        const firstWeekday = new Date(viewYear, viewMonth, 1).getDay(); // 0=일
-
-        let recordCount = 0;
-        let imgCount = 0;
+        const firstWeekday = new Date(viewYear, viewMonth, 1).getDay();
 
         const grid = document.getElementById('calGrid');
         grid.innerHTML = "";
@@ -145,26 +319,24 @@
             const dateStr = `${viewYear}${pad(viewMonth + 1)}${pad(d)}`;
             const record = allData[dateStr];
             const cell = document.createElement('div');
+            const hasImg = record && record.imageUrl;
 
-            const numEl = document.createElement('div');
-            numEl.className = 'day-num';
-            numEl.textContent = d;
-
-            if (record && record.imageUrl) {
+            if (hasImg) {
                 cell.className = 'day-cell has-img';
                 const img = document.createElement('img');
                 img.crossOrigin = 'anonymous';
                 img.src = record.imageUrl;
+                img.onclick = function(e) { e.stopPropagation(); openImgModal(record.imageUrl); };
                 cell.appendChild(img);
-                recordCount++; imgCount++;
-            } else if (record) {
-                cell.className = 'day-cell no-record';
-                recordCount++;
+                // 운동한 날은 날짜 표기 생략
             } else {
-                cell.className = 'day-cell no-record';
+                cell.className = 'day-cell';
+                const numEl = document.createElement('div');
+                numEl.className = 'day-num';
+                numEl.textContent = d;
+                cell.appendChild(numEl);
             }
 
-            cell.appendChild(numEl);
             grid.appendChild(cell);
         }
 
@@ -176,10 +348,26 @@
             grid.appendChild(empty);
         }
 
-        document.getElementById('calSub').textContent = `기록 ${recordCount}일 · 사진 ${imgCount}장`;
+        const stats = computeMonthStats(viewYear, viewMonth);
+        const statsEl = document.getElementById('calStats');
+        const line1 = `${stats.recordDays}일/${stats.daysInMonth}일 운동완료`;
+        const line2 = stats.topPart
+            ? `최다부위 · ${stats.topPart} ${fmtSets(stats.topPartSets)}세트`
+            : `최다부위 · 기록 없음`;
+        const line3 = stats.topExercise
+            ? `최다운동 · ${stats.topExercise} ${stats.topExerciseSets}세트`
+            : `최다운동 · 기록 없음`;
+        statsEl.innerHTML = `<div class="stat-line">${line1}</div><div class="stat-line">${line2}</div><div class="stat-line">${line3}</div>`;
     }
 
-    // 캘린더 내 모든 이미지가 로드(또는 실패 확정)될 때까지 대기
+    function openImgModal(src) {
+        document.getElementById('imgModalPic').src = src;
+        document.getElementById('imgModal').classList.add('open');
+    }
+    function closeImgModal() {
+        document.getElementById('imgModal').classList.remove('open');
+    }
+
     function waitForImages() {
         const imgs = Array.from(document.querySelectorAll('#calendar img'));
         return Promise.all(imgs.map(function(img) {
@@ -200,12 +388,10 @@
             await waitForImages();
             const canvas = await html2canvas(document.getElementById('calendar'), {
                 useCORS: true,
-                backgroundColor: '#161616',
                 scale: 1
             });
             const link = document.createElement('a');
-            const monthNames2 = ["01","02","03","04","05","06","07","08","09","10","11","12"];
-            link.download = `ssimg_calendar_${viewYear}-${monthNames2[viewMonth]}.png`;
+            link.download = `ssimg_calendar_${viewYear}-${pad(viewMonth + 1)}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (e) {
@@ -222,7 +408,8 @@
         viewYear = t.getFullYear();
         viewMonth = t.getMonth();
         renderCalendar();
-        await loadData();
+        await Promise.all([loadData(), loadExerciseMap()]);
+        document.getElementById('statusMsg').textContent = document.getElementById('statusMsg').textContent || "";
         renderCalendar();
     })();
 </script>
