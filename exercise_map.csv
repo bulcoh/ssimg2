@@ -7,6 +7,7 @@ Back Extension,Lower Back,Hamstring
 Back Extension (Machine),Lower Back,Hamstring
 Ball Slams,Core,Shoulder
 Battle Ropes,Cardio,
+Bayesian Cable Curl,Biceps,
 Bench Dip,Triceps,
 Bench Press (Barbell),Chest,
 Bench Press (Cable),Chest,
@@ -67,6 +68,7 @@ Deadlift (Barbell),Glute,Hamstring
 Deadlift (Dumbbell),Glute,Hamstring
 Deadlift (Smith Machine),Glute,Hamstring
 Deadlift High Pull (Barbell),Allbody,
+Deadlift Touch&Go (Barbell),Glute,Hamstring
 Decline Bench Press (Barbell),Chest,
 Decline Bench Press (Dumbbell),Chest,
 Decline Bench Press (Smith Machine),Chest,
@@ -254,6 +256,7 @@ Standing Calf Raise (Dumbbell),Calf,
 Standing Calf Raise (Machine),Calf,
 Standing Calf Raise (Smith Machine),Calf,
 Step-up,Glute,Quads
+Stepbox Wide Squat (Dumbbell),Adductor,Glute
 Stiff Leg Deadlift (Barbell),Hamstring,Lower Back
 Stiff Leg Deadlift (Dumbbell),Hamstring,Lower Back
 Straight Arm Pulldown,Lat,
@@ -264,6 +267,7 @@ Sumo Deadlift High Pull (Barbell),Allbody,
 Superman,Lower Back,
 Swimming,Cardio,
 T Bar Row,Traps,Lat
+T Bar Row (Chest Supported),Traps,Lat
 Thruster (Bar),Quads,Shoulder
 Thruster (Kettlebell),Quads,Shoulder
 Toe touch,Core,
