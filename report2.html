@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSimage 2 - 월간 리포트</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #111; color: #eee; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+
+    h2 { font-family: 'Archivo Black', sans-serif; color: #ff4757; font-size: 20px; margin: 10px 0; text-align: center; }
+
+    .nav { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+    .nav button { background: #333; color: #eee; border: none; border-radius: 10px; padding: 10px 18px; font-size: 18px; cursor: pointer; }
+    .nav span { font-weight: 700; font-size: 18px; min-width: 120px; text-align: center; }
+
+    .btn { background: #ff4757; color: white; padding: 14px 20px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; margin-bottom: 16px; }
+    .btn:disabled { background: #555; cursor: default; }
+
+    .status { color: #888; font-size: 13px; margin-bottom: 10px; text-align: center; }
+
+    /* 캘린더는 항상 1080px 고정폭으로 그려짐(다운로드 해상도 고정). 모바일에선 가로 스크롤로 확인 */
+    .calendar-scroll { width: 100%; max-width: 1080px; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; }
+
+    #calendar {
+        width: 1080px;
+        background: #161616;
+        padding: 40px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .cal-title { font-family: 'Archivo Black', sans-serif; color: #ff4757; font-size: 46px; text-align: center; margin-bottom: 4px; }
+    .cal-sub { text-align: center; color: rgba(255,255,255,0.4); font-size: 16px; margin-bottom: 26px; }
+
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 10px; }
+    .cal-weekdays div { text-align: center; font-weight: 700; font-size: 15px; color: rgba(255,255,255,0.5); }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+    .day-cell {
+        position: relative;
+        aspect-ratio: 3 / 4;
+        background: #202020;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .day-cell.empty { background: transparent; }
+    .day-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .day-num {
+        position: absolute; top: 6px; left: 8px;
+        font-weight: 700; font-size: 18px; color: #fff;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        z-index: 2;
+    }
+    .day-cell.no-record .day-num { color: rgba(255,255,255,0.25); text-shadow: none; }
+    .day-cell.has-img::after {
+        content: "";
+        position: absolute; left: 0; right: 0; bottom: 0; height: 40%;
+        background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+    }
+
+    .cal-footer { text-align: center; color: rgba(255,255,255,0.2); font-size: 16px; margin-top: 26px; }
+</style>
+</head>
+<body>
+
+<h2>운동 캘린더</h2>
+
+<div class="nav">
+    <button onclick="changeMonth(-1)">◀</button>
+    <span id="monthLabel">-</span>
+    <button onclick="changeMonth(1)">▶</button>
+</div>
+
+<button class="btn" id="downloadBtn" onclick="downloadCalendarImage()">🖼️ 이미지로 저장</button>
+<div class="status" id="statusMsg">데이터 불러오는 중...</div>
+
+<div class="calendar-scroll">
+    <div id="calendar">
+        <div class="cal-title" id="calTitle">-</div>
+        <div class="cal-sub" id="calSub"></div>
+        <div class="cal-weekdays">
+            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-footer">SHARE STRONG IMAGE V2</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+    const GITHUB_REPO = "bulcoh/ssimg2";
+    let allData = {};
+    let viewYear, viewMonth; // viewMonth: 0-indexed
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function todayKorea() {
+        const now = new Date();
+        return new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    }
+
+    async function loadData() {
+        const statusEl = document.getElementById('statusMsg');
+        try {
+            const url = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json?t=${Date.now()}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('fetch failed: ' + res.status);
+            allData = await res.json();
+            statusEl.textContent = "";
+        } catch (e) {
+            console.error(e);
+            statusEl.textContent = "⚠️ data.json을 불러오지 못했습니다 (빈 캘린더로 표시)";
+        }
+    }
+
+    function changeMonth(delta) {
+        viewMonth += delta;
+        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const monthNames = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
+        document.getElementById('monthLabel').textContent = `${viewYear}년 ${monthNames[viewMonth]}`;
+        document.getElementById('calTitle').textContent = `${viewYear} ${monthNames[viewMonth].toUpperCase()}`;
+
+        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+        const firstWeekday = new Date(viewYear, viewMonth, 1).getDay(); // 0=일
+
+        let recordCount = 0;
+        let imgCount = 0;
+
+        const grid = document.getElementById('calGrid');
+        grid.innerHTML = "";
+
+        for (let i = 0; i < firstWeekday; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day-cell empty';
+            grid.appendChild(empty);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${viewYear}${pad(viewMonth + 1)}${pad(d)}`;
+            const record = allData[dateStr];
+            const cell = document.createElement('div');
+
+            const numEl = document.createElement('div');
+            numEl.className = 'day-num';
+            numEl.textContent = d;
+
+            if (record && record.imageUrl) {
+                cell.className = 'day-cell has-img';
+                const img = document.createElement('img');
+                img.crossOrigin = 'anonymous';
+                img.src = record.imageUrl;
+                cell.appendChild(img);
+                recordCount++; imgCount++;
+            } else if (record) {
+                cell.className = 'day-cell no-record';
+                recordCount++;
+            } else {
+                cell.className = 'day-cell no-record';
+            }
+
+            cell.appendChild(numEl);
+            grid.appendChild(cell);
+        }
+
+        const totalCells = firstWeekday + daysInMonth;
+        const trailing = (7 - (totalCells % 7)) % 7;
+        for (let i = 0; i < trailing; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day-cell empty';
+            grid.appendChild(empty);
+        }
+
+        document.getElementById('calSub').textContent = `기록 ${recordCount}일 · 사진 ${imgCount}장`;
+    }
+
+    // 캘린더 내 모든 이미지가 로드(또는 실패 확정)될 때까지 대기
+    function waitForImages() {
+        const imgs = Array.from(document.querySelectorAll('#calendar img'));
+        return Promise.all(imgs.map(function(img) {
+            if (img.complete) return Promise.resolve();
+            return new Promise(function(resolve) {
+                img.onload = resolve;
+                img.onerror = resolve;
+            });
+        }));
+    }
+
+    async function downloadCalendarImage() {
+        const btn = document.getElementById('downloadBtn');
+        btn.disabled = true;
+        btn.textContent = "이미지 만드는 중...";
+        try {
+            await document.fonts.ready;
+            await waitForImages();
+            const canvas = await html2canvas(document.getElementById('calendar'), {
+                useCORS: true,
+                backgroundColor: '#161616',
+                scale: 1
+            });
+            const link = document.createElement('a');
+            const monthNames2 = ["01","02","03","04","05","06","07","08","09","10","11","12"];
+            link.download = `ssimg_calendar_${viewYear}-${monthNames2[viewMonth]}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (e) {
+            console.error(e);
+            alert('이미지 생성 실패: ' + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "🖼️ 이미지로 저장";
+        }
+    }
+
+    (async function init() {
+        const t = todayKorea();
+        viewYear = t.getFullYear();
+        viewMonth = t.getMonth();
+        renderCalendar();
+        await loadData();
+        renderCalendar();
+    })();
+</script>
+</body>
+</html>
