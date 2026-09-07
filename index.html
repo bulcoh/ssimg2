@@ -70,6 +70,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/exifreader/dist/exif-reader.min.js"></script>
 
+    <!-- R2 업로드용: aws4fetch (S3 호환 서명) -->
+    <script type="module">
+        import { AwsClient } from "https://cdn.jsdelivr.net/npm/aws4fetch/dist/aws4fetch.esm.js";
+        const R2_ACCOUNT_ID = "076777d6c28d204037e09a9653f9d42a";
+        const R2_BUCKET = "ssimg2-photos";
+        window.r2Upload = async function(blob, key, accessKeyId, secretAccessKey) {
+            try {
+                const client = new AwsClient({ accessKeyId, secretAccessKey });
+                const url = `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${R2_BUCKET}/${key}`;
+                const res = await client.fetch(url, {
+                    method: 'PUT',
+                    body: blob,
+                    headers: { 'Content-Type': 'image/jpeg' }
+                });
+                return res.ok;
+            } catch (e) {
+                console.error('R2 업로드 에러', e);
+                return false;
+            }
+        };
+    </script>
+
 </head>
 <body>
 
@@ -121,6 +143,7 @@
     <button id="pushGithubBtn" class="btn btn-data" style="display:block; background: #6c5ce7; color: white;">🚀 깃허브로 데이터 쏘기</button>
     <button id="saveDataBtn" class="btn btn-data" onclick="downloadData()">📊 파일로 저장 (비상용)</button>
     <div class="guide" onclick="resetToken()" style="cursor:pointer">SHARE STRONG IMAGE V2</div>
+    <div class="guide" onclick="resetR2Token()" style="cursor:pointer">R2 키 초기화</div>
 </div>
 
 <canvas id="canvas"></canvas>
@@ -129,6 +152,62 @@
     let GITHUB_TOKEN = localStorage.getItem('gh_token') || "";
     const GITHUB_REPO = "bulcoh/ssimg2";
     const GITHUB_FILE_PATH = "data.json";
+
+    // R2 썸네일 업로드 설정
+    const R2_PUBLIC_URL = "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev";
+    let R2_ACCESS_KEY = localStorage.getItem('r2_access_key') || "";
+    let R2_SECRET_KEY = localStorage.getItem('r2_secret_key') || "";
+
+    function checkR2Token() {
+        if (!R2_ACCESS_KEY || !R2_SECRET_KEY) {
+            const ak = prompt("🔐 R2 Access Key ID를 입력하세요 (브라우저에 저장됩니다):", "");
+            if (!ak || !ak.trim()) return false;
+            const sk = prompt("🔐 R2 Secret Access Key를 입력하세요:", "");
+            if (!sk || !sk.trim()) return false;
+            R2_ACCESS_KEY = ak.trim();
+            R2_SECRET_KEY = sk.trim();
+            localStorage.setItem('r2_access_key', R2_ACCESS_KEY);
+            localStorage.setItem('r2_secret_key', R2_SECRET_KEY);
+        }
+        return true;
+    }
+
+    function resetR2Token() {
+        if (confirm("저장된 R2 키를 지울까?")) {
+            localStorage.removeItem('r2_access_key');
+            localStorage.removeItem('r2_secret_key');
+            R2_ACCESS_KEY = ""; R2_SECRET_KEY = "";
+            alert("삭제 완료! 다음 업로드 때 새로 물어볼게.");
+        }
+    }
+
+    // 캔버스 → 480px / JPEG 60% 썸네일 Blob 생성
+    function makeThumbnailBlob() {
+        return new Promise(function(resolve) {
+            const thumbCanvas = document.createElement('canvas');
+            const scale = 480 / canvas.width;
+            thumbCanvas.width = 480;
+            thumbCanvas.height = Math.round(canvas.height * scale);
+            thumbCanvas.getContext('2d').drawImage(canvas, 0, 0, thumbCanvas.width, thumbCanvas.height);
+            thumbCanvas.toBlob(function(blob) { resolve(blob); }, 'image/jpeg', 0.6);
+        });
+    }
+
+    // 날짜 기준 키로 업로드 (같은 날 재생성 시 자동 덮어쓰기)
+    async function uploadThumbnailToR2(dateStr) {
+        if (!checkR2Token()) return null;
+        if (!window.r2Upload) { console.warn('R2 클라이언트 로딩 전'); return null; }
+        try {
+            const blob = await makeThumbnailBlob();
+            const key = dateStr.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + '.jpg';
+            const ok = await window.r2Upload(blob, key, R2_ACCESS_KEY, R2_SECRET_KEY);
+            if (!ok) { console.error('R2 업로드 실패'); return null; }
+            return R2_PUBLIC_URL.replace(/\/$/, '') + '/' + key;
+        } catch (e) {
+            console.error('썸네일 업로드 중 에러', e);
+            return null;
+        }
+    }
 
     let currentMinutes = 0;
     let currentFileDate = "";
@@ -196,7 +275,8 @@
                 cooldown: cooldownVal,
                 swim: oldData.swim || 0,
                 run: oldData.run || 0,
-                workout: oldData.workout || null
+                workout: oldData.workout || null,
+                imageUrl: oldData.imageUrl || null
             };
         } else if (type === 'swim') {
             currentData[dateStr].swim = mins;
@@ -216,6 +296,12 @@
             };
         }
 
+        // strong 기록일 때만 캔버스를 썸네일로 만들어 R2에 업로드 (날짜 키로 덮어쓰기)
+        if (type === 'strong') {
+            const thumbUrl = await uploadThumbnailToR2(dateStr);
+            if (thumbUrl) currentData[dateStr].imageUrl = thumbUrl;
+        }
+
         const jsonStr = JSON.stringify(currentData, null, 2);
         const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
             function(match, p1) { return String.fromCharCode('0x' + p1); }));
@@ -225,7 +311,8 @@
             body: JSON.stringify({ message: `Update ${type} at ${dateStr}`, content: encodedContent, sha: sha })
         });
         if (putRes.ok) {
-            alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!`);
+            const thumbNote = type === 'strong' ? (currentData[dateStr].imageUrl ? " (썸네일 업로드 완료)" : " (썸네일 업로드 실패/생략)") : "";
+            alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!${thumbNote}`);
             await rebuildLogTxt(currentData);
         } else {
             const errorDetail = await putRes.json();
