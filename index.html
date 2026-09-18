@@ -781,8 +781,7 @@ function drawImageContain(img, dx, dy, dw, dh) {
     const sy = dy + (dh - sh) / 2;
     ctx.drawImage(img, sx, sy, sw, sh);
     }
-   
-   // ─── TYPE D (액자형 — 사진+텍스트 전체를 통째로 축소해 130px 여백 안에 배치) ───
+   // ─── TYPE D (액자형 — 동일 스케일로 축소, 비율 유지, 남는 공간은 중앙 정렬) ───
 async function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
     const FULL_W = 1080, FULL_H = 1350;
     const margin = 130;
@@ -790,25 +789,32 @@ async function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerc
     canvas.width = FULL_W;
     canvas.height = FULL_H;
 
-    // 1) 실제 canvas에 먼저 TYPE A와 동일하게 "풀사이즈" 그대로 전체 구성을 렌더링
+    // 1) 풀사이즈로 전체 구성 렌더링 (기존과 동일)
     drawImageCover(img, FULL_W, FULL_H);
     const iX = 70, rX = FULL_W - 70;
     drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
     drawExerciseTags(exerciseList);
     drawSignature(FULL_H - 22);
 
-    // 2) 방금 그린 결과 전체를 비트맵으로 캡처 (canvas/ctx 변수는 그대로 유지, 재할당 없음)
+    // 2) 결과 캡처
     const bitmap = await createImageBitmap(canvas);
 
-    // 3) canvas를 검정으로 초기화하고, 캡처해둔 비트맵을 축소해서 여백 안쪽에 재배치
+    // 3) 검정 배경
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const innerW = FULL_W - margin * 2;
-    const innerH = FULL_H - margin * 2;
-    ctx.drawImage(bitmap, 0, 0, FULL_W, FULL_H, margin, margin, innerW, innerH);
+    // 4) 가로/세로 스케일을 "동일하게" 맞춤 (더 작은 쪽 기준) → 찌그러짐 없음
+    const innerW = FULL_W - margin * 2;   // 820
+    const innerH = FULL_H - margin * 2;   // 1090
+    const scale = Math.min(innerW / FULL_W, innerH / FULL_H); // 0.752로 통일
+    const drawW = FULL_W * scale;
+    const drawH = FULL_H * scale;
+    const dx = (FULL_W - drawW) / 2;  // 가로 중앙 정렬
+    const dy = (FULL_H - drawH) / 2;  // 세로 중앙 정렬
 
-    bitmap.close && bitmap.close(); // 메모리 정리 (지원 브라우저에서만)
+    ctx.drawImage(bitmap, 0, 0, FULL_W, FULL_H, dx, dy, drawW, drawH);
+
+    bitmap.close && bitmap.close();
 }
 
     // ─── TYPE B (구 Type G, 레이더 차트) ─────────────────────────────────────
