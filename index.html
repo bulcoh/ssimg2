@@ -782,27 +782,39 @@ function drawImageContain(img, dx, dy, dw, dh) {
     ctx.drawImage(img, sx, sy, sw, sh);
 }
 
-// ─── TYPE D (액자형 — 상하좌우 130px 검정 여백, 비율 유지) ────────────────
+// ─── TYPE D (액자형 — 사진+텍스트 전체를 통째로 축소해 130px 여백 안에 배치) ───
 function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
-    canvas.width = 1080; canvas.height = 1350;
+    const FULL_W = 1080, FULL_H = 1350;
+    const margin = 130;
 
-    // 전체 검정 배경 (액자 여백)
+    // 1) 오프스크린 캔버스에 TYPE A와 동일하게 "원본 크기" 그대로 전체 구성을 렌더링
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = FULL_W;
+    offCanvas.height = FULL_H;
+    const offCtx = offCanvas.getContext('2d');
+
+    // 전역 canvas/ctx를 오프스크린으로 일시 교체 (draw 함수들이 canvas/ctx를 그대로 참조하므로)
+    const realCanvas = canvas, realCtx = ctx;
+    canvas = offCanvas; ctx = offCtx;
+
+    drawImageCover(img, FULL_W, FULL_H);
+    const iX = 70, rX = FULL_W - 70;
+    drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
+    drawExerciseTags(exerciseList);
+    drawSignature(FULL_H - 22);
+
+    // 전역 원복
+    canvas = realCanvas; ctx = realCtx;
+
+    // 2) 실제 캔버스: 검정 배경 채우고, 오프스크린 결과 전체를 축소해서 중앙(여백 안쪽)에 붙여넣기
+    canvas.width = FULL_W; canvas.height = FULL_H;
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 130px 안쪽 영역에만 사진 배치, 비율 유지, 여백 침범 없음
-    const margin = 130;
-    drawImageContain(
-        img,
-        margin, margin,
-        canvas.width - margin * 2,
-        canvas.height - margin * 2
-    );
-
-    const iX = 70, rX = canvas.width - 70;
-    drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
-    drawExerciseTags(exerciseList);
-    drawSignature(canvas.height - 22);
+    const innerW = FULL_W - margin * 2;
+    const innerH = FULL_H - margin * 2;
+    // offCanvas 전체(1080x1350)를 innerW x innerH 크기로 축소해서 그림 → 폰트/태그/원까지 동일 비율로 축소됨
+    ctx.drawImage(offCanvas, 0, 0, FULL_W, FULL_H, margin, margin, innerW, innerH);
 }
     // ─── TYPE B (구 Type G, 레이더 차트) ─────────────────────────────────────
     function drawTypeB(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
