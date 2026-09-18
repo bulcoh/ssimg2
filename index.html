@@ -34,7 +34,7 @@
         .photo-group { display: flex; gap: 10px; margin-bottom: 10px; }
         .photo-group label { flex: 1; margin-bottom: 0 !important; }
 
-        /* --- 타입 선택 UI (3종) --- */
+        /* --- 타입 선택 UI (4종) --- */
         .type-selector {
             display: flex;
             gap: 8px;
@@ -58,6 +58,7 @@
         .type-btn.active-A { border-color: #ff4757; color: #ff4757; background: rgba(255,71,87,0.12); }
         .type-btn.active-B { border-color: #00d2ff; color: #00d2ff; background: rgba(0,210,255,0.10); }
         .type-btn.active-C { border-color: #ff9f43; color: #ff9f43; background: rgba(255,159,67,0.10); }
+        .type-btn.active-D { border-color: #a29bfe; color: #a29bfe; background: rgba(162,155,254,0.12); }
 
         .type-label { font-size: 10px; display: block; margin-top: 2px; opacity: 0.8; }
 
@@ -119,7 +120,7 @@
         </label>
     </div>
 
-    <!-- 디자인 타입 선택 (3종) -->
+    <!-- 디자인 타입 선택 (4종) -->
     <div class="type-selector">
         <button class="type-btn active-A" id="typeA" onclick="selectType('A')">
             TYPE A
@@ -132,6 +133,10 @@
         <button class="type-btn" id="typeC" onclick="selectType('C')">
             TYPE C
             <span class="type-label">Fleek</span>
+        </button>
+        <button class="type-btn" id="typeD" onclick="selectType('D')">
+            TYPE D
+            <span class="type-label">Crop 4:5</span>
         </button>
     </div>
 
@@ -216,7 +221,7 @@
 
     function selectType(type) {
         selectedType = type;
-        ['A','B','C'].forEach(function(t) {
+        ['A','B','C','D'].forEach(function(t) {
             const btn = document.getElementById('type' + t);
             btn.className = 'type-btn';
             if (t === type) btn.classList.add('active-' + t);
@@ -548,7 +553,7 @@ https://link.strong.app/swnxgzke`;
     }
 
     // 타입별 draw 함수 매핑 — processWorkout에서 분기문 없이 호출
-    const TYPE_DRAWERS = { A: drawTypeA, B: drawTypeB, C: drawTypeC };
+    const TYPE_DRAWERS = { A: drawTypeA, B: drawTypeB, C: drawTypeC, D: drawTypeD };
 
     async function processWorkout() {
         const rawText = document.getElementById('logInput').value;
@@ -679,7 +684,7 @@ https://link.strong.app/swnxgzke`;
         ctx.fillText("SHARE STRONG IMAGE V2", canvas.width / 2, y);
     }
 
-    // ── 공통 하단 운동 태그 목록 (A, B 공용) ─────────────────────────────────
+    // ── 공통 하단 운동 태그 목록 (A, B, D 공용) ──────────────────────────────
     function drawExerciseTags(exerciseList) {
         const iX = 70;
         const tagFont = "700 22px 'Inter'";
@@ -747,6 +752,29 @@ https://link.strong.app/swnxgzke`;
     function drawTypeA(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const iX = 70, rX = canvas.width - 70;
+        drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
+        drawExerciseTags(exerciseList);
+        drawSignature(canvas.height - 22);
+    }
+
+    // ─── 유틸: 원본 비율 유지 + 중앙 기준 cover 크롭 ─────────────────────────
+    // 원본이 캔버스보다 세로로 길면 위아래를, 가로로 길면 좌우를 중앙 기준으로 잘라냄
+    function drawImageCover(img, cw, ch) {
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        const scale = Math.max(cw / iw, ch / ih);
+        const sw = cw / scale, sh = ch / scale;
+        const sx = (iw - sw) / 2;
+        const sy = (ih - sh) / 2;
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+    }
+
+    // ─── TYPE D (A와 동일 레이아웃, 4:5 중앙 크롭 — 사진 안 찌그러짐) ────────
+    function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+        canvas.width = 1080; canvas.height = 1350;
+        drawImageCover(img, canvas.width, canvas.height);
 
         const iX = 70, rX = canvas.width - 70;
         drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
