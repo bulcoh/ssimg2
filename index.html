@@ -771,21 +771,43 @@ https://link.strong.app/swnxgzke`;
         ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
     }
 
-    // ─── TYPE D (A와 동일 레이아웃, 4:5 중앙 크롭 — 사진 안 찌그러짐) ────────
-    function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
-        canvas.width = 1080; canvas.height = 1350;
-        drawImageCover(img, canvas.width, canvas.height);
+   // ─── 유틸: 지정 영역 안에 비율 유지 + 잘림 없이(contain) 중앙 배치 ─────────
+function drawImageContain(img, dx, dy, dw, dh) {
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    const scale = Math.min(dw / iw, dh / ih); // cover와 반대로 min 사용 → 잘림 없음
+    const sw = iw * scale, sh = ih * scale;
+    const sx = dx + (dw - sw) / 2;
+    const sy = dy + (dh - sh) / 2;
+    ctx.drawImage(img, sx, sy, sw, sh);
+}
 
-        const iX = 70, rX = canvas.width - 70;
-        drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
-        drawExerciseTags(exerciseList);
-        drawSignature(canvas.height - 22);
-    }
+// ─── TYPE D (액자형 — 상하좌우 130px 검정 여백, 비율 유지) ────────────────
+function drawTypeD(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
+    canvas.width = 1080; canvas.height = 1350;
 
+    // 전체 검정 배경 (액자 여백)
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 130px 안쪽 영역에만 사진 배치, 비율 유지, 여백 침범 없음
+    const margin = 130;
+    drawImageContain(
+        img,
+        margin, margin,
+        canvas.width - margin * 2,
+        canvas.height - margin * 2
+    );
+
+    const iX = 70, rX = canvas.width - 70;
+    drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
+    drawExerciseTags(exerciseList);
+    drawSignature(canvas.height - 22);
+}
     // ─── TYPE B (구 Type G, 레이더 차트) ─────────────────────────────────────
     function drawTypeB(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        drawImageCover(img, canvas.width, canvas.height);
         ctx.fillStyle = "rgba(0,0,0,0.4)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -910,7 +932,7 @@ https://link.strong.app/swnxgzke`;
     // ─── TYPE C (구 Type F, Fleek2) ──────────────────────────────────────────
     function drawTypeC(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        drawImageCover(img, canvas.width, canvas.height);
 
         const iX = 40, rX = canvas.width - 40;
         const headEnd = 240;
