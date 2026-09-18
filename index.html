@@ -751,7 +751,7 @@ https://link.strong.app/swnxgzke`;
     // ─── TYPE A (구 Type H, 기본형) — 사진 + 헤더 + 하단 태그 목록만 ─────────
     function drawTypeA(img, workoutTitle, dateTime, duration, totalSets, exerciseList) {
         canvas.width = 1080; canvas.height = 1350;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        drawImageCover(img, canvas.width, canvas.height);
 
         const iX = 70, rX = canvas.width - 70;
         drawHeaderBlock(iX, rX, workoutTitle, dateTime, duration, totalSets);
