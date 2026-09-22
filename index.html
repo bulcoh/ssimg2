@@ -134,8 +134,8 @@
 </div>
 
     <div class="btn-group">
-        <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영</button>
-        <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기</button>
+<button class="btn btn-swim" id="btnSwim" onclick="recordManual('swim')">🏊‍♂️ 수영</button>
+<button class="btn btn-run" id="btnRun" onclick="recordManual('run')">🏃‍♂️ 달리기</button>
         <button class="btn btn-sub" onclick="loadTestData()" style="background:#333;color:#888;">🧪 테스트</button>
     </div>
     <div class="cardio-panel" id="cardioPanel">
@@ -145,8 +145,7 @@
 
 
     <!-- 사진: 갤러리 선택 / 카메라 촬영 -->
-    <input type="file" id="imageInput" accept="image/*" style="display:none">
-    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+
     <div class="photo-group">
 <input type="file" id="imageInput" accept="image/*" style="display:none">
 <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center; width: 100%; box-sizing: border-box;">
