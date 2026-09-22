@@ -185,7 +185,10 @@
 
 <div id="resultContainer">
     <img id="resultImage" alt="Result Workout Image">
-    <button id="pushGithubBtn" class="btn btn-data" style="display:block; background: #6c5ce7; color: white;">🚀 깃허브로 데이터 쏘기</button>
+        <div style="display:flex; gap:8px; margin-top:5px;">
+        <button id="downloadImgBtn" class="btn btn-data" style="display:block; flex:1; background:#2ed573; color:white;">⬇️ 이미지 저장</button>
+        <button id="pushGithubBtn" class="btn btn-data" style="display:block; flex:1; background:#6c5ce7; color:white;">🚀 깃허브 쏘기</button>
+    </div>
     <button id="saveDataBtn" class="btn btn-data" onclick="downloadData()">📊 파일로 저장 (비상용)</button>
     <div class="guide" onclick="resetToken()" style="cursor:pointer">SHARE STRONG IMAGE V2</div>
     <div class="guide" onclick="resetR2Token()" style="cursor:pointer">R2 키 초기화</div>
@@ -301,35 +304,44 @@ document.getElementById('buildStamp').textContent = `build ${y}${m}${day}_${ampm
             alert("삭제 완료! 다음 전송 때 새로 물어볼게.");
         }
     }
+async function pushToGithub(type, mins, dateStr) {
+    const cooldownVal = Number(currentParsed?.cooldownMins) || 0;
+    if (!checkToken()) return;
 
-    async function pushToGithub(type, mins, dateStr) {
-        const cooldownVal = Number(currentParsed?.cooldownMins) || 0;
-        if (!checkToken()) return;
-        const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
-        let sha = "";
-        let currentData = {};
-        try {
-    const res = await fetch(url + '?t=' + Date.now(), { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
-    if (res.ok) {
-        const json = await res.json();
-        sha = json.sha;
-        if (!json.content) {
-            // 1MB 초과 등으로 content가 비어있는 경우 → raw URL로 재시도
-            const rawRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json?t=${Date.now()}`);
-            if (!rawRes.ok) throw new Error('raw fetch도 실패');
-            currentData = await rawRes.json();
+    const pushBtn = document.getElementById('pushGithubBtn');
+    const originalText = pushBtn.innerText;
+    pushBtn.disabled = true;
+    pushBtn.innerText = "⏳ 전송 중...";
+
+    const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+    let sha = "";
+    let currentData = {};
+    try {
+        const res = await fetch(url + '?t=' + Date.now(), { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
+        if (res.ok) {
+            const json = await res.json();
+            sha = json.sha;
+            if (!json.content) {
+                // 1MB 초과 등으로 content가 비어있는 경우 → raw URL로 재시도
+                const rawRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json?t=${Date.now()}`);
+                if (!rawRes.ok) throw new Error('raw fetch도 실패');
+                currentData = await rawRes.json();
+            } else {
+                const content = decodeURIComponent(atob(json.content).split('').map(c =>
+                    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                currentData = JSON.parse(content);
+            }
         } else {
-            const content = decodeURIComponent(atob(json.content).split('').map(c =>
-                '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-            currentData = JSON.parse(content);
+            throw new Error('GET 실패: ' + res.status);
         }
-    } else {
-        throw new Error('GET 실패: ' + res.status);
+    } catch (e) {
+        alert('⚠️ 기존 데이터 로드 실패 — 덮어쓰기 방지를 위해 저장을 중단합니다.\n' + e.message);
+        pushBtn.disabled = false;
+        pushBtn.innerText = originalText;
+        return; // ← 핵심: 실패하면 여기서 함수 자체를 종료, PUT 진행 안 함
     }
-} catch (e) {
-    alert('⚠️ 기존 데이터 로드 실패 — 덮어쓰기 방지를 위해 저장을 중단합니다.\n' + e.message);
-    return; // ← 핵심: 실패하면 여기서 함수 자체를 종료, PUT 진행 안 함
-}
+
+    try {
         if (!currentData[dateStr]) {
             currentData[dateStr] = { strong: 0, cooldown: 0, swim: 0, run: 0 };
         }
@@ -370,6 +382,8 @@ document.getElementById('buildStamp').textContent = `build ${y}${m}${day}_${ampm
         }
 
         const jsonStr = JSON.stringify(currentData, null, 2);
+        const sizeKB = new Blob([jsonStr]).size / 1024;
+        const SIZE_WARN_THRESHOLD_KB = 900;
         const encodedContent = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
             function(match, p1) { return String.fromCharCode('0x' + p1); }));
         const putRes = await fetch(url, {
@@ -379,6 +393,10 @@ document.getElementById('buildStamp').textContent = `build ${y}${m}${day}_${ampm
         });
         if (putRes.ok) {
             const thumbNote = type === 'strong' ? (currentData[dateStr].imageUrl ? " (썸네일 업로드 완료)" : " (썸네일 업로드 실패/생략)") : "";
+            let sizeWarn = "";
+            if (sizeKB > SIZE_WARN_THRESHOLD_KB) {
+                sizeWarn = `\n\n⚠️ data.json 용량 ${sizeKB.toFixed(0)}KB — 1MB(1024KB) 근접!`;
+            }
             alert(`✅ strong ${mins - cooldownVal}분 / cooldown ${cooldownVal}분 저장 완료!${thumbNote}`);
             await rebuildLogTxt(currentData);
         } else {
@@ -389,7 +407,11 @@ document.getElementById('buildStamp').textContent = `build ${y}${m}${day}_${ampm
                 alert(`❌ 저장 실패: ${errorDetail.message}`);
             }
         }
+    } finally {
+        pushBtn.disabled = false;
+        pushBtn.innerText = originalText;
     }
+}
 
 let cardioPanelType = null;
 
@@ -737,6 +759,14 @@ https://link.strong.app/swnxgzke`;
                         resultImg.src = canvas.toDataURL('image/png');
                         resultContainer.style.display = 'block';
                         resultContainer.appendChild(document.getElementById('buildStamp')); // ← 추가: 생성되면 스탬프를 R2초기화 밑으로 이동
+
+
+                        document.getElementById('downloadImgBtn').onclick = function() {
+                            const link = document.createElement('a');
+                            link.href = canvas.toDataURL('image/png');
+                            link.download = `ssimg_${currentFileDate}.png`;
+                            link.click();
+                        };
 
                         const pushBtn = document.getElementById('pushGithubBtn');
                         const snapParsed = parsed;
