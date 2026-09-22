@@ -367,8 +367,11 @@ let cardioPanelType = null;
 
 async function recordManual(type) {
     const panel = document.getElementById('cardioPanel');
-    document.getElementById('btnSwim').classList.toggle('active', type === 'swim' && !panel.classList.contains('open'));
-document.getElementById('btnRun').classList.toggle('active', type === 'run' && !panel.classList.contains('open'));
+    document.getElementById('btnSwim').classList.remove('active');
+document.getElementById('btnRun').classList.remove('active');
+if (!(panel.classList.contains('open') && cardioPanelType === type)) {
+    document.getElementById('btn' + (type === 'swim' ? 'Swim' : 'Run')).classList.add('active');
+}
 
 
     // 같은 버튼 다시 누르면 닫기
@@ -458,12 +461,7 @@ document.getElementById('btnRun').classList.remove('active');
         }
     }
     document.getElementById('imageInput').onchange = onPhotoPicked;
-    document.getElementById('cameraInput').onchange = function() {
-        // 촬영본을 imageInput 쪽으로 옮겨서 이후 로직(EXIF 등)을 그대로 재사용
-        const input = document.getElementById('imageInput');
-        input.files = this.files;
-        onPhotoPicked();
-    };
+ 
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -559,6 +557,7 @@ https://link.strong.app/swnxgzke`;
                 alert('sample.jpg 파일이 같은 폴더에 없어!');
             });
     }
+
     window._testPhotoTime = new Date('2026-03-14T13:30:00');
 
     window.addEventListener("load", async () => {
