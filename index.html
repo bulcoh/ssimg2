@@ -237,6 +237,7 @@
 
     // 날짜 기준 키로 업로드 (같은 날 재생성 시 자동 덮어쓰기)
     async function uploadThumbnailToR2(dateStr) {
+        
         if (!checkR2Token()) return null;
         if (!window.r2Upload) { console.warn('R2 클라이언트 로딩 전'); return null; }
         try {
@@ -294,17 +295,27 @@
         let sha = "";
         let currentData = {};
         try {
-            const res = await fetch(url + '?t=' + Date.now(), { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
-            if (res.ok) {
-                const json = await res.json();
-                sha = json.sha;
-                const content = decodeURIComponent(atob(json.content).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-                currentData = JSON.parse(content);
-            }
-        } catch (e) { console.log("기존 데이터 없음 또는 에러:", e); }
-
+    const res = await fetch(url + '?t=' + Date.now(), { headers: { "Authorization": `Bearer ${GITHUB_TOKEN}` } });
+    if (res.ok) {
+        const json = await res.json();
+        sha = json.sha;
+        if (!json.content) {
+            // 1MB 초과 등으로 content가 비어있는 경우 → raw URL로 재시도
+            const rawRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json?t=${Date.now()}`);
+            if (!rawRes.ok) throw new Error('raw fetch도 실패');
+            currentData = await rawRes.json();
+        } else {
+            const content = decodeURIComponent(atob(json.content).split('').map(c =>
+                '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+            currentData = JSON.parse(content);
+        }
+    } else {
+        throw new Error('GET 실패: ' + res.status);
+    }
+} catch (e) {
+    alert('⚠️ 기존 데이터 로드 실패 — 덮어쓰기 방지를 위해 저장을 중단합니다.\n' + e.message);
+    return; // ← 핵심: 실패하면 여기서 함수 자체를 종료, PUT 진행 안 함
+}
         if (!currentData[dateStr]) {
             currentData[dateStr] = { strong: 0, cooldown: 0, swim: 0, run: 0 };
         }
