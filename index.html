@@ -200,17 +200,15 @@
     let R2_ACCESS_KEY = localStorage.getItem('r2_access_key') || "";
     let R2_SECRET_KEY = localStorage.getItem('r2_secret_key') || "";
 
-   function checkR2Token() {
-    if (!R2_ACCESS_KEY) {
-        const ak = prompt("🔐 R2 Access Key ID:", "");
-        if (!ak || !ak.trim()) return false;
-        R2_ACCESS_KEY = ak.trim();
+    function checkR2Token() {
+    if (!R2_ACCESS_KEY || !R2_SECRET_KEY) {
+        const input = prompt("🔐 R2 키를 입력하세요\n형식: 액세스키:시크릿키", "");
+        if (!input || !input.trim()) return false;
+        const parts = input.trim().split(':');
+        if (parts.length < 2) { alert("형식이 틀렸어! 액세스키:시크릿키 형식으로 입력해줘"); return false; }
+        R2_ACCESS_KEY = parts[0].trim();
+        R2_SECRET_KEY = parts.slice(1).join(':').trim();
         localStorage.setItem('r2_access_key', R2_ACCESS_KEY);
-    }
-    if (!R2_SECRET_KEY) {
-        const sk = prompt("🔐 R2 Secret Access Key:", "");
-        if (!sk || !sk.trim()) return false;
-        R2_SECRET_KEY = sk.trim();
         localStorage.setItem('r2_secret_key', R2_SECRET_KEY);
     }
     return true;
