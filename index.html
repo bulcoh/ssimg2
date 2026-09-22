@@ -148,10 +148,13 @@
 
     <div class="photo-group">
 <input type="file" id="imageInput" accept="image/*" style="display:none">
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
 <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center; width: 100%; box-sizing: border-box;">
     🖼️ 사진 선택하기
 </label>
-
+<label for="cameraInput" class="btn btn-sub" style="display:block; text-align:center; width:100%; box-sizing:border-box; margin-bottom:10px;">
+    📷 사진 찍기
+</label>
     </div>
 
     <!-- 디자인 타입 선택 (4종) -->
@@ -461,7 +464,11 @@ document.getElementById('btnRun').classList.remove('active');
         }
     }
     document.getElementById('imageInput').onchange = onPhotoPicked;
- 
+ document.getElementById('cameraInput').onchange = function() {
+    const input = document.getElementById('imageInput');
+    input.files = this.files;
+    onPhotoPicked();
+};
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
