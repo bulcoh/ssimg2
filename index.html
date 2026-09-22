@@ -238,7 +238,7 @@
     // 날짜 기준 키로 업로드 (같은 날 재생성 시 자동 덮어쓰기)
     async function uploadThumbnailToR2(dateStr) {
         if (!checkR2Token()) return null;
-        if (!window.r2Upload) { console.warn('R2 클라이언트 로딩 전'); return null; }
+        if (!window.r2Upload) { alert('R2 클라이언트 로딩 전'); return null; }
         try {
             const blob = await makeThumbnailBlob();
             const key = dateStr.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + '.jpg';
