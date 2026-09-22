@@ -246,7 +246,7 @@
             if (!ok) { console.error('R2 업로드 실패'); return null; }
             return R2_PUBLIC_URL.replace(/\/$/, '') + '/' + key;
         } catch (e) {
-            console.error('썸네일 업로드 중 에러', e);
+            alert('R2 에러: ' + e.message);
             return null;
         }
     }
