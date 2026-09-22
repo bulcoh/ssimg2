@@ -180,11 +180,8 @@
     <button class="btn" onclick="processWorkout()">이미지 생성 (딸깍!)</button>
 </div>
 
-<div style="font-size:11px; color:#555; text-align:center; margin-top:8px;">
-    build 2026-09-22-01
-</div>
+<div id="buildStamp" style="font-size:11px; color:#555; text-align:center; margin-top:8px;"></div>
 
-<div id="resultContainer">
 
 <div id="resultContainer">
     <img id="resultImage" alt="Result Workout Image">
@@ -201,6 +198,15 @@
     const GITHUB_REPO = "bulcoh/ssimg2";
     const GITHUB_FILE_PATH = "data.json";
 
+(function() {
+    const d = new Date(document.lastModified);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const h = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    document.getElementById('buildStamp').textContent = `build ${y}${m}${day}_${h}${min}`;
+})();
     // R2 썸네일 업로드 설정
     const R2_PUBLIC_URL = "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev";
     let R2_ACCESS_KEY = localStorage.getItem('r2_access_key') || "";
@@ -481,11 +487,11 @@ document.getElementById('btnRun').classList.remove('active');
         }
     }
     document.getElementById('imageInput').onchange = onPhotoPicked;
- document.getElementById('cameraInput').onchange = function() {
-    const input = document.getElementById('imageInput');
-    input.files = this.files;
-    onPhotoPicked();
-};
+    document.getElementById('cameraInput').onchange = function() {
+        const input = document.getElementById('imageInput');
+        input.files = this.files;
+        onPhotoPicked();
+    };
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -728,6 +734,7 @@ https://link.strong.app/swnxgzke`;
                     ).then(function() {
                         resultImg.src = canvas.toDataURL('image/png');
                         resultContainer.style.display = 'block';
+                        resultContainer.appendChild(document.getElementById('buildStamp')); // ← 추가: 생성되면 스탬프를 R2초기화 밑으로 이동
 
                         const pushBtn = document.getElementById('pushGithubBtn');
                         const snapParsed = parsed;
