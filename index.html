@@ -92,6 +92,10 @@
         .cardio-day-stats { color: #666; font-size: 13px; }
         .cardio-loading { padding: 16px; text-align: center; color: #666; font-size: 13px; }
 
+        /* 버튼 스윔 달리기 언액티브 */
+        .btn-swim.active { background: #0a5fa3 !important; opacity: 0.7; }
+.btn-run.active  { background: #1a8a47 !important; opacity: 0.7; }
+
     </style>
     <link rel="manifest" href="manifest.json">
 
@@ -124,29 +128,31 @@
 
 <div class="editor">
     <h2>SSimage 2</h2>
-    <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..."></textarea>
+<div style="display:flex; gap:8px; margin-bottom:10px;">
+    <textarea id="logInput" placeholder="Strong 로그를 복사해 넣으세요..." style="flex:5; min-height:100px; background:#333; border:1px solid #444; color:#fff; padding:10px; border-radius:10px; resize:none; outline:none; box-sizing:border-box; -webkit-user-select:text; font-size:16px;"></textarea>
+ <button onclick="pasteLog()" style="flex:1; background:#444; color:#fff; border:none; border-radius:10px; font-size:13px; font-weight:bold; cursor:pointer; padding:8px 4px; -webkit-appearance:none; align-self:stretch;">📋<br>붙여<br>넣기</button>
+</div>
 
     <div class="btn-group">
-        <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영 추가</button>
-        <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기 추가</button>
-        <button class="btn btn-sub" onclick="loadTestData()" style="background:#333;color:#888;">🧪 테스트 모드</button>
+        <button class="btn btn-swim" onclick="recordManual('swim')">🏊‍♂️ 수영</button>
+        <button class="btn btn-run" onclick="recordManual('run')">🏃‍♂️ 달리기</button>
+        <button class="btn btn-sub" onclick="loadTestData()" style="background:#333;color:#888;">🧪 테스트</button>
     </div>
     <div class="cardio-panel" id="cardioPanel">
     <div class="cardio-loading">불러오는 중...</div>
 </div>
 
-    <button class="btn btn-sub" onclick="pasteLog()">📋 클립보드 붙여넣기</button>
+
 
     <!-- 사진: 갤러리 선택 / 카메라 촬영 -->
     <input type="file" id="imageInput" accept="image/*" style="display:none">
     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
     <div class="photo-group">
-        <label for="imageInput" class="btn btn-sub" id="fileLabel" style="display:block; text-align:center;">
-            🖼️ 사진 선택하기
-        </label>
-        <label for="cameraInput" class="btn btn-sub" id="cameraLabel" style="display:block; text-align:center;">
-            📷 사진 찍기
-        </label>
+<input type="file" id="imageInput" accept="image/*" style="display:none">
+<label for="imageInput" class="btn btn-sub" id="fileLabel" style="display: block; text-align: center; width: 100%; box-sizing: border-box;">
+    🖼️ 사진 선택하기
+</label>
+
     </div>
 
     <!-- 디자인 타입 선택 (4종) -->
@@ -361,6 +367,8 @@
 let cardioPanelType = null;
 
 async function recordManual(type) {
+    document.getElementById('btnSwim').classList.toggle('active', type === 'swim' && !panel.classList.contains('open'));
+document.getElementById('btnRun').classList.toggle('active', type === 'run' && !panel.classList.contains('open'));
     const panel = document.getElementById('cardioPanel');
 
     // 같은 버튼 다시 누르면 닫기
@@ -427,6 +435,8 @@ async function recordManual(type) {
 async function selectCardioDay(dateStr, type) {
     const panel = document.getElementById('cardioPanel');
     panel.classList.remove('open');
+    document.getElementById('btnSwim').classList.remove('active');
+document.getElementById('btnRun').classList.remove('active');
     cardioPanelType = null;
 
     const label = type === 'swim' ? '수영' : '달리기';
