@@ -55,90 +55,11 @@
     "run": 0
   },
   "20260314": {
-    "strong": 56,
-    "cooldown": 10,
+    "strong": 90,
+    "cooldown": 0,
     "swim": 0,
     "run": 0,
-    "workout": {
-      "title": "LEGS#2",
-      "datetime": "2026년 3월 14일 토요일 오후 12:24",
-      "duration": 66,
-      "totalSets": 27,
-      "exercises": [
-        {
-          "name": "Plank",
-          "sets": 3,
-          "warms": 0,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Deadlift (Barbell)",
-          "sets": 2,
-          "warms": 4,
-          "drops": 1,
-          "fails": 1
-        },
-        {
-          "name": "Romanian Deadlift (Barbell)",
-          "sets": 3,
-          "warms": 1,
-          "drops": 2,
-          "fails": 1
-        },
-        {
-          "name": "Lying One Leg Curl",
-          "sets": 3,
-          "warms": 1,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Leg Extension (Single Leg)",
-          "sets": 3,
-          "warms": 1,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Lunge (Smith Muchine)",
-          "sets": 3,
-          "warms": 1,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Standing Calf Raise (Bodyweight)",
-          "sets": 0,
-          "warms": 1,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Standing Calf Raise (Dumbbell)",
-          "sets": 3,
-          "warms": 0,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Hanging Leg Raise",
-          "sets": 3,
-          "warms": 1,
-          "drops": 0,
-          "fails": 0
-        },
-        {
-          "name": "Walking",
-          "sets": 1,
-          "warms": 0,
-          "drops": 0,
-          "fails": 0
-        }
-      ]
     },
-    "imageUrl": null
-  },
   "20260316": {
     "strong": 90,
     "swim": 0,
