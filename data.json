@@ -9328,5 +9328,97 @@
       ]
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-09-22.jpg"
+  },
+  "20260923": {
+    "strong": 78,
+    "cooldown": 10,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL HYPR",
+      "datetime": "2026년 9월 23일 수요일 오후 6:25",
+      "duration": 88,
+      "totalSets": 22,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Row (Cable)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Single Reverse Fly (Cable)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Cable)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shrug (Barbell)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Incline Curl (Dumbbell)",
+          "sets": 1,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bicycle Crunch",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Flat Knee Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    },
+    "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-09-23.jpg"
   }
 }
