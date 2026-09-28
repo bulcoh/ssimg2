@@ -9421,6 +9421,84 @@
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-09-23.jpg"
   },
+  "20260924": {
+    "strong": 115,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH GBD",
+      "datetime": "2026년 9월 24일 목요일 오후 4:28",
+      "duration": 115,
+      "totalSets": 31,
+      "exercises": [
+        {
+          "name": "Seated Overhead Press (Barbell)",
+          "sets": 5,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Plate Loaded)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 6,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over One Arm Row (Dumbbell)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Reverse Fly (Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Machine)",
+          "sets": 4,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Chest Dips (Machine)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Decline Chest Press (Mahine)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Squat (Bodyweight)",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    },
+    "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-09-24.jpg"
+  },
   "20260926": {
     "strong": 93,
     "cooldown": 0,
