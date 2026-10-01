@@ -9723,7 +9723,7 @@
     "strong": 77,
     "cooldown": 0,
     "swim": 0,
-    "run": 0,
+    "run": 24,
     "workout": {
       "title": "PULL HYPR",
       "datetime": "2026년 10월 1일 목요일 오후 10:22",
