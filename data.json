@@ -9718,5 +9718,90 @@
       ]
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-09-29.jpg"
+  },
+  "20261001": {
+    "strong": 77,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL HYPR",
+      "datetime": "2026년 10월 1일 목요일 오후 10:22",
+      "duration": 77,
+      "totalSets": 26,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Row (Machine)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "warms": 2,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Seated Row (Cable)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Single Reverse Fly (Cable)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Shrug (Barbell)",
+          "sets": 2,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bent Over Row (Barbell)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hammer Curl (Cable)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Bicycle Crunch",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Flat Knee Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    },
+    "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-10-01.jpg"
   }
 }
