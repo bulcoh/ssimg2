@@ -9719,6 +9719,12 @@
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-09-29.jpg"
   },
+  "20260930": {
+    "strong": 0,
+    "cooldown": 0,
+    "swim": 38,
+    "run": 0
+  },
   "20261001": {
     "strong": 77,
     "cooldown": 0,
