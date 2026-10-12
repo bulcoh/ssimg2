@@ -10254,7 +10254,7 @@
     "strong": 69,
     "cooldown": 0,
     "swim": 0,
-    "run": 0,
+    "run": 15,
     "workout": {
       "title": "LEGS HYPR",
       "datetime": "2026년 10월 10일 토요일 오후 7:52",
