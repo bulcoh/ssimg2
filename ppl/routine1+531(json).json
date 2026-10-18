@@ -303,6 +303,17 @@
           "sub1": "DB Floor Skull",
           "sub2": "Cable OH Ext",
           "note": "바벨을 머리 뒤쪽으로 호를 그리며 보내세요. 반복 사이에는 바벨이 바닥에 완전히 멈추게(dead stop) 둡니다."
+        },
+        {
+          "name": "DB Lateral Raise",
+          "w": "1",
+          "sets": "3",
+          "reps": "15-20",
+          "rpe": "9-10",
+          "rest": "~1-2m",
+          "sub1": "-",
+          "sub2": "-",
+          "note": "-"
         }
       ]
     },
@@ -447,48 +458,6 @@
           "note": "발가락 끝까지 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
         }
       ]
-    },
-    "Sun": {
-      "title": "Rest",
-      "exercises": []
-    }
-  },
-  "WEEK1\tThu\tPush #2\tFloor Skull Crusher\t1\t3\t6-8\t8-9\t~1-2m\tDB Floor Skull\tCable OH Ext\t바벨을 머리 뒤쪽으로 호를 그리며 보내세요. 반복 사이에는 바벨이 바닥에 완전히 멈추게(dead stop) 둡니다.1": {
-    "Thu": {
-      "title": "Push #2",
-      "exercises": [
-        {
-          "name": "DB Lateral Raise",
-          "w": "1",
-          "sets": "3",
-          "reps": "15-20",
-          "rpe": "9-10",
-          "rest": "~1-2m",
-          "sub1": "-",
-          "sub2": "-",
-          "note": "-"
-        }
-      ]
-    },
-    "Mon": {
-      "title": "",
-      "exercises": []
-    },
-    "Tue": {
-      "title": "",
-      "exercises": []
-    },
-    "Wed": {
-      "title": "",
-      "exercises": []
-    },
-    "Fri": {
-      "title": "",
-      "exercises": []
-    },
-    "Sat": {
-      "title": "",
-      "exercises": []
     },
     "Sun": {
       "title": "Rest",
