@@ -10377,5 +10377,90 @@
       ]
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-10-16.jpg"
+  },
+  "20261019": {
+    "strong": 78,
+    "cooldown": 15,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "Push t",
+      "datetime": "2026년 10월 19일 월요일 오전 10:03",
+      "duration": 93,
+      "totalSets": 22,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Side Plank",
+          "sets": 0,
+          "warms": 2,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Cable Crossover",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Machine)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 0,
+          "warms": 1,
+          "drops": 3,
+          "fails": 0
+        },
+        {
+          "name": "Pec Deck (Machine)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Cable Rope Extension",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Flat Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    },
+    "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-10-19.jpg"
   }
 }
