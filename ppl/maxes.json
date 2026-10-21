@@ -1,0 +1,11 @@
+{
+  "unit": "kg",
+  "round_to": 2.5,
+  "tm_ratio": 0.9,
+  "lifts": {
+    "Squat": 85,
+    "Deadlift": 120,
+    "Overhead Press": 50,
+    "Bench Press": 90
+  }
+}
