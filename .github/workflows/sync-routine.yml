@@ -1,0 +1,34 @@
+name: Sync routine
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Convert CSV to JSON
+        env:
+          CSV_URL: ${{ secrets.CSV_URL }}
+          OUT_FILE: routine.json
+        run: node scripts/convert.mjs
+      - name: Commit if changed
+        run: |
+          if [ -n "$(git status --porcelain routine.json)" ]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git add routine.json
+            git commit -m "sync routine from sheet"
+            git push
+          else
+            echo "변경 없음"
+          fi
