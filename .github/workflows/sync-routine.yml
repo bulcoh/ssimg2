@@ -16,18 +16,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Convert CSV to JSON
+      - name: Convert routine 1
         env:
-          CSV_URL: ${{ secrets.CSV_URL }}
-          OUT_FILE: routine.json
+          CSV_URL: ${{ secrets.CSV_URL_1 }}
+          OUT_FILE: ppl/routine1+531(json).json
+        run: node scripts/convert.mjs
+      - name: Convert routine 2
+        env:
+          CSV_URL: ${{ secrets.CSV_URL_2 }}
+          OUT_FILE: ppl/routine2+531(json).json
         run: node scripts/convert.mjs
       - name: Commit if changed
         run: |
-          if [ -n "$(git status --porcelain routine.json)" ]; then
+          if [ -n "$(git status --porcelain routine1.json routine2.json)" ]; then
             git config user.name "github-actions"
             git config user.email "github-actions@users.noreply.github.com"
-            git add routine.json
-            git commit -m "sync routine from sheet"
+            git add routine1+531(json).json routine2+531(json).json
+            git commit -m "sync routines from sheet"
             git push
           else
             echo "변경 없음"
