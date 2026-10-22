@@ -26,7 +26,7 @@
           "note": "벤치를 4560도 경사로 설정하고, 바벨이 가슴 상부에 닿을 때까지 통제하며 내리세요."
         },
         {
-          "name": "Egyptian Cable\nLateral Raise",
+          "name": "Egyptian Cable Lateral Raise",
           "w": "2",
           "sets": "3",
           "reps": "6-8",
@@ -244,7 +244,7 @@
           "note": "어깨너비의 약 1.5배로 그립을 잡으세요. RPE에 도달할수 있도록 필요에 따라 무게를 추가하거나 보조를 받으세요. 자세는 최대한 일정하게 유지해야 합니다."
         },
         {
-          "name": "Close-Grip Seated\nCable Row",
+          "name": "Close-Grip Seated Cable Row",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -277,7 +277,7 @@
           "note": "컬을 할 때마다 팔을 교차하세요. 오른팔로 1회, 왼팔로 1회를 수행하며 각 팔이 46회에 도달할 때까지 반복합니다."
         },
         {
-          "name": "1-Arm DB\nPreacher Curl",
+          "name": "1-Arm DB Preacher Curl",
           "w": "1",
           "sets": "1",
           "reps": "6-8",
@@ -304,7 +304,7 @@
           "note": "무릎이 발가락보다 앞으로 나가게 하여 대퇴사두근에 긴장이 집중되도록 하세요."
         },
         {
-          "name": "Dumbbell\nWalking Lunge",
+          "name": "Dumbbell Walking Lunge",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -337,7 +337,7 @@
           "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
         },
         {
-          "name": "Decline Plate-Weighted\nCrunch",
+          "name": "Decline Plate-Weighted Crunch",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
@@ -370,7 +370,7 @@
           "note": "편안한 아치를 만들고, 가슴에서 잠시 멈춘 뒤 매 횟수마다폭발적으로 밀어 올리세요."
         },
         {
-          "name": "High-Incline Smith\nMachine Press",
+          "name": "High-Incline Smith Machine Press",
           "w": "2",
           "sets": "2",
           "reps": "4-6",
@@ -381,7 +381,7 @@
           "note": "벤치를 4560도 경사로 설정하고, 바벨이 가슴 상부에 닿을 때까지 통제하며 내리세요."
         },
         {
-          "name": "Egyptian Cable\nLateral Raise",
+          "name": "Egyptian Cable Lateral Raise",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
@@ -392,7 +392,7 @@
           "note": "케이블 반대 방향으로 몸을 기울이고, 삼각근을 쥐어짜는데 집중하세요."
         },
         {
-          "name": "Overhead Cable\nTriceps Extension",
+          "name": "Overhead Cable Triceps Extension",
           "w": "2",
           "sets": "2",
           "reps": "4-6",
@@ -419,7 +419,7 @@
       "title": "PULL #1",
       "exercises": [
         {
-          "name": "Neutral-Grip Lat\nPulldown",
+          "name": "Neutral-Grip Lat Pulldown",
           "w": "3",
           "sets": "3",
           "reps": "4-6",
@@ -479,7 +479,7 @@
       "title": "LEGS #1",
       "exercises": [
         {
-          "name": "Squat or\nMachine Squat",
+          "name": "Squat or Machine Squat",
           "w": "3-4",
           "sets": "1",
           "reps": "3-5",
@@ -539,7 +539,7 @@
       "title": "PUSH #2",
       "exercises": [
         {
-          "name": "Seated DB\nShoulder Press",
+          "name": "Seated DB Shoulder Press",
           "w": "3",
           "sets": "2",
           "reps": "6-8",
@@ -599,7 +599,7 @@
           "note": "어깨너비의 약 1.5배로 그립을 잡으세요. RPE에 도달할수 있도록 필요에 따라 무게를 추가하거나 보조를 받으세요. 자세는 최대한 일정하게 유지해야 합니다."
         },
         {
-          "name": "Close-Grip Seated\nCable Row",
+          "name": "Close-Grip Seated Cable Row",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -632,7 +632,7 @@
           "note": "컬을 할 때마다 팔을 교차하세요. 오른팔로 1회, 왼팔로 1회를 수행하며 각 팔이 46회에 도달할 때까지 반복합니다."
         },
         {
-          "name": "1-Arm DB\nPreacher Curl",
+          "name": "1-Arm DB Preacher Curl",
           "w": "1",
           "sets": "1",
           "reps": "6-8",
@@ -659,7 +659,7 @@
           "note": "무릎이 발가락보다 앞으로 나가게 하여 대퇴사두근에 긴장이 집중되도록 하세요."
         },
         {
-          "name": "Dumbbell\nWalking Lunge",
+          "name": "Dumbbell Walking Lunge",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -692,7 +692,7 @@
           "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
         },
         {
-          "name": "Decline Plate-Weighted\nCrunch",
+          "name": "Decline Plate-Weighted Crunch",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
@@ -725,7 +725,7 @@
           "note": "편안한 아치를 만들고, 가슴에서 잠시 멈춘 뒤 매 횟수마다폭발적으로 밀어 올리세요."
         },
         {
-          "name": "High-Incline Smith\nMachine Press",
+          "name": "High-Incline Smith Machine Press",
           "w": "2",
           "sets": "2",
           "reps": "4-6",
@@ -736,7 +736,7 @@
           "note": "벤치를 4560도 경사로 설정하고, 바벨이 가슴 상부에 닿을 때까지 통제하며 내리세요."
         },
         {
-          "name": "Egyptian Cable\nLateral Raise",
+          "name": "Egyptian Cable Lateral Raise",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
@@ -747,7 +747,7 @@
           "note": "케이블 반대 방향으로 몸을 기울이고, 삼각근을 쥐어짜는데 집중하세요."
         },
         {
-          "name": "Overhead Cable\nTriceps Extension",
+          "name": "Overhead Cable Triceps Extension",
           "w": "2",
           "sets": "2",
           "reps": "4-6",
@@ -774,7 +774,7 @@
       "title": "PULL #1",
       "exercises": [
         {
-          "name": "Neutral-Grip Lat\nPulldown",
+          "name": "Neutral-Grip Lat Pulldown",
           "w": "3",
           "sets": "3",
           "reps": "4-6",
@@ -834,7 +834,7 @@
       "title": "LEGS #1",
       "exercises": [
         {
-          "name": "Squat or\nMachine Squat",
+          "name": "Squat or Machine Squat",
           "w": "3-4",
           "sets": "1",
           "reps": "3-5",
@@ -894,7 +894,7 @@
       "title": "PUSH #2",
       "exercises": [
         {
-          "name": "Seated DB\nShoulder Press",
+          "name": "Seated DB Shoulder Press",
           "w": "3",
           "sets": "2",
           "reps": "6-8",
@@ -954,7 +954,7 @@
           "note": "어깨너비의 약 1.5배로 그립을 잡으세요. RPE에 도달할수 있도록 필요에 따라 무게를 추가하거나 보조를 받으세요. 자세는 최대한 일정하게 유지해야 합니다."
         },
         {
-          "name": "Close-Grip Seated\nCable Row",
+          "name": "Close-Grip Seated Cable Row",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -987,7 +987,7 @@
           "note": "컬을 할 때마다 팔을 교차하세요. 오른팔로 1회, 왼팔로 1회를 수행하며 각 팔이 46회에 도달할 때까지 반복합니다."
         },
         {
-          "name": "1-Arm DB\nPreacher Curl",
+          "name": "1-Arm DB Preacher Curl",
           "w": "1",
           "sets": "1",
           "reps": "6-8",
@@ -1014,7 +1014,7 @@
           "note": "무릎이 발가락보다 앞으로 나가게 하여 대퇴사두근에 긴장이 집중되도록 하세요."
         },
         {
-          "name": "Dumbbell\nWalking Lunge",
+          "name": "Dumbbell Walking Lunge",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -1047,7 +1047,7 @@
           "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
         },
         {
-          "name": "Decline Plate-Weighted\nCrunch",
+          "name": "Decline Plate-Weighted Crunch",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
@@ -1080,7 +1080,7 @@
           "note": "편안한 아치를 만들고, 가슴에서 잠시 멈춘 뒤 매 횟수마다폭발적으로 밀어 올리세요."
         },
         {
-          "name": "High-Incline Smith\nMachine Press",
+          "name": "High-Incline Smith Machine Press",
           "w": "2",
           "sets": "2",
           "reps": "4-6",
@@ -1091,7 +1091,7 @@
           "note": "벤치를 4560도 경사로 설정하고, 바벨이 가슴 상부에 닿을 때까지 통제하며 내리세요."
         },
         {
-          "name": "Egyptian Cable\nLateral Raise",
+          "name": "Egyptian Cable Lateral Raise",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
@@ -1102,7 +1102,7 @@
           "note": "케이블 반대 방향으로 몸을 기울이고, 삼각근을 쥐어짜는데 집중하세요."
         },
         {
-          "name": "Overhead Cable\nTriceps Extension",
+          "name": "Overhead Cable Triceps Extension",
           "w": "2",
           "sets": "2",
           "reps": "4-6",
@@ -1129,7 +1129,7 @@
       "title": "PULL #1",
       "exercises": [
         {
-          "name": "Neutral-Grip Lat\nPulldown",
+          "name": "Neutral-Grip Lat Pulldown",
           "w": "3",
           "sets": "3",
           "reps": "4-6",
@@ -1189,7 +1189,7 @@
       "title": "LEGS #1",
       "exercises": [
         {
-          "name": "Squat or\nMachine Squat",
+          "name": "Squat or Machine Squat",
           "w": "3-4",
           "sets": "1",
           "reps": "3-5",
@@ -1249,7 +1249,7 @@
       "title": "PUSH #2",
       "exercises": [
         {
-          "name": "Seated DB\nShoulder Press",
+          "name": "Seated DB Shoulder Press",
           "w": "3",
           "sets": "2",
           "reps": "6-8",
@@ -1309,7 +1309,7 @@
           "note": "어깨너비의 약 1.5배로 그립을 잡으세요. RPE에 도달할수 있도록 필요에 따라 무게를 추가하거나 보조를 받으세요. 자세는 최대한 일정하게 유지해야 합니다."
         },
         {
-          "name": "Close-Grip Seated\nCable Row",
+          "name": "Close-Grip Seated Cable Row",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -1342,7 +1342,7 @@
           "note": "컬을 할 때마다 팔을 교차하세요. 오른팔로 1회, 왼팔로 1회를 수행하며 각 팔이 46회에 도달할 때까지 반복합니다."
         },
         {
-          "name": "1-Arm DB\nPreacher Curl",
+          "name": "1-Arm DB Preacher Curl",
           "w": "1",
           "sets": "1",
           "reps": "6-8",
@@ -1369,7 +1369,7 @@
           "note": "무릎이 발가락보다 앞으로 나가게 하여 대퇴사두근에 긴장이 집중되도록 하세요."
         },
         {
-          "name": "Dumbbell\nWalking Lunge",
+          "name": "Dumbbell Walking Lunge",
           "w": "3",
           "sets": "2",
           "reps": "4-6",
@@ -1402,7 +1402,7 @@
           "note": "발가락 끝까지 밀어 올리세요. 하단에서는 종아리를 스트레칭하되, 반동을 주지 마세요."
         },
         {
-          "name": "Decline Plate-Weighted\nCrunch",
+          "name": "Decline Plate-Weighted Crunch",
           "w": "2",
           "sets": "2",
           "reps": "6-8",
