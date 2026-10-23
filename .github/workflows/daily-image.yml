@@ -13,20 +13,15 @@ on:
       - scripts/make-image.mjs
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: daily-image
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,9 +35,13 @@ jobs:
         run: npm install --no-save puppeteer-core
       - name: Make image
         run: node scripts/make-image.mjs
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-      - id: deploy
-        uses: actions/deploy-pages@v4
+      - name: Publish to image branch (history is reset every time)
+        run: |
+          cd site
+          git init -q -b image
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add today.jpg
+          git commit -qm "daily image"
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push -f origin image
