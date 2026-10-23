@@ -1,0 +1,48 @@
+name: Daily image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 15 * * *" # 한국시간 매일 00:00
+  push:
+    branches: [main]
+    paths:
+      - log.txt
+      - ppl/**
+      - assets/**
+      - scripts/make-image.mjs
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+      - name: Install puppeteer-core
+        run: npm install --no-save puppeteer-core
+      - name: Make image
+        run: node scripts/make-image.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
