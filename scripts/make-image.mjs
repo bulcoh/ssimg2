@@ -6,7 +6,7 @@ const KO = { Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "�
 const KANJI = { Mon: "月", Tue: "火", Wed: "水", Thu: "木", Fri: "金", Sat: "土", Sun: "日" };
 const DAY_MS = 86400000;
 // 단위는 모두 px(540x1080 기준). 폰이 배경화면을 약 8% 확대해서 가장자리(좌우 약 20, 상하 약 40)가 잘린다.
-const SIDE_SAFE = 34;    // 좌우 여백: 잘리는 폭보다 넓게
+const SIDE_SAFE = 48;    // 좌우 여백: 잘리는 폭보다 넓게
 const TOP_SAFE = 90;     // 위 여백: 잘림(약 40) + 상태표시줄(시계/아이콘) 아래로 내려오도록
 const BOTTOM_SAFE = 190; // 하단 독(앱 아이콘) 영역
 // 픽셀롬이 배경화면을 약 8% 확대해서 가장자리가 잘린다(좌우 약 20px, 상하 약 40px, 540x1080 기준).
@@ -109,7 +109,7 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link r
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:540px;height:1080px;overflow:hidden}
 body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:#f1f3f6;
-  background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),${bg} center/cover no-repeat}
+  background:${bg} center/cover no-repeat}
 #page{height:1080px;display:flex;flex-direction:column;padding:${TOP_SAFE}px ${SIDE_SAFE}px ${BOTTOM_SAFE}px}
 #chart{position:relative;display:flex;gap:2px;padding:0 6px;margin-bottom:12px}
 #chart .grid{position:absolute;left:0;right:0;bottom:0;pointer-events:none;z-index:3}
