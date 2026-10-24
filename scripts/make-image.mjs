@@ -5,7 +5,12 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const KO = { Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "토", Sun: "일" };
 const KANJI = { Mon: "月", Tue: "火", Wed: "水", Thu: "木", Fri: "金", Sat: "土", Sun: "日" };
 const DAY_MS = 86400000;
-const BOTTOM_SAFE = 190; // 하단 독(앱 아이콘) 영역(px, 540x1080 기준)
+// 단위는 모두 px(540x1080 기준). 폰이 배경화면을 약 8% 확대해서 가장자리(좌우 약 20, 상하 약 40)가 잘린다.
+const SIDE_SAFE = 26;    // 좌우 여백: 잘리는 폭보다 넓게
+const TOP_SAFE = 84;     // 위 여백: 잘림(약 40) + 상태표시줄(시계/아이콘) 아래로 내려오도록
+const BOTTOM_SAFE = 190; // 하단 독(앱 아이콘) 영역
+// 픽셀롬이 배경화면을 약 8% 확대해서 가장자리가 잘린다(좌우 약 20px, 상하 약 40px, 540x1080 기준).
+// 그래서 위쪽 46px, 좌우 26px 안쪽에만 내용을 둔다.
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 // ---------- 날짜 계산 (전부 UTC 자정 기준 숫자로 처리) ----------
@@ -108,7 +113,7 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link r
 html,body{width:540px;height:1080px;overflow:hidden}
 body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:#f1f3f6;
   background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),${bg} center/cover no-repeat}
-#page{height:1080px;display:flex;flex-direction:column;padding:34px 14px ${BOTTOM_SAFE}px}
+#page{height:1080px;display:flex;flex-direction:column;padding:${TOP_SAFE}px ${SIDE_SAFE}px ${BOTTOM_SAFE}px}
 #chart{position:relative;display:flex;gap:2px;padding:0 6px;margin-bottom:12px}
 #chart .grid{position:absolute;left:0;right:0;bottom:0;pointer-events:none;z-index:3}
 #chart .grid u{position:absolute;left:0;right:0;height:0;border-top:1px solid #e0a030}
@@ -144,6 +149,29 @@ ${chartHtml()}
 </div></body></html>`;
 
 mkdirSync("site", { recursive: true });
+
+// ---------- KWGT용 가벼운 JSON: 오늘 루틴과 14일 기록만 담는다 ----------
+{
+  const day = st.kind === "ok" ? routine[st.weekKey]?.[dayName] : null;
+  const logDays = Array.from({ length: 14 }, (_, i) => {
+    const ms = today - (13 - i) * DAY_MS;
+    const [a, c] = log.get(fmt(ms)) || [0, 0];
+    return { date: fmt(ms), day: KANJI[DAYS[dow(ms)]], a, c, t: a + c };
+  });
+  const out = {
+    date: todayStr,
+    weekday: dayName,
+    status: st.kind, // ok / before / skip / done
+    week: st.kind === "ok" ? st.n : null,
+    week_key: st.kind === "ok" ? st.weekKey : null,
+    total_weeks: weekKeys.length,
+    title: day?.title || "",
+    rest_day: st.kind === "ok" && !(day && day.exercises.length),
+    exercises: day?.exercises || [],
+    log: logDays,
+  };
+  writeFileSync("site/today.json", JSON.stringify(out) + "\n");
+}
 
 if (process.env.DRY) {
   writeFileSync("site/preview.html", html);
