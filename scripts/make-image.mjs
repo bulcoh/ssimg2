@@ -6,8 +6,8 @@ const KO = { Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "�
 const KANJI = { Mon: "月", Tue: "火", Wed: "水", Thu: "木", Fri: "金", Sat: "土", Sun: "日" };
 const DAY_MS = 86400000;
 // 단위는 모두 px(540x1080 기준). 폰이 배경화면을 약 8% 확대해서 가장자리(좌우 약 20, 상하 약 40)가 잘린다.
-const SIDE_SAFE = 48;    // 좌우 여백: 잘리는 폭보다 넓게
-const TOP_SAFE = 90;     // 위 여백: 잘림(약 40) + 상태표시줄(시계/아이콘) 아래로 내려오도록
+const SIDE_SAFE = 34;    // 좌우 여백: 잘리는 폭보다 넓게
+const TOP_SAFE = 100;    // 위 여백: 잘림(약 40) + 상태표시줄(시계/아이콘) 아래로 내려오도록
 const BOTTOM_SAFE = 190; // 하단 독(앱 아이콘) 영역
 // 픽셀롬이 배경화면을 약 8% 확대해서 가장자리가 잘린다(좌우 약 20px, 상하 약 40px, 540x1080 기준).
 // 그래서 위쪽 46px, 좌우 26px 안쪽에만 내용을 둔다.
@@ -71,26 +71,30 @@ function msg(big, small) {
   return `<div class="msg"><div>${big}</div><small>${small}</small></div>`;
 }
 
-// ---------- 최근 14일 그래프 ----------
+// ---------- 최근 14일 그래프 (3D 투명 통 + 채워지는 내용물) ----------
+const UNIT = 26;   // 30분 한 칸의 높이(px)
+const CAP = 110;   // 통의 상한(분). 이보다 길게 운동한 날은 통이 가득 찬 모양으로 표시되고 숫자는 실제 시간이 나온다.
+const BOX_W = 20;  // 통 앞면 폭(px)
+const BOX_D = 8;   // 통 깊이(px, 윗면·옆면 두께)
 function chartHtml() {
   const days = Array.from({ length: 14 }, (_, i) => today - (13 - i) * DAY_MS);
-  const totals = days.map((ms) => (log.get(fmt(ms)) || [0, 0]).reduce((a, b) => a + b, 0));
-  const UNIT = 26; // 30분 한 칸의 높이(px). 숫자를 키우면 그래프가 커진다.
-  const top = Math.max(90, Math.ceil(Math.max(...totals) / 30) * 30); // 30분 단위로 맞춘 그래프 높이
-  const H = (top / 30) * UNIT;
-  const px = (v) => ((v / 30) * UNIT).toFixed(1);
-  // 0, 30, 60, 90분 눈금선 4줄 (막대 위에 그려진다)
+  const hC = (CAP / 30) * UNIT;          // 통 높이
+  const H = hC + BOX_D;                   // 윗면까지 포함한 그래프 높이
   const grid = [0, 30, 60, 90].map((v) => `<u style="bottom:${(v / 30) * UNIT}px"></u>`).join("");
   const cols = days.map((ms) => {
     const [a, c] = log.get(fmt(ms)) || [0, 0];
+    const t = a + c;
     const w = dow(ms);
     const cls = w === 5 ? "sat" : w === 6 ? "sun" : "";
-    // 연한 막대는 (무산소+유산소) 전체 높이, 그 위에 진한 무산소 막대를 겹친다.
-    const bars = a + c
-      ? `<s class="l" style="height:${px(a + c)}px"></s><s class="d${c ? "" : " r"}" style="height:${px(a)}px"></s><em style="color:${a ? "#8db8f5" : "#1d3f8c"}">${a + c}</em>`
+    // 내용물은 통 안쪽을 빈틈없이 채운다. (앞면: 무산소 진한색 + 위쪽 유산소 연한색)
+    const fillH = Math.min((Math.min(t, CAP) / 30) * UNIT - 1, hC - 2).toFixed(1);
+    const aH = Math.min((a / 30) * UNIT, Number(fillH)).toFixed(1);
+    const tc = c > 0 ? "#c4dcfb" : "#6fa0ee";
+    const fill = t
+      ? `<s style="height:${fillH}px;--a:${aH}px;--tc:${tc}"><em style="color:${a ? "#8db8f5" : "#1d3f8c"}">${t}</em><q></q></s>`
       : "";
     return `<div class="col ${cls} ${ms === today ? "today" : ""}">
-      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${H}px">${bars}</div></div>`;
+      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${H}px"><k></k>${fill}</div></div>`;
   }).join("");
   return `<div id="chart"><div class="grid" style="height:${H}px">${grid}</div>${cols}</div>`;
 }
@@ -113,18 +117,22 @@ body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;fon
 #page{height:1080px;display:flex;flex-direction:column;padding:${TOP_SAFE}px ${SIDE_SAFE}px ${BOTTOM_SAFE}px}
 #chart{position:relative;display:flex;gap:2px;padding:0 6px;margin-bottom:12px}
 #chart .grid{position:absolute;left:0;right:0;bottom:0;pointer-events:none;z-index:3}
-#chart .grid u{position:absolute;left:0;right:0;height:0;border-top:1px solid #e0a030}
-.col{flex:1;text-align:center;position:relative;border-radius:4px}
-.col.today{background:rgba(255,255,255,.1)}
-.col p{font-family:var(--dfont);line-height:1.15;margin-bottom:5px;color:#e8ecf2;font-weight:800}
+#chart .grid u{position:absolute;left:0;right:0;height:0;border-top:1px solid rgba(224,160,48,.8)}
+.col{flex:1;text-align:center;position:relative}
+.col p{font-family:var(--dfont);line-height:1.15;padding:2px 0 3px;margin-bottom:2px;color:#e8ecf2;font-weight:800}
+.col.today p{border-bottom:2px solid #fff}
 .col p b{font-size:16px;font-weight:800}
 .col p span{font-size:19px}
 .col.sat p{color:#5b9bff}.col.sun p{color:#ff6b6b}
-.bars{position:relative;margin:0 1px}
-.bars s{position:absolute;left:0;right:0;bottom:0;text-decoration:none}
-.bars .l{background:#8db8f5;border-radius:3px 3px 0 0}
-.bars .d{background:#2f6bd6}
-.bars .d.r{border-radius:3px 3px 0 0}
+.bars{position:relative}
+.bars k{position:absolute;left:50%;margin-left:-${(BOX_W+BOX_D)/2}px;width:${BOX_W}px;height:${(CAP/30)*UNIT}px;bottom:0;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.04);z-index:2}
+.bars k::after{content:"";position:absolute;left:-1px;bottom:100%;width:calc(100% + 2px);height:${BOX_D}px;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.08);transform-origin:0 100%;transform:skewX(-45deg)}
+.bars k::before{content:"";position:absolute;left:100%;top:-1px;width:${BOX_D}px;height:calc(100% + 2px);border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.05);transform-origin:0 0;transform:skewY(-45deg)}
+.bars s{position:absolute;left:50%;margin-left:-${(BOX_W+BOX_D)/2-1}px;width:${BOX_W-2}px;bottom:1px;background:#8db8f5;text-decoration:none}
+.bars s::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--a);background:#2f6bd6}
+.bars s::after{content:"";position:absolute;left:0;bottom:100%;width:100%;height:${BOX_D}px;background:var(--tc);transform-origin:0 100%;transform:skewX(-45deg)}
+.bars q{position:absolute;left:100%;top:0;width:${BOX_D}px;height:100%;background:#5e8fd0;transform-origin:0 0;transform:skewY(-45deg)}
+.bars q::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--a);background:#1d4aa0}
 .bars em{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-family:var(--dfont);font-weight:800;font-style:normal;font-size:11px;z-index:4}
 #content{flex:1;overflow:hidden;min-height:0}
 #inner{font-size:14px;line-height:1.35}
