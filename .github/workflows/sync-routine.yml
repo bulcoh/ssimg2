@@ -16,16 +16,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Convert routine 1
+      # 슬롯 N의 시크릿(CSV_URL_N)이 있으면 ppl/routineN.json 으로 변환한다.
+      # 비어 있는 슬롯은 건너뛴다. 슬롯을 더 늘리려면 아래 env 와 for 목록에 번호만 추가.
+      - name: Convert routines
         env:
-          CSV_URL: ${{ secrets.CSV_URL_1 }}
-          OUT_FILE: ppl/routine1+531(json).json
-        run: node scripts/convert.mjs
-      - name: Convert routine 2
-        env:
-          CSV_URL: ${{ secrets.CSV_URL_2 }}
-          OUT_FILE: ppl/routine2+531(json).json
-        run: node scripts/convert.mjs
+          CSV_URL_1: ${{ secrets.CSV_URL_1 }}
+          CSV_URL_2: ${{ secrets.CSV_URL_2 }}
+          CSV_URL_3: ${{ secrets.CSV_URL_3 }}
+          CSV_URL_4: ${{ secrets.CSV_URL_4 }}
+          CSV_URL_5: ${{ secrets.CSV_URL_5 }}
+        run: |
+          mkdir -p ppl
+          for i in 1 2 3 4 5; do
+            var="CSV_URL_$i"
+            url="${!var}"
+            if [ -n "$url" ]; then
+              echo "슬롯 $i 변환"
+              CSV_URL="$url" OUT_FILE="ppl/routine$i.json" node scripts/convert.mjs \
+                || echo "::warning::슬롯 $i 변환 실패 (시크릿 주소와 시트 게시 상태를 확인하세요)"
+            else
+              echo "슬롯 $i 비어 있음, 건너뜀"
+            fi
+          done
       - name: Commit if changed
         run: |
           if [ -n "$(git status --porcelain ppl)" ]; then
