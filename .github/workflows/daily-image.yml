@@ -3,7 +3,7 @@ name: Daily image
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 15 * * *" # 한국시간 매일 00:00
+    - cron: "17 15 * * *" # 한국시간 매일 00:00
   push:
     branches: [main]
     paths:
