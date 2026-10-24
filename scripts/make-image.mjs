@@ -95,9 +95,6 @@ function chartHtml() {
   return `<div id="chart"><div class="grid" style="height:${H}px">${grid}</div>${cols}</div>`;
 }
 
-// ---------- 하단 주차 표시 ----------
-const weeksHtml = weekKeys.map((k, i) => `<span class="${st.kind === "ok" && st.n === i + 1 ? "on" : ""}">W${i + 1}</span>`).join("");
-
 // ---------- 배경 ----------
 let bg = "linear-gradient(#1b1f26,#0e1014)";
 for (const f of ["assets/bg.jpg", "assets/bg.jpeg", "assets/bg.png"]) {
@@ -140,12 +137,9 @@ h1{font-size:1.5em;font-style:italic;font-weight:800;margin-bottom:.3em}
 .note{font-size:.8em;color:#dfe5ee;margin-top:.15em}
 .msg{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:1.6em;font-weight:700;gap:.4em}
 .msg small{font-size:.55em;font-weight:500;color:#aeb7c4}
-#weeks{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#8f98a6;padding:10px 4px 0}
-#weeks .on{color:#fff}
 </style></head><body><div id="page">
 ${chartHtml()}
 <div id="content"><div id="inner">${routineHtml()}</div></div>
-<div id="weeks">${weeksHtml}</div>
 </div></body></html>`;
 
 mkdirSync("site", { recursive: true });
