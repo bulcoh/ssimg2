@@ -71,32 +71,31 @@ function msg(big, small) {
   return `<div class="msg"><div>${big}</div><small>${small}</small></div>`;
 }
 
-// ---------- 최근 14일 그래프 (3D 투명 통 + 채워지는 내용물) ----------
+// ---------- 최근 14일 그래프 (플랫 캡슐 통 + 빈틈없이 채워지는 내용물) ----------
 const UNIT = 26;   // 30분 한 칸의 높이(px)
 const CAP = 110;   // 통의 상한(분). 이보다 길게 운동한 날은 통이 가득 찬 모양으로 표시되고 숫자는 실제 시간이 나온다.
-const BOX_W = 20;  // 통 앞면 폭(px)
-const BOX_D = 8;   // 통 깊이(px, 윗면·옆면 두께)
+const BOX_W = 24;  // 통 폭(px). 양 끝이 둥근 캡슐 모양
 function chartHtml() {
   const days = Array.from({ length: 14 }, (_, i) => today - (13 - i) * DAY_MS);
   const hC = (CAP / 30) * UNIT;          // 통 높이
-  const H = hC + BOX_D;                   // 윗면까지 포함한 그래프 높이
   const grid = [0, 30, 60, 90].map((v) => `<u style="bottom:${(v / 30) * UNIT}px"></u>`).join("");
   const cols = days.map((ms) => {
     const [a, c] = log.get(fmt(ms)) || [0, 0];
     const t = a + c;
     const w = dow(ms);
     const cls = w === 5 ? "sat" : w === 6 ? "sun" : "";
-    // 내용물은 통 안쪽을 빈틈없이 채운다. (앞면: 무산소 진한색 + 위쪽 유산소 연한색)
-    const fillH = Math.min((Math.min(t, CAP) / 30) * UNIT - 1, hC - 2).toFixed(1);
-    const aH = Math.min((a / 30) * UNIT, Number(fillH)).toFixed(1);
-    const tc = c > 0 ? "#c4dcfb" : "#6fa0ee";
-    const fill = t
-      ? `<s style="height:${fillH}px;--a:${aH}px;--tc:${tc}"><em style="color:${a ? "#8db8f5" : "#1d3f8c"}">${t}</em><q></q></s>`
+    // 내용물은 통 안쪽을 빈틈없이 채운다. 통이 둥글게 잘라 주기 때문에 막대 두 개가 겹쳐 보이지 않는다.
+    // 아래쪽 진한색 = 무산소, 위쪽 연한색 = 유산소
+    const fillH = Math.max(0, Math.min((Math.min(t, CAP) / 30) * UNIT - 1, hC - 2));
+    const aH = Math.max(0, Math.min((a / 30) * UNIT - 1, fillH));
+    const numColor = a || fillH < 17 ? "#8db8f5" : "#0b2a66";
+    const inner = t
+      ? `<s style="height:${fillH.toFixed(1)}px;--a:${aH.toFixed(1)}px"></s><em style="color:${numColor}">${t}</em>`
       : "";
     return `<div class="col ${cls} ${ms === today ? "today" : ""}">
-      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${H}px"><k></k>${fill}</div></div>`;
+      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC}px"><k>${inner}</k></div></div>`;
   }).join("");
-  return `<div id="chart"><div class="grid" style="height:${H}px">${grid}</div>${cols}</div>`;
+  return `<div id="chart"><div class="grid" style="height:${hC}px">${grid}</div>${cols}</div>`;
 }
 
 // ---------- 배경 ----------
@@ -125,15 +124,11 @@ body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;fon
 .col p span{font-size:19px}
 .col.sat p{color:#5b9bff}.col.sun p{color:#ff6b6b}
 .bars{position:relative}
-.bars k{position:absolute;left:50%;margin-left:-${(BOX_W+BOX_D)/2}px;width:${BOX_W}px;height:${(CAP/30)*UNIT}px;bottom:0;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.04);z-index:2}
-.bars k::after{content:"";position:absolute;left:-1px;bottom:100%;width:calc(100% + 2px);height:${BOX_D}px;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.08);transform-origin:0 100%;transform:skewX(-45deg)}
-.bars k::before{content:"";position:absolute;left:100%;top:-1px;width:${BOX_D}px;height:calc(100% + 2px);border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.05);transform-origin:0 0;transform:skewY(-45deg)}
-.bars s{position:absolute;left:50%;margin-left:-${(BOX_W+BOX_D)/2-1}px;width:${BOX_W-2}px;bottom:1px;background:#8db8f5;text-decoration:none}
+.bars k{position:absolute;left:50%;margin-left:-${BOX_W/2}px;width:${BOX_W}px;height:100%;bottom:0;border:1px solid rgba(255,255,255,.24);border-radius:${BOX_W/2}px;background:rgba(255,255,255,.05);overflow:hidden;z-index:2}
+.col.today .bars k{border-color:rgba(255,255,255,.7)}
+.bars s{position:absolute;left:0;right:0;bottom:0;background:#8db8f5;text-decoration:none}
 .bars s::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--a);background:#2f6bd6}
-.bars s::after{content:"";position:absolute;left:0;bottom:100%;width:100%;height:${BOX_D}px;background:var(--tc);transform-origin:0 100%;transform:skewX(-45deg)}
-.bars q{position:absolute;left:100%;top:0;width:${BOX_D}px;height:100%;background:#5e8fd0;transform-origin:0 0;transform:skewY(-45deg)}
-.bars q::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--a);background:#1d4aa0}
-.bars em{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-family:var(--dfont);font-weight:800;font-style:normal;font-size:11px;z-index:4}
+.bars em{position:absolute;left:0;right:0;bottom:7px;text-align:center;font-family:var(--dfont);font-weight:800;font-style:normal;font-size:11px;line-height:1;z-index:1}
 #content{flex:1;overflow:hidden;min-height:0}
 #inner{font-size:14px;line-height:1.35}
 h1{font-size:1.5em;font-style:italic;font-weight:800;margin-bottom:.3em}
