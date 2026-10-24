@@ -6,7 +6,7 @@ const KO = { Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "�
 const KANJI = { Mon: "月", Tue: "火", Wed: "水", Thu: "木", Fri: "金", Sat: "土", Sun: "日" };
 const DAY_MS = 86400000;
 // 단위는 모두 px(540x1080 기준). 폰이 배경화면을 약 8% 확대해서 가장자리(좌우 약 20, 상하 약 40)가 잘린다.
-const SIDE_SAFE = 34;    // 좌우 여백: 잘리는 폭보다 넓게
+const SIDE_SAFE = 46;    // 좌우 여백: 잘리는 폭보다 넓게
 const TOP_SAFE = 100;    // 위 여백: 잘림(약 40) + 상태표시줄(시계/아이콘) 아래로 내려오도록
 const BOTTOM_SAFE = 190; // 하단 독(앱 아이콘) 영역
 // 픽셀롬이 배경화면을 약 8% 확대해서 가장자리가 잘린다(좌우 약 20px, 상하 약 40px, 540x1080 기준).
@@ -78,7 +78,8 @@ const BOX_W = 24;  // 통 폭(px). 양 끝이 둥근 캡슐 모양
 function chartHtml() {
   const days = Array.from({ length: 14 }, (_, i) => today - (13 - i) * DAY_MS);
   const hC = (CAP / 30) * UNIT;          // 통 높이
-  const grid = [0, 30, 60, 90].map((v) => `<u style="bottom:${(v / 30) * UNIT}px"></u>`).join("");
+  // 30·60·90분 눈금선은 통 안쪽에만 그린다. (통 안 맨 아래 = 0분이라 0분선은 따로 없다)
+  const lines = [30, 60, 90].map((v) => `<i style="bottom:${(v / 30) * UNIT - 1}px"></i>`).join("");
   const cols = days.map((ms) => {
     const [a, c] = log.get(fmt(ms)) || [0, 0];
     const t = a + c;
@@ -93,9 +94,9 @@ function chartHtml() {
       ? `<s style="height:${fillH.toFixed(1)}px;--a:${aH.toFixed(1)}px"></s><em style="color:${numColor}">${t}</em>`
       : "";
     return `<div class="col ${cls} ${ms === today ? "today" : ""}">
-      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC}px"><k>${inner}</k></div></div>`;
+      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC}px"><k>${inner}${lines}</k></div></div>`;
   }).join("");
-  return `<div id="chart"><div class="grid" style="height:${hC}px">${grid}</div>${cols}</div>`;
+  return `<div id="chart">${cols}</div>`;
 }
 
 // ---------- 배경 ----------
@@ -115,8 +116,6 @@ body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;fon
   background:${bg} center/cover no-repeat}
 #page{height:1080px;display:flex;flex-direction:column;padding:${TOP_SAFE}px ${SIDE_SAFE}px ${BOTTOM_SAFE}px}
 #chart{position:relative;display:flex;gap:2px;padding:0 6px;margin-bottom:12px}
-#chart .grid{position:absolute;left:0;right:0;bottom:0;pointer-events:none;z-index:3}
-#chart .grid u{position:absolute;left:0;right:0;height:0;border-top:1px solid rgba(224,160,48,.8)}
 .col{flex:1;text-align:center;position:relative}
 .col p{font-family:var(--dfont);line-height:1.15;padding:2px 0 3px;margin-bottom:2px;color:#e8ecf2;font-weight:800}
 .col.today p{border-bottom:2px solid #fff}
@@ -128,7 +127,8 @@ body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;fon
 .col.today .bars k{border-color:rgba(255,255,255,.7)}
 .bars s{position:absolute;left:0;right:0;bottom:0;background:#8db8f5;text-decoration:none}
 .bars s::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--a);background:#2f6bd6}
-.bars em{position:absolute;left:0;right:0;bottom:7px;text-align:center;font-family:var(--dfont);font-weight:800;font-style:normal;font-size:11px;line-height:1;z-index:1}
+.bars i{position:absolute;left:0;right:0;height:0;border-top:1px solid rgba(224,160,48,.85);z-index:2}
+.bars em{position:absolute;left:0;right:0;bottom:7px;text-align:center;font-family:var(--dfont);font-weight:800;font-style:normal;font-size:11px;line-height:1;z-index:3}
 #content{flex:1;overflow:hidden;min-height:0}
 #inner{font-size:14px;line-height:1.35}
 h1{font-size:1.5em;font-style:italic;font-weight:800;margin-bottom:.3em}
