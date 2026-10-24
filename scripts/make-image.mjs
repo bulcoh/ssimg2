@@ -144,29 +144,6 @@ ${chartHtml()}
 
 mkdirSync("site", { recursive: true });
 
-// ---------- KWGT용 가벼운 JSON: 오늘 루틴과 14일 기록만 담는다 ----------
-{
-  const day = st.kind === "ok" ? routine[st.weekKey]?.[dayName] : null;
-  const logDays = Array.from({ length: 14 }, (_, i) => {
-    const ms = today - (13 - i) * DAY_MS;
-    const [a, c] = log.get(fmt(ms)) || [0, 0];
-    return { date: fmt(ms), day: KANJI[DAYS[dow(ms)]], a, c, t: a + c };
-  });
-  const out = {
-    date: todayStr,
-    weekday: dayName,
-    status: st.kind, // ok / before / skip / done
-    week: st.kind === "ok" ? st.n : null,
-    week_key: st.kind === "ok" ? st.weekKey : null,
-    total_weeks: weekKeys.length,
-    title: day?.title || "",
-    rest_day: st.kind === "ok" && !(day && day.exercises.length),
-    exercises: day?.exercises || [],
-    log: logDays,
-  };
-  writeFileSync("site/today.json", JSON.stringify(out) + "\n");
-}
-
 if (process.env.DRY) {
   writeFileSync("site/preview.html", html);
   console.log("DRY: site/preview.html 작성 /", todayStr, dayName, JSON.stringify(st));
