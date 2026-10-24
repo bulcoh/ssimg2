@@ -127,7 +127,7 @@ html,body{width:540px;height:1080px;overflow:hidden}
 body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:#f1f3f6;
   background:${bg} center/cover no-repeat}
 #page{height:1080px;display:flex;flex-direction:column;padding:${TOP_SAFE}px ${SIDE_SAFE}px ${BOTTOM_SAFE}px}
-h1{font-size:21px;line-height:1.35;font-style:italic;font-weight:800;text-align:center;margin-bottom:6px}
+h1{font-size:21px;line-height:1.35;font-style:italic;font-weight:800;text-align:center;margin-bottom:6px;position:relative;top:10px}
 #chart{position:relative;display:flex;align-items:flex-start;gap:2px;padding:0 6px;margin-bottom:12px}
 .col{flex:1;text-align:center;position:relative}
 .col p{font-family:var(--dfont);line-height:1.15;padding:2px 0 3px;margin-bottom:2px;color:#e8ecf2;font-weight:800}
