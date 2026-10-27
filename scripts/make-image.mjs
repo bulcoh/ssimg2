@@ -20,7 +20,7 @@ const PROFILES = {
   // Fire 7 (2022): 600x1024 세로 화면. 배경화면이 약 8% 확대되어 한쪽당 가로 약 24, 세로 약 41이 잘린다.
   // 그래서 이미지를 가로 +60, 세로 +104 더 크게(660x1128) 만들고, 안전 여백은 그 바깥 여백(bleed) 안쪽부터 잰다.
   // 그래프는 좁은 화면에 맞춰 계곡 없이 직선, 높이는 폰의 80%(unit 26 -> 20.8), 눈금선은 2줄(50, 100분).
-  fire: { file: "today-fire.jpg", w: 600, h: 1024, scale: 1, bleedX: 10, bleedY: 52, side: 40, top: 40, bottom: 100, boxW: 24, unit: 20.8, cols: 1, base: 14, valley: 0, titleTop: false, titleDrop: 0, grid: [50, 100] },
+  fire: { file: "today-fire.jpg", w: 600, h: 1024, scale: 2, bleedX: 10, bleedY: 52, side: 40, top: 40, bottom: 100, boxW: 24, unit: 20.8, cols: 1, base: 17, valley: 0, titleTop: false, titleDrop: 0, grid: [50, 100] },
 };
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
