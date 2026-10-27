@@ -14,7 +14,7 @@ const PROFILES = {
   // Mi Max 3 (픽셀롬): 배경화면이 약 8% 확대되어 좌우 약 20, 상하 약 40이 잘린다. (540x1080 기준)
   phone: { file: "today.jpg", w: 540, h: 1080, scale: 2, side: 46, top: 100, bottom: 190, boxW: 24, unit: 26, cols: 1, base: 14 },
   // Fire 7 (2022): 1024x600 가로 화면. 여백은 추정값이라 실제 화면을 보고 조정한다.
-  fire: { file: "today-fire.jpg", w: 600, h: 1024, scale: 1, side: 10, top: 44, bottom: 190, boxW: 26, unit: 26, cols: 1, base: 14 },
+  fire: { file: "today-fire.jpg", w: 600, h: 1024, scale: 1, side: 40, top: 60, bottom: 100, boxW: 24, unit: 26, cols: 1, base: 14 },
 };
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
