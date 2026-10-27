@@ -1,16 +1,21 @@
-// 오늘의 루틴 + 최근 14일 운동시간 그래프를 1080x2160 배경화면으로 만든다.
+// 오늘의 루틴 + 최근 14일 운동시간 그래프를 기기별 배경화면(폰 1080x2160, Fire 1024x600)으로 만든다.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const KO = { Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "토", Sun: "일" };
 const KANJI = { Mon: "月", Tue: "火", Wed: "水", Thu: "木", Fri: "金", Sat: "土", Sun: "日" };
 const DAY_MS = 86400000;
-// 단위는 모두 px(540x1080 기준). 폰이 배경화면을 약 8% 확대해서 가장자리(좌우 약 20, 상하 약 40)가 잘린다.
-const SIDE_SAFE = 46;    // 좌우 여백: 잘리는 폭보다 넓게
-const TOP_SAFE = 100;    // 위 여백: 잘림(약 40) + 상태표시줄(시계/아이콘) 아래로 내려오도록
-const BOTTOM_SAFE = 190; // 하단 독(앱 아이콘) 영역
-// 픽셀롬이 배경화면을 약 8% 확대해서 가장자리가 잘린다(좌우 약 20px, 상하 약 40px, 540x1080 기준).
-// 그래서 위쪽 46px, 좌우 26px 안쪽에만 내용을 둔다.
+// ---------- 기기별 설정 ----------
+// w,h = CSS 픽셀 크기, scale = 배율 (실제 이미지 크기 = w*scale x h*scale)
+// side/top/bottom = 안전 여백(px). 기기가 배경화면을 확대해서 가장자리가 잘리거나 상태표시줄이 덮는 영역을 피한다.
+// boxW = 통 폭, unit = 30분 한 칸의 높이, cols = 루틴 목록 단 수, base = 기본 글자 크기
+// 새 기기를 추가하려면 아래에 한 줄을 더 쓰면 된다. 결과 파일은 file 이름으로 image 브랜치에 올라간다.
+const PROFILES = {
+  // Mi Max 3 (픽셀롬): 배경화면이 약 8% 확대되어 좌우 약 20, 상하 약 40이 잘린다. (540x1080 기준)
+  phone: { file: "today.jpg", w: 540, h: 1080, scale: 2, side: 46, top: 100, bottom: 190, boxW: 24, unit: 26, cols: 1, base: 14 },
+  // Fire 7 (2022): 1024x600 가로 화면. 여백은 추정값이라 실제 화면을 보고 조정한다.
+  fire: { file: "today-fire.jpg", w: 1024, h: 600, scale: 1, side: 40, top: 44, bottom: 70, boxW: 36, unit: 24, cols: 2, base: 15 },
+};
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 // ---------- 날짜 계산 (전부 UTC 자정 기준 숫자로 처리) ----------
@@ -49,14 +54,6 @@ function resolveWeek() {
 const st = resolveWeek();
 const dayName = DAYS[dow(today)];
 
-// ---------- 타이틀 (맨 위 가운데) ----------
-function titleHtml() {
-  if (st.kind !== "ok") return "";
-  const day = routine[st.weekKey]?.[dayName];
-  if (!day || !day.exercises.length) return "";
-  return `<h1>${esc(st.weekKey)} ${esc(day.title)}</h1>`;
-}
-
 // ---------- 본문(루틴) ----------
 function routineHtml() {
   if (st.kind === "before") return msg("아직 시작 전이에요", `시작일 ${esc(cfg.start_date)}`);
@@ -73,30 +70,25 @@ function routineHtml() {
       ${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}
     </div>`;
   }).join("");
-  return rows;
+  return `<h1>${esc(st.weekKey)} ${esc(day.title)}</h1><div class="cols">${rows}</div>`;
 }
 function msg(big, small) {
   return `<div class="msg"><div>${big}</div><small>${small}</small></div>`;
 }
 
 // ---------- 최근 14일 그래프 (플랫 캡슐 통 + 빈틈없이 채워지는 내용물) ----------
-const UNIT = 26;   // 30분 한 칸의 높이(px)
 const CAP = 110;   // 통의 상한(분). 이보다 길게 운동한 날은 통이 가득 찬 모양으로 표시되고 숫자는 실제 시간이 나온다.
-const BOX_W = 24;  // 통 폭(px). 양 끝이 둥근 캡슐 모양
-const VALLEY = 72; // 가운데 캡슐이 아래로 내려앉는 깊이(px). 중앙 상단의 시계(날짜 글자)를 피하는 계곡 모양
-function chartHtml() {
+function chartHtml(P) {
+  const UNIT = P.unit;
   const days = Array.from({ length: 14 }, (_, i) => today - (13 - i) * DAY_MS);
   const hC = (CAP / 30) * UNIT;          // 통 높이
   // 30·60·90분 눈금선은 통 안쪽에만 그린다. (통 안 맨 아래 = 0분이라 0분선은 따로 없다)
   const lines = [30, 60, 90].map((v) => `<i style="bottom:${(v / 30) * UNIT - 1}px"></i>`).join("");
-  const cols = days.map((ms, i) => {
+  const cols = days.map((ms) => {
     const [a, c] = log.get(fmt(ms)) || [0, 0];
     const t = a + c;
     const w = dow(ms);
     const cls = w === 5 ? "sat" : w === 6 ? "sun" : "";
-    // 양 끝은 위로, 가운데로 갈수록 아래로 내려앉는 포물선(계곡)
-    const u = (i - 6.5) / 6.5;
-    const off = (VALLEY * (1 - u * u)).toFixed(1);
     // 내용물은 통 안쪽을 빈틈없이 채운다. 통이 둥글게 잘라 주기 때문에 막대 두 개가 겹쳐 보이지 않는다.
     // 아래쪽 진한색 = 무산소, 위쪽 연한색 = 유산소
     const fillH = Math.max(0, Math.min((Math.min(t, CAP) / 30) * UNIT - 1, hC - 2));
@@ -105,33 +97,37 @@ function chartHtml() {
     const inner = t
       ? `<s style="height:${fillH.toFixed(1)}px;--a:${aH.toFixed(1)}px"></s><em style="color:${numColor}">${t}</em>`
       : "";
-    return `<div class="col ${cls} ${ms === today ? "today" : ""}" style="margin-top:${off}px">
-      <p><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC}px"><k>${inner}${lines}</k></div></div>`;
+    return `<div class="col ${cls} ${ms === today ? "today" : ""}">
+      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC}px"><k>${inner}${lines}</k></div></div>`;
   }).join("");
   return `<div id="chart">${cols}</div>`;
 }
 
 // ---------- 배경 ----------
-let bg = "linear-gradient(#1b1f26,#0e1014)";
-for (const f of ["assets/bg.jpg", "assets/bg.jpeg", "assets/bg.png"]) {
-  if (existsSync(f)) {
-    const mime = f.endsWith("png") ? "image/png" : "image/jpeg";
-    bg = `url(data:${mime};base64,${readFileSync(f).toString("base64")})`;
-    break;
+// assets/bg-기기이름.jpg 가 있으면 그것을, 없으면 assets/bg.jpg 를 쓴다. 둘 다 없으면 어두운 단색.
+function bgFor(name) {
+  for (const f of [`assets/bg-${name}.jpg`, "assets/bg.jpg", "assets/bg.jpeg", "assets/bg.png"]) {
+    if (existsSync(f)) {
+      const mime = f.endsWith("png") ? "image/png" : "image/jpeg";
+      return `url(data:${mime};base64,${readFileSync(f).toString("base64")})`;
+    }
   }
+  return "linear-gradient(#1b1f26,#0e1014)";
 }
 
-const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@800&text=0123456789%E6%9C%88%E7%81%AB%E6%B0%B4%E6%9C%A8%E9%87%91%E5%9C%9F%E6%97%A5&display=block"><style>
+function buildHtml(name, P) {
+  const BOX_W = P.boxW;
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@800&text=0123456789%E6%9C%88%E7%81%AB%E6%B0%B4%E6%9C%A8%E9%87%91%E5%9C%9F%E6%97%A5&display=block"><style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:540px;height:1080px;overflow:hidden}
+html,body{width:${P.w}px;height:${P.h}px;overflow:hidden}
 body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:#f1f3f6;
-  background:${bg} center/cover no-repeat}
-#page{height:1080px;display:flex;flex-direction:column;padding:${TOP_SAFE}px ${SIDE_SAFE}px ${BOTTOM_SAFE}px}
-h1{font-size:21px;line-height:1.35;font-style:italic;font-weight:800;text-align:center;margin-bottom:6px;position:relative;top:10px}
-#chart{position:relative;display:flex;align-items:flex-start;gap:2px;padding:0 6px;margin-bottom:12px}
+  background:${bgFor(name)} center/cover no-repeat}
+#page{height:${P.h}px;display:flex;flex-direction:column;padding:${P.top}px ${P.side}px ${P.bottom}px}
+#chart{position:relative;display:flex;gap:2px;padding:0 6px;margin-bottom:12px}
 .col{flex:1;text-align:center;position:relative}
 .col p{font-family:var(--dfont);line-height:1.15;padding:2px 0 3px;margin-bottom:2px;color:#e8ecf2;font-weight:800}
 .col.today p{border-bottom:2px solid #fff}
+.col p b{font-size:16px;font-weight:800}
 .col p span{font-size:19px}
 .col.sat p{color:#5b9bff}.col.sun p{color:#ff6b6b}
 .bars{position:relative}
@@ -142,8 +138,10 @@ h1{font-size:21px;line-height:1.35;font-style:italic;font-weight:800;text-align:
 .bars i{position:absolute;left:0;right:0;height:0;border-top:1px solid rgba(224,160,48,.85);z-index:2}
 .bars em{position:absolute;left:0;right:0;bottom:7px;text-align:center;font-family:var(--dfont);font-weight:800;font-style:normal;font-size:11px;line-height:1;z-index:3}
 #content{flex:1;overflow:hidden;min-height:0}
-#inner{font-size:14px;line-height:1.35}
-.ex{margin-bottom:.8em}
+#inner{font-size:${P.base}px;line-height:1.35}
+.cols{column-count:${P.cols};column-gap:28px}
+h1{font-size:1.5em;font-style:italic;font-weight:800;margin-bottom:.3em}
+.ex{margin-bottom:.8em;break-inside:avoid}
 .nm b{font-size:1.2em;font-weight:600;margin-right:.6em}
 .sub{font-size:.8em;color:#aeb7c4}.sub i{margin:0 .35em}
 .meta{font-size:.95em;font-weight:600;display:flex;gap:.9em;flex-wrap:wrap}
@@ -152,16 +150,19 @@ h1{font-size:21px;line-height:1.35;font-style:italic;font-weight:800;text-align:
 .msg{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:1.6em;font-weight:700;gap:.4em}
 .msg small{font-size:.55em;font-weight:500;color:#aeb7c4}
 </style></head><body><div id="page">
-${titleHtml()}
-${chartHtml()}
+${chartHtml(P)}
 <div id="content"><div id="inner">${routineHtml()}</div></div>
 </div></body></html>`;
+}
 
 mkdirSync("site", { recursive: true });
 
+const only = process.env.PROFILE; // 특정 기기만 만들고 싶을 때(예: PROFILE=fire)
+const targets = Object.entries(PROFILES).filter(([name]) => !only || name === only);
+
 if (process.env.DRY) {
-  writeFileSync("site/preview.html", html);
-  console.log("DRY: site/preview.html 작성 /", todayStr, dayName, JSON.stringify(st));
+  for (const [name, P] of targets) writeFileSync(`site/preview-${name}.html`, buildHtml(name, P));
+  console.log("DRY:", targets.map(([n]) => n).join(","), todayStr, dayName, JSON.stringify(st));
   process.exit(0);
 }
 
@@ -171,24 +172,28 @@ const browser = await puppeteer.launch({
   executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome",
   args: ["--no-sandbox", "--disable-setuid-sandbox"],
 });
-const page = await browser.newPage();
-await page.setViewport({ width: 540, height: 1080, deviceScaleFactor: 2 });
-try {
-  await page.setContent(html, { waitUntil: "networkidle0", timeout: 30000 });
-} catch {
-  await page.setContent(html, { waitUntil: "load" }); // 구글 폰트가 안 불러와지면 기본 폰트로
-}
-await page.evaluate(() => document.fonts.ready);
-// 종목이 많아 넘치면 글자 크기를 줄여서 맞춘다.
-await page.evaluate(() => {
-  const box = document.getElementById("content");
-  const inner = document.getElementById("inner");
-  let size = 14;
-  while (inner.scrollHeight > box.clientHeight && size > 8) {
-    size -= 0.5;
-    inner.style.fontSize = size + "px";
+for (const [name, P] of targets) {
+  const html = buildHtml(name, P);
+  const page = await browser.newPage();
+  await page.setViewport({ width: P.w, height: P.h, deviceScaleFactor: P.scale });
+  try {
+    await page.setContent(html, { waitUntil: "networkidle0", timeout: 30000 });
+  } catch {
+    await page.setContent(html, { waitUntil: "load" }); // 구글 폰트가 안 불러와지면 기본 폰트로
   }
-});
-await page.screenshot({ path: "site/today.jpg", type: "jpeg", quality: 88 });
+  await page.evaluate(() => document.fonts.ready);
+  // 종목이 많아 넘치면 글자 크기를 줄여서 맞춘다. (세로로 넘치거나, 단이 옆으로 밀려나면 줄인다)
+  await page.evaluate((base) => {
+    const box = document.getElementById("content");
+    const inner = document.getElementById("inner");
+    let size = base;
+    while ((inner.scrollHeight > box.clientHeight || inner.scrollWidth > box.clientWidth) && size > 8) {
+      size -= 0.5;
+      inner.style.fontSize = size + "px";
+    }
+  }, P.base);
+  await page.screenshot({ path: `site/${P.file}`, type: "jpeg", quality: 88 });
+  await page.close();
+  console.log("완료:", `site/${P.file}`, `${P.w * P.scale}x${P.h * P.scale}`, todayStr, dayName, JSON.stringify(st));
+}
 await browser.close();
-console.log("완료: site/today.jpg", todayStr, dayName, JSON.stringify(st));
