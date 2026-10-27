@@ -241,8 +241,12 @@ document.getElementById('buildStamp').textContent = `build ${y}${m}${day}_${ampm
         if (confirm("저장된 R2 키를 지울까?")) {
             localStorage.removeItem('r2_access_key');
             localStorage.removeItem('r2_secret_key');
-            R2_ACCESS_KEY = ""; R2_SECRET_KEY = "";
-            alert("삭제 완료! 다음 업로드 때 새로 물어볼게.");
+            localStorage.removeItem('gh_token'); // 깃허브 토큰 삭제 추가
+            R2_ACCESS_KEY = ""; 
+            R2_SECRET_KEY = ""; 
+            GITHUB_TOKEN = ""; // 메모리 변수도 초기화
+            alert("R2 키와 깃허브 토큰 삭제 완료! 다음 전송 때 새로 물어볼게.");
+            
         }
     }
 
