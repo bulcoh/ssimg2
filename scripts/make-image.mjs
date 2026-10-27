@@ -6,15 +6,21 @@ const KO = { Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "�
 const KANJI = { Mon: "月", Tue: "火", Wed: "水", Thu: "木", Fri: "金", Sat: "土", Sun: "日" };
 const DAY_MS = 86400000;
 // ---------- 기기별 설정 ----------
-// w,h = CSS 픽셀 크기, scale = 배율 (실제 이미지 크기 = w*scale x h*scale)
-// side/top/bottom = 안전 여백(px). 기기가 배경화면을 확대해서 가장자리가 잘리거나 상태표시줄이 덮는 영역을 피한다.
+// w,h = 기기 화면 크기(CSS 픽셀), scale = 배율 (실제 이미지 크기 = (w+bleedX*2)*scale x (h+bleedY*2)*scale)
+// bleedX/bleedY = 기기 화면 바깥으로 더 키우는 여백(한쪽 기준). 기기가 배경화면을 확대해서 잘리는 만큼을 이미지가 미리 더 크게 가지고 있게 한다.
+// side/top/bottom = 기기 화면 가장자리에서 안쪽으로 둘 안전 여백(px). 상태표시줄이 덮는 영역 등을 피한다. (bleed는 따로 더해진다)
 // boxW = 통 폭, unit = 30분 한 칸의 높이, cols = 루틴 목록 단 수, base = 기본 글자 크기
+// grid = 눈금선을 그을 분(分) 값들. CAP(110)이 통 꼭대기라서 값이 클수록 위로 올라간다.
+// valley = 가운데 캡슐이 아래로 내려앉는 깊이(px), 0이면 직선. 폰은 중앙 상단 시계(날짜 글자)를 피하려고 계곡 모양.
+// titleTop = true면 타이틀(WEEK1 Legs #2)을 맨 위 가운데에 두고, false면 루틴 목록 맨 앞에 둔다. titleDrop = 타이틀만 아래로 내리는 양(px)
 // 새 기기를 추가하려면 아래에 한 줄을 더 쓰면 된다. 결과 파일은 file 이름으로 image 브랜치에 올라간다.
 const PROFILES = {
   // Mi Max 3 (픽셀롬): 배경화면이 약 8% 확대되어 좌우 약 20, 상하 약 40이 잘린다. (540x1080 기준)
-  phone: { file: "today.jpg", w: 540, h: 1080, scale: 2, side: 46, top: 100, bottom: 190, boxW: 24, unit: 26, cols: 1, base: 14 },
-  // Fire 7 (2022): 1024x600 가로 화면. 여백은 추정값이라 실제 화면을 보고 조정한다.
-  fire: { file: "today-fire.jpg", w: 600, h: 1024, scale: 1, side: 40, top: 60, bottom: 100, boxW: 24, unit: 26, cols: 1, base: 14 },
+  phone: { file: "today.jpg", w: 540, h: 1080, scale: 2, bleedX: 0, bleedY: 0, side: 46, top: 100, bottom: 190, boxW: 24, unit: 26, cols: 1, base: 14, valley: 72, titleTop: true, titleDrop: 10, grid: [30, 60, 90] },
+  // Fire 7 (2022): 600x1024 세로 화면. 배경화면이 약 8% 확대되어 한쪽당 가로 약 24, 세로 약 41이 잘린다.
+  // 그래서 이미지를 가로 +60, 세로 +104 더 크게(660x1128) 만들고, 안전 여백은 그 바깥 여백(bleed) 안쪽부터 잰다.
+  // 그래프는 좁은 화면에 맞춰 계곡 없이 직선, 높이는 폰의 80%(unit 26 -> 20.8), 눈금선은 2줄(50, 100분).
+  fire: { file: "today-fire.jpg", w: 600, h: 1024, scale: 1, bleedX: 30, bleedY: 52, side: 40, top: 40, bottom: 100, boxW: 24, unit: 20.8, cols: 1, base: 14, valley: 0, titleTop: false, titleDrop: 0, grid: [50, 100] },
 };
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -54,14 +60,27 @@ function resolveWeek() {
 const st = resolveWeek();
 const dayName = DAYS[dow(today)];
 
-// ---------- 본문(루틴) ----------
-function routineHtml() {
+// ---------- 타이틀 / 본문(루틴) ----------
+// 오늘 운동이 있는 날이면 { title, exercises }, 아니면 null
+function todayPlan() {
+  if (st.kind !== "ok") return null;
+  const day = routine[st.weekKey]?.[dayName];
+  if (!day || !day.exercises.length) return null;
+  return { title: `${esc(st.weekKey)} ${esc(day.title)}`, exercises: day.exercises };
+}
+// titleTop 기기: 맨 위 가운데에 놓는 타이틀
+function titleHtml(P) {
+  const plan = todayPlan();
+  if (!P.titleTop || !plan) return "";
+  return `<h1 class="ttl">${plan.title}</h1>`;
+}
+function routineHtml(P) {
   if (st.kind === "before") return msg("아직 시작 전이에요", `시작일 ${esc(cfg.start_date)}`);
   if (st.kind === "skip") return msg("이번 주는 디로드·휴식 주", "푹 쉬어요");
   if (st.kind === "done") return msg("루틴이 끝났어요", "ppl/config.json에서 다음 루틴을 정해 주세요");
-  const day = routine[st.weekKey]?.[dayName];
-  if (!day || !day.exercises.length) return msg(`${esc(st.weekKey)} · ${KO[dayName]}요일`, "오늘은 휴식일");
-  const rows = day.exercises.map((e) => {
+  const plan = todayPlan();
+  if (!plan) return msg(`${esc(st.weekKey)} · ${KO[dayName]}요일`, "오늘은 휴식일");
+  const rows = plan.exercises.map((e) => {
     const subs = [e.sub1, e.sub2].filter(Boolean).map(esc).join('<i></i>');
     const f = (label, v, cls) => (v ? `<span class="${cls}">${label}[ ${esc(v)} ]</span>` : "");
     return `<div class="ex">
@@ -70,7 +89,7 @@ function routineHtml() {
       ${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}
     </div>`;
   }).join("");
-  return `<h1>${esc(st.weekKey)} ${esc(day.title)}</h1><div class="cols">${rows}</div>`;
+  return `${P.titleTop ? "" : `<h1>${plan.title}</h1>`}<div class="cols">${rows}</div>`;
 }
 function msg(big, small) {
   return `<div class="msg"><div>${big}</div><small>${small}</small></div>`;
@@ -82,13 +101,16 @@ function chartHtml(P) {
   const UNIT = P.unit;
   const days = Array.from({ length: 14 }, (_, i) => today - (13 - i) * DAY_MS);
   const hC = (CAP / 30) * UNIT;          // 통 높이
-  // 30·60·90분 눈금선은 통 안쪽에만 그린다. (통 안 맨 아래 = 0분이라 0분선은 따로 없다)
-  const lines = [30, 60, 90].map((v) => `<i style="bottom:${(v / 30) * UNIT - 1}px"></i>`).join("");
-  const cols = days.map((ms) => {
+  // 눈금선은 통 안쪽에만 그린다. (통 안 맨 아래 = 0분이라 0분선은 따로 없다)
+  const lines = P.grid.map((v) => `<i style="bottom:${((v / 30) * UNIT - 1).toFixed(1)}px"></i>`).join("");
+  const cols = days.map((ms, i) => {
     const [a, c] = log.get(fmt(ms)) || [0, 0];
     const t = a + c;
     const w = dow(ms);
     const cls = w === 5 ? "sat" : w === 6 ? "sun" : "";
+    // 양 끝은 위로, 가운데로 갈수록 아래로 내려앉는 포물선(계곡). valley가 0이면 직선.
+    const u = (i - 6.5) / 6.5;
+    const off = (P.valley * (1 - u * u)).toFixed(1);
     // 내용물은 통 안쪽을 빈틈없이 채운다. 통이 둥글게 잘라 주기 때문에 막대 두 개가 겹쳐 보이지 않는다.
     // 아래쪽 진한색 = 무산소, 위쪽 연한색 = 유산소
     const fillH = Math.max(0, Math.min((Math.min(t, CAP) / 30) * UNIT - 1, hC - 2));
@@ -97,8 +119,8 @@ function chartHtml(P) {
     const inner = t
       ? `<s style="height:${fillH.toFixed(1)}px;--a:${aH.toFixed(1)}px"></s><em style="color:${numColor}">${t}</em>`
       : "";
-    return `<div class="col ${cls} ${ms === today ? "today" : ""}">
-      <p><b>${new Date(ms).getUTCDate()}</b><br><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC}px"><k>${inner}${lines}</k></div></div>`;
+    return `<div class="col ${cls} ${ms === today ? "today" : ""}" style="margin-top:${off}px">
+      <p><span>${KANJI[DAYS[w]]}</span></p><div class="bars" style="height:${hC.toFixed(1)}px"><k>${inner}${lines}</k></div></div>`;
   }).join("");
   return `<div id="chart">${cols}</div>`;
 }
@@ -117,17 +139,18 @@ function bgFor(name) {
 
 function buildHtml(name, P) {
   const BOX_W = P.boxW;
+  const W = P.w + P.bleedX * 2; // 실제로 그리는 캔버스 크기 (기기 화면 + 잘릴 여백)
+  const H = P.h + P.bleedY * 2;
   return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@800&text=0123456789%E6%9C%88%E7%81%AB%E6%B0%B4%E6%9C%A8%E9%87%91%E5%9C%9F%E6%97%A5&display=block"><style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:${P.w}px;height:${P.h}px;overflow:hidden}
+html,body{width:${W}px;height:${H}px;overflow:hidden}
 body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:#f1f3f6;
   background:${bgFor(name)} center/cover no-repeat}
-#page{height:${P.h}px;display:flex;flex-direction:column;padding:${P.top}px ${P.side}px ${P.bottom}px}
-#chart{position:relative;display:flex;gap:2px;padding:0 6px;margin-bottom:12px}
+#page{height:${H}px;display:flex;flex-direction:column;padding:${P.bleedY + P.top}px ${P.bleedX + P.side}px ${P.bleedY + P.bottom}px}
+#chart{position:relative;display:flex;align-items:flex-start;gap:2px;padding:0 6px;margin-bottom:12px}
 .col{flex:1;text-align:center;position:relative}
 .col p{font-family:var(--dfont);line-height:1.15;padding:2px 0 3px;margin-bottom:2px;color:#e8ecf2;font-weight:800}
 .col.today p{border-bottom:2px solid #fff}
-.col p b{font-size:16px;font-weight:800}
 .col p span{font-size:19px}
 .col.sat p{color:#5b9bff}.col.sun p{color:#ff6b6b}
 .bars{position:relative}
@@ -141,6 +164,7 @@ body{--dfont:"Noto Sans TC","Noto Sans CJK TC","Noto Sans CJK KR",sans-serif;fon
 #inner{font-size:${P.base}px;line-height:1.35}
 .cols{column-count:${P.cols};column-gap:28px}
 h1{font-size:1.5em;font-style:italic;font-weight:800;margin-bottom:.3em}
+h1.ttl{font-size:21px;line-height:1.35;text-align:center;margin-bottom:6px;position:relative;top:${P.titleDrop}px}
 .ex{margin-bottom:.8em;break-inside:avoid}
 .nm b{font-size:1.2em;font-weight:600;margin-right:.6em}
 .sub{font-size:.8em;color:#aeb7c4}.sub i{margin:0 .35em}
@@ -150,8 +174,9 @@ h1{font-size:1.5em;font-style:italic;font-weight:800;margin-bottom:.3em}
 .msg{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:1.6em;font-weight:700;gap:.4em}
 .msg small{font-size:.55em;font-weight:500;color:#aeb7c4}
 </style></head><body><div id="page">
+${titleHtml(P)}
 ${chartHtml(P)}
-<div id="content"><div id="inner">${routineHtml()}</div></div>
+<div id="content"><div id="inner">${routineHtml(P)}</div></div>
 </div></body></html>`;
 }
 
@@ -173,9 +198,11 @@ const browser = await puppeteer.launch({
   args: ["--no-sandbox", "--disable-setuid-sandbox"],
 });
 for (const [name, P] of targets) {
+  const W = P.w + P.bleedX * 2;
+  const H = P.h + P.bleedY * 2;
   const html = buildHtml(name, P);
   const page = await browser.newPage();
-  await page.setViewport({ width: P.w, height: P.h, deviceScaleFactor: P.scale });
+  await page.setViewport({ width: W, height: H, deviceScaleFactor: P.scale });
   try {
     await page.setContent(html, { waitUntil: "networkidle0", timeout: 30000 });
   } catch {
@@ -194,6 +221,6 @@ for (const [name, P] of targets) {
   }, P.base);
   await page.screenshot({ path: `site/${P.file}`, type: "jpeg", quality: 88 });
   await page.close();
-  console.log("완료:", `site/${P.file}`, `${P.w * P.scale}x${P.h * P.scale}`, todayStr, dayName, JSON.stringify(st));
+  console.log("완료:", `site/${P.file}`, `${W * P.scale}x${H * P.scale}`, todayStr, dayName, JSON.stringify(st));
 }
 await browser.close();
