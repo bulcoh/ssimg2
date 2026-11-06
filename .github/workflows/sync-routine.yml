@@ -22,12 +22,14 @@ jobs:
         env:
           CSV_URL_1: ${{ secrets.CSV_URL_1 }}
           CSV_URL_2: ${{ secrets.CSV_URL_2 }}
-          CSV_URL_3: ${{ secrets.CSV_URL_3 }}
+          CSV_URL_3_P1: ${{ secrets.CSV_URL_3_P1 }}
+          CSV_URL_3_P2: ${{ secrets.CSV_URL_3_P2 }}
+          CSV_URL_3_P3: ${{ secrets.CSV_URL_3_P3 }}
           CSV_URL_4: ${{ secrets.CSV_URL_4 }}
           CSV_URL_5: ${{ secrets.CSV_URL_5 }}
         run: |
           mkdir -p ppl
-          for i in 1 2 3 4 5; do
+          for i in 1 2 3_P1 3_P2 3_P3 4 5; do
             var="CSV_URL_$i"
             url="${!var}"
             if [ -n "$url" ]; then
