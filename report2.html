@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SSimage 2 - 월간 리포트</title>
+
+<!-- 홈 화면에 추가(PWA) / 아이콘 -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SSimage">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
     * { box-sizing: border-box; }
@@ -147,6 +158,27 @@
     #calendar[data-theme="4"] .day-cell img { filter: contrast(1.08) saturate(1.1); }
     #calendar[data-theme="4"] .cal-footer { color: rgba(255,170,60,0.4); letter-spacing: 2px; }
 
+    /* ── 모바일 세로 피드 (화면 폭 700px 이하에서만 보임) ── */
+    #feed { display: none; width: 100%; max-width: 560px; }
+    .feed-empty { height: 26px; display: flex; align-items: center; padding: 0 6px; font-size: 12px; color: #666; }
+    .feed-pic { position: relative; margin: 8px 0; border-radius: 14px; overflow: hidden; background: #202020; min-height: 240px; }
+    .feed-pic.loaded { min-height: 0; }
+    .feed-pic img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+    .feed-pic::after {
+        content: ""; position: absolute; left: 0; right: 0; top: 0; height: 56px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
+        pointer-events: none;
+    }
+    .feed-date { position: absolute; top: 10px; left: 12px; z-index: 2; font-weight: 700; font-size: 14px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+    .feed-end { text-align: center; color: #555; font-size: 12px; padding: 20px 0 40px; }
+    #feedSentinel { height: 1px; }
+
+    @media (max-width: 700px) {
+        body { padding: 12px; }
+        .nav, .concept-selector, #downloadBtn, .calendar-scroll { display: none; }
+        #feed { display: block; }
+    }
+
     /* 이미지 팝업 모달 */
     #imgModal {
         display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
@@ -192,6 +224,8 @@
     </div>
 </div>
 
+<div id="feed"></div>
+
 <div id="imgModal" onclick="closeImgModal()">
     <img id="imgModalPic" src="" alt="">
 </div>
@@ -206,6 +240,7 @@
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
+    // 한국시간으로 +9h 밀어 둔 Date. 연/월/일은 반드시 getUTC* 로 읽는다.
     function todayKorea() {
         const now = new Date();
         return new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -360,6 +395,97 @@
         statsEl.innerHTML = `<div class="stat-line">${line1}</div><div class="stat-line">${line2}</div><div class="stat-line">${line3}</div>`;
     }
 
+    // ───────── 모바일 세로 피드 ─────────
+    // 오늘부터 과거로 하루씩 내려간다. 미래 날짜는 만들지 않는다.
+    // 사진이 있는 날 = 큰 카드, 사진이 없는 날 = 얇은 한 줄.
+    // 한 번에 FEED_CHUNK 일치만 그리고, 아래로 스크롤해서 끝이 가까워지면 다음 묶음을 그린다.
+    const mobileMQ = window.matchMedia('(max-width: 700px)');
+    const DAY_MS = 86400000;
+    const FEED_CHUNK = 8;
+    const WD = ['일', '월', '화', '수', '목', '금', '토'];
+    let dataReady = false;
+    let feed = { cursor: 0, oldest: 0, todayMs: 0, observer: null };
+
+    function startFeed() {
+        const el = document.getElementById('feed');
+        if (feed.observer) feed.observer.disconnect();
+        el.innerHTML = '';
+
+        const t = todayKorea();
+        feed.todayMs = Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate());
+        feed.cursor = feed.todayMs;
+
+        const keys = Object.keys(allData).filter(function(k) { return k.length === 8; }).sort();
+        if (!keys.length) {
+            el.innerHTML = '<div class="feed-end">기록이 없어요</div>';
+            return;
+        }
+        const first = keys[0];
+        feed.oldest = Date.UTC(+first.slice(0, 4), +first.slice(4, 6) - 1, +first.slice(6, 8));
+
+        const sentinel = document.createElement('div');
+        sentinel.id = 'feedSentinel';
+        el.appendChild(sentinel);
+
+        feed.observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) appendFeed();
+        }, { rootMargin: '800px 0px' });
+        feed.observer.observe(sentinel);
+    }
+
+    function appendFeed() {
+        const el = document.getElementById('feed');
+        const sentinel = document.getElementById('feedSentinel');
+        if (!sentinel) return;
+
+        for (let n = 0; n < FEED_CHUNK && feed.cursor >= feed.oldest; n++) {
+            el.insertBefore(buildFeedItem(feed.cursor), sentinel);
+            feed.cursor -= DAY_MS;
+        }
+
+        if (feed.cursor < feed.oldest) {
+            feed.observer.disconnect();
+            sentinel.remove();
+            const end = document.createElement('div');
+            end.className = 'feed-end';
+            end.textContent = '첫 기록이에요';
+            el.appendChild(end);
+        } else {
+            // 얇은 줄만 이어져서 sentinel 이 아직 화면 근처에 있으면 다시 확인하게 한다
+            feed.observer.unobserve(sentinel);
+            feed.observer.observe(sentinel);
+        }
+    }
+
+    function buildFeedItem(ms) {
+        const d = new Date(ms);
+        const key = `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`;
+        const label = `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일 (${WD[d.getUTCDay()]})`;
+        const record = allData[key];
+        const item = document.createElement('div');
+
+        if (record && record.imageUrl) {
+            item.className = 'feed-pic';
+            const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.alt = label;
+            img.onload = function() { item.classList.add('loaded'); };
+            img.onerror = function() { item.classList.add('loaded'); };
+            img.onclick = function() { openImgModal(record.imageUrl); };
+            img.src = record.imageUrl;
+            const dateEl = document.createElement('div');
+            dateEl.className = 'feed-date';
+            dateEl.textContent = label;
+            item.appendChild(img);
+            item.appendChild(dateEl);
+        } else {
+            item.className = 'feed-empty';
+            item.textContent = label + (ms === feed.todayMs ? ' · 오늘' : '');
+        }
+        return item;
+    }
+
     function openImgModal(src) {
         document.getElementById('imgModalPic').src = src;
         document.getElementById('imgModal').classList.add('open');
@@ -405,13 +531,21 @@
 
     (async function init() {
         const t = todayKorea();
-        viewYear = t.getFullYear();
-        viewMonth = t.getMonth();
-        renderCalendar();
+        viewYear = t.getUTCFullYear();
+        viewMonth = t.getUTCMonth();
+        // 모바일에서는 숨겨진 캘린더 사진까지 받지 않도록 데스크톱일 때만 그린다
+        if (!mobileMQ.matches) renderCalendar();
         await Promise.all([loadData(), loadExerciseMap()]);
         document.getElementById('statusMsg').textContent = document.getElementById('statusMsg').textContent || "";
-        renderCalendar();
+        dataReady = true;
+        if (mobileMQ.matches) startFeed(); else renderCalendar();
     })();
+
+    // 화면 폭이 바뀌어 모바일 <-> 데스크톱이 전환될 때
+    mobileMQ.addEventListener('change', function(e) {
+        if (!dataReady) return;
+        if (e.matches) startFeed(); else renderCalendar();
+    });
 </script>
 </body>
 </html>
