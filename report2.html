@@ -7,8 +7,8 @@
 
 <!-- 홈 화면에 추가(PWA) / 아이콘 -->
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="reporticon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="reporticon/favicon-32.png">
 <meta name="theme-color" content="#111111">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -163,7 +163,7 @@
     .feed-empty { height: 26px; display: flex; align-items: center; padding: 0 6px; font-size: 12px; color: #666; }
     .feed-pic { position: relative; margin: 8px 0; border-radius: 14px; overflow: hidden; background: #202020; min-height: 240px; }
     .feed-pic.loaded { min-height: 0; }
-    .feed-pic img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+    .feed-pic img { width: 100%; height: auto; display: block; cursor: copy; }
     .feed-pic::after {
         content: ""; position: absolute; left: 0; right: 0; top: 0; height: 56px;
         background: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
@@ -172,6 +172,13 @@
     .feed-date { position: absolute; top: 10px; left: 12px; z-index: 2; font-weight: 700; font-size: 14px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
     .feed-end { text-align: center; color: #555; font-size: 12px; padding: 20px 0 40px; }
     #feedSentinel { height: 1px; }
+    #toast {
+        position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px);
+        background: rgba(40,40,40,0.95); color: #fff; padding: 12px 20px; border-radius: 999px;
+        font-size: 14px; font-weight: 700; opacity: 0; pointer-events: none;
+        transition: opacity .2s, transform .2s; z-index: 1000; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 700px) {
         body { padding: 12px; }
@@ -225,6 +232,8 @@
 </div>
 
 <div id="feed"></div>
+
+<div id="toast"></div>
 
 <div id="imgModal" onclick="closeImgModal()">
     <img id="imgModalPic" src="" alt="">
@@ -401,7 +410,7 @@
     // 한 번에 FEED_CHUNK 일치만 그리고, 아래로 스크롤해서 끝이 가까워지면 다음 묶음을 그린다.
     const mobileMQ = window.matchMedia('(max-width: 700px)');
     const DAY_MS = 86400000;
-    const FEED_CHUNK = 8;
+    const FEED_CHUNK = 5;
     const WD = ['일', '월', '화', '수', '목', '금', '토'];
     let dataReady = false;
     let feed = { cursor: 0, oldest: 0, todayMs: 0, observer: null };
@@ -472,7 +481,7 @@
             img.alt = label;
             img.onload = function() { item.classList.add('loaded'); };
             img.onerror = function() { item.classList.add('loaded'); };
-            img.onclick = function() { openImgModal(record.imageUrl); };
+            img.onclick = function() { copyFeedImage(record.imageUrl); };
             img.src = record.imageUrl;
             const dateEl = document.createElement('div');
             dateEl.className = 'feed-date';
@@ -484,6 +493,57 @@
             item.textContent = label + (ms === feed.todayMs ? ' · 오늘' : '');
         }
         return item;
+    }
+
+    // 피드 사진을 탭하면 이미지를 클립보드에 복사한다. (HTTPS 필요, 실패하면 확대 팝업으로 대신 보여준다)
+    let toastTimer = null;
+    function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() { el.classList.remove('show'); }, 1600);
+    }
+
+    // 클립보드는 PNG 만 안정적으로 받으므로 JPG 등은 PNG 로 바꿔 준다.
+    function toPngBlob(blob) {
+        if (blob.type === 'image/png') return Promise.resolve(blob);
+        return new Promise(function(resolve, reject) {
+            const objUrl = URL.createObjectURL(blob);
+            const im = new Image();
+            im.onload = function() {
+                const c = document.createElement('canvas');
+                c.width = im.naturalWidth;
+                c.height = im.naturalHeight;
+                c.getContext('2d').drawImage(im, 0, 0);
+                c.toBlob(function(b) {
+                    URL.revokeObjectURL(objUrl);
+                    b ? resolve(b) : reject(new Error('toBlob failed'));
+                }, 'image/png');
+            };
+            im.onerror = function() { URL.revokeObjectURL(objUrl); reject(new Error('decode failed')); };
+            im.src = objUrl;
+        });
+    }
+
+    let copying = false;
+    async function copyFeedImage(url) {
+        if (copying) return;
+        copying = true;
+        try {
+            // 탭 직후 바로 write 를 호출하고, 이미지 준비는 Promise 로 넘겨야 iOS 사파리가 허용한다
+            const blobPromise = fetch(url)
+                .then(function(r) { if (!r.ok) throw new Error('fetch ' + r.status); return r.blob(); })
+                .then(toPngBlob);
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
+            showToast('📋 복사했어요');
+        } catch (e) {
+            console.error(e);
+            showToast('복사 실패 · 꾹 눌러서 복사해 주세요');
+            openImgModal(url);
+        } finally {
+            copying = false;
+        }
     }
 
     function openImgModal(src) {
