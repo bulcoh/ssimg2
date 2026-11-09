@@ -11646,5 +11646,90 @@
       ]
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-11-07.jpg"
+  },
+  "20261109": {
+    "strong": 75,
+    "cooldown": 15,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PUSH#1",
+      "datetime": "2026년 11월 9일 월요일 오후 4:54",
+      "duration": 90,
+      "totalSets": 23,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Seated Overhead Press (Dumbbell)",
+          "sets": 3,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Press Around (Cable)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 0,
+          "warms": 1,
+          "drops": 3,
+          "fails": 0
+        },
+        {
+          "name": "Triceps Pushdown (Cable - Straight Bar)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shoulder Press (Machine)",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Flat Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Walking",
+          "sets": 1,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        }
+      ]
+    },
+    "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-11-09.jpg"
   }
 }
