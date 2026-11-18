@@ -12171,5 +12171,83 @@
       ]
     },
     "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-11-16.jpg"
+  },
+  "20261117": {
+    "strong": 81,
+    "cooldown": 0,
+    "swim": 0,
+    "run": 0,
+    "workout": {
+      "title": "PULL#1",
+      "datetime": "2026년 11월 17일 화요일 오후 10:39",
+      "duration": 81,
+      "totalSets": 28,
+      "exercises": [
+        {
+          "name": "Plank",
+          "sets": 0,
+          "warms": 3,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Pull Up (Assisted)",
+          "sets": 5,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "T Bar Row (Chest Supported)",
+          "sets": 3,
+          "warms": 2,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Straight Arm Pulldown",
+          "sets": 2,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Reverse Fly (Machine)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Seated Row (Cable)",
+          "sets": 3,
+          "warms": 0,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Shrug (Barbell)",
+          "sets": 2,
+          "warms": 1,
+          "drops": 1,
+          "fails": 0
+        },
+        {
+          "name": "Incline Curl (Dumbbell)",
+          "sets": 3,
+          "warms": 1,
+          "drops": 0,
+          "fails": 0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "warms": 0,
+          "drops": 1,
+          "fails": 0
+        }
+      ]
+    },
+    "imageUrl": "https://pub-db73e50451904383ad80cd40bdd21e82.r2.dev/2026-11-17.jpg"
   }
 }
